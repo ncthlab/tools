@@ -3,38 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>見得行築爐爐底用料包數計算機.</title>
+    <title>見得行築爐爐底用料包數計算機</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
             background-color: #f4f4f4;
         }
         .container {
             background-color: #ffffff;
             border-radius: 10px;
             padding: 20px;
-            width: 600px; /* 將寬度設為 600px */
-            margin: auto;
+            max-width: 100%; /* 避免超出螢幕 */
+            width: 100%;
+            margin: 0 auto;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
         input, select, button {
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0;
-            width: 95%; /* 調整寬度以適應更大的容器 */
+            width: 100%; /* 寬度調整為100%以適應螢幕 */
             font-size: 16px;
+            box-sizing: border-box; /* 使 padding 和 margin 不影響寬度 */
         }
         .result {
             font-size: 24px;
             font-weight: bold;
             color: #333;
+            margin-top: 20px;
+        }
+        h1 {
+            font-size: 20px; /* 標題字體大小調整 */
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>見得行築爐爐底用料包數計算機.</h1>
+        <h1>見得行築爐爐底用料包數計算機</h1>
         <label for="diameter">爐底直徑 (mm):</label>
         <input type="number" id="diameter" placeholder="輸入爐底直徑">
         
