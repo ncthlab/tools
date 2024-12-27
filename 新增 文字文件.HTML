@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>見得行築爐爐底用料計算機</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 600px; /* 將寬度設為 600px */
+            margin: auto;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input, select, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 95%; /* 調整寬度以適應更大的容器 */
+            font-size: 16px;
+        }
+        .result {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>見得行築爐爐底用料計算機</h1>
+        <label for="diameter">爐底直徑 (mm):</label>
+        <input type="number" id="diameter" placeholder="輸入爐底直徑">
+        
+        <label for="height">爐底高度 (mm):</label>
+        <input type="number" id="height" placeholder="輸入爐底高度">
+        
+        <label for="material">用料:</label>
+        <select id="material">
+            <option value="2">電熔氧化矽 GQ</option>
+            <option value="1.9">電熔氧化矽 GQ35</option>
+            <option value="2.9">氧化鋁 10V16</option>
+        </select>
+        
+        <button onclick="calculate()">計算包數</button>
+        
+        <div class="result" id="result">包數: </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // 獲取用戶輸入的值
+            const diameter = parseFloat(document.getElementById("diameter").value);
+            const height = parseFloat(document.getElementById("height").value);
+            const materialDensity = parseFloat(document.getElementById("material").value);
+
+            // 驗證輸入是否有效
+            if (isNaN(diameter) || isNaN(height) || isNaN(materialDensity)) {
+                document.getElementById("result").textContent = "請輸入有效數值";
+                return;
+            }
+
+            // 計算體積 (cm³)
+            const radius = diameter / 10 / 2; // 轉換為公分並計算半徑
+            const heightCm = height / 10; // 轉換為公分
+            const volume = Math.PI * radius * radius * heightCm; // 體積公式
+
+            // 計算總重量 (kg)
+            const totalWeight = (volume * materialDensity) / 1000; // 轉換為公斤
+
+            // 計算包數
+            const packages = totalWeight / 25; // 每包25kg
+
+            // 顯示結果
+            document.getElementById("result").textContent = `包數: ${packages.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
