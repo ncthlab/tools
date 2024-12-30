@@ -39,6 +39,7 @@
             margin-left: auto; /* 使元素水平居中 */
             margin-right: auto; /* 使元素水平居中 */
             background-color: #f2f2f2; /* 輸入框和按鈕的背景顏色為淡灰色 */
+            border: 2px solid black; /* 粗黑框 */
         }
         select {
             background-color: #d4edda; /* 下拉選單填色為淡綠色 */
@@ -153,7 +154,7 @@
         <div class="subresult" id="weight">用料重量: </div>
 
         <!-- 用水重量顯示 -->
-        <div class="subresult hidden" id="waterAmount">用水重量: </div>
+        <div class="subresult" id="waterAmount">用水重量: </div>
 
         <!-- 包數顯示 -->
         <div class="result" id="result">包數: </div>
@@ -174,6 +175,7 @@
         function calculate() {
             const selectedMode = document.getElementById('mode').value;
             let totalWeight = 0;
+            let waterAmount = 0;
 
             if (selectedMode === '爐底') {
                 const diameter = parseFloat(document.getElementById("diameter").value);
@@ -189,11 +191,6 @@
                 const heightCm = height / 10;
                 const volume = Math.PI * radius * radius * heightCm;
                 totalWeight = (volume * materialDensity) / 1000;
-
-                const packageCount = (totalWeight / 25).toFixed(2); // 每包25kg
-                document.getElementById("weight").textContent = `用料重量: ${totalWeight.toFixed(2)} kg`;
-                document.getElementById("result").textContent = `包數: ${packageCount} 包`;
-
             } else if (selectedMode === '盆') {
                 const topDiameterOuter = parseFloat(document.getElementById("topDiameterOuter").value);
                 const bottomDiameterOuter = parseFloat(document.getElementById("bottomDiameterOuter").value);
@@ -201,43 +198,31 @@
                 const topDiameterInner = parseFloat(document.getElementById("topDiameterInner").value);
                 const bottomDiameterInner = parseFloat(document.getElementById("bottomDiameterInner").value);
                 const heightInner = parseFloat(document.getElementById("heightInner").value);
-                const moistureContent = parseFloat(document.getElementById("moistureContent").value);
 
-                if (isNaN(topDiameterOuter) || isNaN(bottomDiameterOuter) || isNaN(heightOuter) ||
-                    isNaN(topDiameterInner) || isNaN(bottomDiameterInner) || isNaN(heightInner) ||
-                    isNaN(moistureContent)) {
+                if (
+                    isNaN(topDiameterOuter) || isNaN(bottomDiameterOuter) || isNaN(heightOuter) ||
+                    isNaN(topDiameterInner) || isNaN(bottomDiameterInner) || isNaN(heightInner)
+                ) {
                     document.getElementById("result").textContent = "請輸入有效數值";
                     return;
                 }
 
-                // 外盆體積
-                const radiusOuter = topDiameterOuter / 10 / 2;
-                const heightOuterCm = heightOuter / 10;
-                const volumeOuter = Math.PI * radiusOuter * radiusOuter * heightOuterCm;
-
-                // 內桶體積
-                const radiusInner = topDiameterInner / 10 / 2;
-                const heightInnerCm = heightInner / 10;
-                const volumeInner = Math.PI * radiusInner * radiusInner * heightInnerCm;
-
-                // 計算用料重量
-                const effectiveVolume = (volumeOuter - volumeInner)  * 3.1 / 1000;
-                totalWeight = effectiveVolume;
-
-                // 計算包數
-                const packageCount = (totalWeight / 25).toFixed(2);
-
-                // 計算用水重量
-                const waterAmount = totalWeight * (moistureContent / 100);
-
-                // 顯示結果
-                document.getElementById("weight").textContent = `用料重量: ${totalWeight.toFixed(2)} kg`;
-                document.getElementById("result").textContent = `包數: ${packageCount} 包`;
-                document.getElementById("waterAmount").textContent = `用水重量: ${waterAmount.toFixed(2)} kg`;
-
-                // 顯示用水重量
-                document.getElementById("waterAmount").classList.remove("hidden");
+                const volumeOuter = (Math.PI * Math.pow(topDiameterOuter / 10 / 2, 2) * heightOuter / 10);
+                const volumeInner = (Math.PI * Math.pow(topDiameterInner / 10 / 2, 2) * heightInner / 10);
+                const volume = volumeOuter - volumeInner;
+                
+                totalWeight = (volume * 3.1) / 1000;
+                
+                // 計算水分需求量
+                const moistureContent = parseFloat(document.getElementById("moistureContent").value) / 100;
+                waterAmount = totalWeight * moistureContent;
             }
+
+            const packageCount = (totalWeight / 25).toFixed(2);
+
+            document.getElementById("weight").textContent = "用料重量: " + totalWeight.toFixed(2) + " kg";
+            document.getElementById("waterAmount").textContent = "用水重量: " + waterAmount.toFixed(2) + " kg";
+            document.getElementById("result").textContent = "包數: " + packageCount;
         }
     </script>
 </body>
