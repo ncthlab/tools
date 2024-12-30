@@ -27,25 +27,29 @@
             width: 50%;
             text-align: center;
             padding-right: 10px;
+            white-space: nowrap; /* 防止文字換行 */
         }
         input, select, button {
             padding: 12px;
             margin: 10px 0;
-            width: 50%; /* 調整築爐的欄位寬度 */
+            width: 70%; /* 保持欄位寬度為 70% */
             text-align: center;
             font-size: 16px;
             box-sizing: border-box;
-            margin-left: auto;
-            margin-right: auto;
-            background-color: #f2f2f2;
+            margin-left: auto; /* 使元素水平居中 */
+            margin-right: auto; /* 使元素水平居中 */
+            background-color: #f2f2f2; /* 輸入框和按鈕的背景顏色為淡灰色 */
         }
         select {
-            font-weight: bold; /* 下拉選單文字粗體 */
-            background-color: #d4edda; /* 選擇計算模式的下拉選單填色淡綠色 */
+            background-color: #d4edda; /* 下拉選單填色為淡綠色 */
+            font-weight: bold; /* 設定下拉選單文字為粗體 */
+        }
+        option {
+            font-weight: bold; /* 設定選項文字為粗體 */
         }
         button {
             background-color: #003366; /* 按鈕背景顏色深藍色 */
-            color: white;
+            color: white; /* 按鈕文字顏色為白色 */
         }
         .result {
             font-size: 24px;
@@ -65,29 +69,16 @@
             display: none;
         }
 
-        /* 設置築盆部分為左右兩欄，左右欄位增加15%寬度並靠中間 */
+        /* 設置築盆部分為左右兩欄並減少間距 */
         .flex-container {
             display: flex;
-            justify-content: center;
-            width: 100%;
+            justify-content: space-between; /* 調整為靠近左右邊緣，縮小間隔 */
+            gap: 2%; /* 增加兩欄之間的間隔，縮小內桶和外盆之間的空隙 */
+            flex-wrap: wrap; /* 使內容能夠換行 */
         }
 
         .flex-container > div {
-            width: 90%; /* 增加欄位寬度至90% */
-            margin: 0 10px;
-        }
-
-        #moisturePercentage {
-            background-color: #d9f2ff; /* 設定水分需求量欄位的背景色為淡藍色 */
-            font-weight: bold; /* 設定文字為粗體 */
-            width: 25%; /* 水分需求量欄位的寬度設為25% */
-            text-align: center; /* 水分需求量欄位文字置中 */
-            margin: 0 auto; /* 水分需求量欄位居中 */
-        }
-
-        /* 設定築爐用料下拉選單的背景色為淡黃色 */
-        #material {
-            background-color: #fff3cd; /* 淡黃色背景 */
+            width: 48%; /* 左右兩欄各佔48% */
         }
     </style>
 </head>
@@ -141,11 +132,6 @@
                     <input type="number" id="heightInner" placeholder="輸入內桶高度">
                 </div>
             </div>
-
-            <label for="moisturePercentage">水分需求量%:</label>
-            <input type="number" id="moisturePercentage" value="6.17" placeholder="水分需求量%">
-
-            <div class="result" id="waterAmount">用水量: </div>
         </div>
 
         <button onclick="calculate()">計算包數</button>
@@ -191,23 +177,23 @@
                 const bottomDiameterInner = parseFloat(document.getElementById("bottomDiameterInner").value);
                 const heightInner = parseFloat(document.getElementById("heightInner").value);
 
-                if (isNaN(topDiameterOuter) || isNaN(bottomDiameterOuter) || isNaN(heightOuter) ||
-                    isNaN(topDiameterInner) || isNaN(bottomDiameterInner) || isNaN(heightInner)) {
+                if (
+                    isNaN(topDiameterOuter) || isNaN(bottomDiameterOuter) || isNaN(heightOuter) ||
+                    isNaN(topDiameterInner) || isNaN(bottomDiameterInner) || isNaN(heightInner)
+                ) {
                     document.getElementById("result").textContent = "請輸入有效數值";
                     return;
                 }
 
                 const volumeOuter = calculateTruncatedConeVolume(topDiameterOuter, bottomDiameterOuter, heightOuter);
                 const volumeInner = calculateTruncatedConeVolume(topDiameterInner, bottomDiameterInner, heightInner);
-                const materialAmount = volumeOuter - volumeInner;
-                const moisturePercentage = parseFloat(document.getElementById("moisturePercentage").value);
-                totalWeight = materialAmount * 3.1;
-                const waterAmount = totalWeight * (moisturePercentage / 100);
+                const materialDensity = 3.1; // 築盆用料密度
 
-                document.getElementById("waterAmount").textContent = `用水量: ${waterAmount.toFixed(2)} kg`;
+                totalWeight = ((volumeOuter - volumeInner) * materialDensity) / 1000;
             }
 
-            const totalBags = (totalWeight / 25).toFixed(2);
+            const bagWeight = 25; // 每包用料重量25kg
+            const totalBags = Math.ceil(totalWeight / bagWeight);
             document.getElementById("result").textContent = `包數: ${totalBags} 包`;
             document.getElementById("weight").textContent = `重量: ${totalWeight.toFixed(2)} kg`;
         }
@@ -216,8 +202,11 @@
             const topRadius = topDiameter / 10 / 2;
             const bottomRadius = bottomDiameter / 10 / 2;
             const heightCm = height / 10;
-            return (Math.PI * heightCm / 3) * (Math.pow(topRadius, 2) + topRadius * bottomRadius + Math.pow(bottomRadius, 2));
+            return (1 / 3) * Math.PI * heightCm * (Math.pow(topRadius, 2) + topRadius * bottomRadius + Math.pow(bottomRadius, 2));
         }
+
+        // 初始化顯示模式
+        switchMode();
     </script>
 </body>
 </html>
