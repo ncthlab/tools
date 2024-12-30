@@ -144,85 +144,68 @@
 
             <!-- 水分需求量欄位 -->
             <label for="moistureContent">水分需求量 (%):</label>
-            <input type="number" id="moistureContent" value="6.17" step="0.01" placeholder="輸入水分需求量">
-
+	<input type="number" id="moistureContent" placeholder="輸入水分需求量" value="6.17">
         </div>
 
         <button onclick="calculate()">計算包數</button>
 
-        <!-- 用料重量顯示 -->
-        <div class="subresult" id="weight">用料重量: </div>
-
-        <!-- 用水重量顯示 -->
-        <div class="subresult" id="waterAmount">用水重量: </div>
-
-        <!-- 包數顯示 -->
-        <div class="result" id="result">包數: </div>
+        <div class="result">
+            <p>用料重量: <span id="materialWeight"></span> kg</p>
+            <p id="moistureResult" class="hidden">用水重量: <span id="waterWeight"></span> kg</p>
+            <p>包數: <span id="packageCount"></span> 包</p>
+        </div>
     </div>
 
     <script>
         function switchMode() {
-            const modes = document.querySelectorAll('.mode');
-            const selectedMode = document.getElementById('mode').value;
-
-            modes.forEach(mode => {
-                mode.classList.add('hidden');
-            });
-
-            document.getElementById(selectedMode).classList.remove('hidden');
+            var mode = document.getElementById("mode").value;
+            if (mode === "爐底") {
+                document.getElementById("爐底").style.display = "block";
+                document.getElementById("盆").style.display = "none";
+                document.getElementById("moistureResult").classList.add("hidden"); // 隱藏水分欄位
+            } else {
+                document.getElementById("爐底").style.display = "none";
+                document.getElementById("盆").style.display = "block";
+                document.getElementById("moistureResult").classList.remove("hidden"); // 顯示水分欄位
+            }
         }
 
         function calculate() {
-            const selectedMode = document.getElementById('mode').value;
-            let totalWeight = 0;
-            let waterAmount = 0;
+            var mode = document.getElementById("mode").value;
+            if (mode === "爐底") {
+                var diameter = parseFloat(document.getElementById("diameter").value);
+                var height = parseFloat(document.getElementById("height").value) / 10; // 高度轉換為cm
+                var material = parseFloat(document.getElementById("material").value);
 
-            if (selectedMode === '爐底') {
-                const diameter = parseFloat(document.getElementById("diameter").value);
-                const height = parseFloat(document.getElementById("height").value);
-                const materialDensity = parseFloat(document.getElementById("material").value);
+                var volume = Math.PI * Math.pow(diameter/10 / 2, 2) * height; // 圓柱體積公式
+                var weight = volume / 1000 * material; // 計算重量 (kg)
+                var packageCount = (weight / 25).toFixed(2); // 計算包數
 
-                if (isNaN(diameter) || isNaN(height) || isNaN(materialDensity)) {
-                    document.getElementById("result").textContent = "請輸入有效數值";
-                    return;
-                }
+                document.getElementById("materialWeight").textContent = weight.toFixed(2);
+                document.getElementById("packageCount").textContent = packageCount;
+            } else if (mode === "盆") {
+                var topDiameterOuter = parseFloat(document.getElementById("topDiameterOuter").value);
+                var bottomDiameterOuter = parseFloat(document.getElementById("bottomDiameterOuter").value);
+                var heightOuter = parseFloat(document.getElementById("heightOuter").value);
 
-                const radius = diameter / 10 / 2;
-                const heightCm = height / 10;
-                const volume = Math.PI * radius * radius * heightCm;
-                totalWeight = (volume * materialDensity) / 1000;
-            } else if (selectedMode === '盆') {
-                const topDiameterOuter = parseFloat(document.getElementById("topDiameterOuter").value);
-                const bottomDiameterOuter = parseFloat(document.getElementById("bottomDiameterOuter").value);
-                const heightOuter = parseFloat(document.getElementById("heightOuter").value);
-                const topDiameterInner = parseFloat(document.getElementById("topDiameterInner").value);
-                const bottomDiameterInner = parseFloat(document.getElementById("bottomDiameterInner").value);
-                const heightInner = parseFloat(document.getElementById("heightInner").value);
+                var topDiameterInner = parseFloat(document.getElementById("topDiameterInner").value);
+                var bottomDiameterInner = parseFloat(document.getElementById("bottomDiameterInner").value);
+                var heightInner = parseFloat(document.getElementById("heightInner").value);
 
-                if (
-                    isNaN(topDiameterOuter) || isNaN(bottomDiameterOuter) || isNaN(heightOuter) ||
-                    isNaN(topDiameterInner) || isNaN(bottomDiameterInner) || isNaN(heightInner)
-                ) {
-                    document.getElementById("result").textContent = "請輸入有效數值";
-                    return;
-                }
+                var outerVolume = (heightOuter / 3) * (Math.PI * Math.pow(topDiameterOuter / 2, 2) + Math.PI * Math.pow(bottomDiameterOuter / 2, 2) + Math.sqrt(Math.PI * Math.pow(topDiameterOuter / 2, 2) * Math.PI * Math.pow(bottomDiameterOuter / 2, 2))); // 梯形圓柱公式
+                var innerVolume = (heightInner / 3) * (Math.PI * Math.pow(topDiameterInner / 2, 2) + Math.PI * Math.pow(bottomDiameterInner / 2, 2) + Math.sqrt(Math.PI * Math.pow(topDiameterInner / 2, 2) * Math.PI * Math.pow(bottomDiameterInner / 2, 2))); // 梯形圓柱公式
+                var materialVolume = outerVolume - innerVolume; // 外盆體積減內桶體積
 
-                const volumeOuter = (Math.PI * Math.pow(topDiameterOuter / 10 / 2, 2) * heightOuter / 10);
-                const volumeInner = (Math.PI * Math.pow(topDiameterInner / 10 / 2, 2) * heightInner / 10);
-                const volume = volumeOuter - volumeInner;
-                
-                totalWeight = (volume * 3.1) / 1000;
-                
-                // 計算水分需求量
-                const moistureContent = parseFloat(document.getElementById("moistureContent").value) / 100;
-                waterAmount = totalWeight * moistureContent;
+                var materialWeight = (materialVolume / 1000) * 3.1/1000; // 計算重量 (kg)
+                var packageCount = (materialWeight / 25).toFixed(2); // 計算包數
+
+                var moistureContent = parseFloat(document.getElementById("moistureContent").value);
+                var waterWeight = materialWeight * moistureContent / 100; // 計算水重量
+
+                document.getElementById("materialWeight").textContent = materialWeight.toFixed(2);
+                document.getElementById("packageCount").textContent = packageCount;
+                document.getElementById("waterWeight").textContent = waterWeight.toFixed(2);
             }
-
-            const packageCount = (totalWeight / 25).toFixed(2);
-
-            document.getElementById("weight").textContent = "用料重量: " + totalWeight.toFixed(2) + " kg";
-            document.getElementById("waterAmount").textContent = "用水重量: " + waterAmount.toFixed(2) + " kg";
-            document.getElementById("result").textContent = "包數: " + packageCount;
         }
     </script>
 </body>
