@@ -41,6 +41,10 @@
         }
         select {
             background-color: #d4edda; /* 下拉選單填色為淡綠色 */
+            font-weight: bold; /* 設定下拉選單文字為粗體 */
+        }
+        option {
+            font-weight: bold; /* 設定選項文字為粗體 */
         }
         button {
             background-color: #003366; /* 按鈕背景顏色深藍色 */
@@ -64,15 +68,16 @@
             display: none;
         }
 
-/* 設置築盆部分為左右兩欄並減少間距 */
-.flex-container {
-    display: flex;
-    justify-content: space-evenly; /* 使內桶與外盆欄位均勻分布並減少間隔 */
-}
+        /* 設置築盆部分為左右兩欄並減少間距 */
+        .flex-container {
+            display: flex;
+            justify-content: space-between; /* 調整為靠近左右邊緣，縮小間隔 */
+            gap: 5%; /* 增加兩欄之間的間隔，縮小內桶和外盆之間的空隙 */
+        }
 
-.flex-container > div {
-    width: 72%; /* 左右兩欄各佔72% */
-}
+        .flex-container > div {
+            width: 48%; /* 左右兩欄各佔48% */
+        }
     </style>
 </head>
 <body>
@@ -194,8 +199,11 @@
             const topRadius = topDiameter / 10 / 2;
             const bottomRadius = bottomDiameter / 10 / 2;
             const heightCm = height / 10;
-            return (1 / 3) * Math.PI * heightCm * (topRadius ** 2 + topRadius * bottomRadius + bottomRadius ** 2);
+            return (1 / 3) * Math.PI * heightCm * (Math.pow(topRadius, 2) + topRadius * bottomRadius + Math.pow(bottomRadius, 2));
         }
+
+        // 初始化顯示模式
+        switchMode();
     </script>
 </body>
 </html>
