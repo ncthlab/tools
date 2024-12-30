@@ -65,16 +65,16 @@
             display: none;
         }
 
-        /* 設置築盆部分為左右兩欄並減少間距 */
+        /* 設置築盆部分為左右兩欄，左右欄位增加15%寬度並靠中間 */
         .flex-container {
             display: flex;
-            justify-content: space-between; /* 調整為靠近左右邊緣，縮小間隔 */
-            gap: 2%; /* 增加兩欄之間的間隔，縮小內桶和外盆之間的空隙 */
-            flex-wrap: wrap; /* 使內容能夠換行 */
+            justify-content: center;
+            width: 100%;
         }
 
         .flex-container > div {
-            width: 48%; /* 左右兩欄各佔48% */
+            width: 85%; /* 外盆內桶欄位寬度增加15% */
+            margin: 0 10px;
         }
 
         #moisturePercentage {
@@ -82,6 +82,7 @@
             font-weight: bold; /* 設定文字為粗體 */
             width: 25%; /* 水分需求量欄位的寬度設為25% */
             text-align: center; /* 水分需求量欄位文字置中 */
+            margin: 0 auto; /* 水分需求量欄位居中 */
         }
 
         /* 設定築爐用料下拉選單的背景色為淡黃色 */
@@ -202,7 +203,6 @@
                 const moisturePercentage = parseFloat(document.getElementById("moisturePercentage").value);
 
                 totalWeight = materialAmount * 3.1; // 使用密度 3.1
-
                 const waterAmount = totalWeight * (moisturePercentage / 100);
                 document.getElementById("waterAmount").textContent = `用水量: ${waterAmount.toFixed(2)} kg`;
             }
