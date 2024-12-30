@@ -27,13 +27,11 @@
             width: 50%;
             text-align: center;
             padding-right: 10px;
-            white-space: nowrap; /* 防止文字換行 */
-            font-weight: bold; /* 提示文字設為粗體 */
         }
         input, select, button {
             padding: 12px;
             margin: 10px 0;
-            width: 70%; /* 保持欄位寬度為 70% */
+            width: 50%; /* 調整寬度為50%以便置中 */
             text-align: center;
             font-size: 16px;
             box-sizing: border-box;
@@ -43,14 +41,7 @@
         }
         select {
             background-color: #d4edda; /* 下拉選單填色為淡綠色 */
-            font-weight: bold; /* 設定下拉選單文字為粗體 */
-        }
-        /* 築爐用料的下拉選單填色為淡黃色 */
-        #material {
-            background-color: #fff3cd; /* 淡黃色 */
-        }
-        option {
-            font-weight: bold; /* 設定選項文字為粗體 */
+            font-weight: bold; /* 下拉選單文字粗體 */
         }
         button {
             background-color: #003366; /* 按鈕背景顏色深藍色 */
@@ -74,31 +65,20 @@
             display: none;
         }
 
-        /* 設置築盆部分為左右兩欄並縮減欄位寬度，居中對齊 */
+        /* 設置築盆部分為左右兩欄 */
         .flex-container {
             display: flex;
-            justify-content: center; /* 靠中間 */
-            gap: 5%; /* 增加兩欄之間的間隔 */
-            flex-wrap: wrap; /* 使內容能夠換行 */
+            justify-content: center;
         }
 
         .flex-container > div {
-            width: 45%; /* 左右兩欄各佔45%，縮小至50%的50% */
-            text-align: center;
+            width: 48%; /* 左右兩欄各佔48% */
+            margin: 0 10px;
         }
 
-        /* 水分需求量欄位縮小為25%並置中 */
         #moisturePercentage {
-            width: 25%; /* 設定水分需求量欄位寬度為25% */
-            margin-left: auto;
-            margin-right: auto; /* 使水分需求量欄位水平居中 */
-        }
-
-        /* 水分需求量父容器置中 */
-        .moisture-container {
-            display: flex;
-            justify-content: center; /* 水分需求量區塊居中 */
-            margin-top: 10px;
+            background-color: #d9f2ff; /* 設定水分需求量欄位的背景色為淡藍色 */
+            font-weight: bold; /* 設定文字為粗體 */
         }
     </style>
 </head>
@@ -153,15 +133,10 @@
                 </div>
             </div>
 
-            <!-- 水分需求量與用水量欄位 -->
-            <div class="moisture-container">
-                <div>
-                    <label for="moisturePercentage">水分需求量%:</label>
-                    <input type="number" id="moisturePercentage" value="6.17" step="0.01" placeholder="輸入水分需求量%">
-                </div>
-            </div>
+            <label for="moisturePercentage">水分需求量%:</label>
+            <input type="number" id="moisturePercentage" value="6.17" placeholder="水分需求量%">
 
-            <div class="subresult" id="waterAmount">用水量: </div>
+            <div class="result" id="waterAmount">用水量: </div>
         </div>
 
         <button onclick="calculate()">計算包數</button>
@@ -224,7 +199,7 @@
                 document.getElementById("waterAmount").textContent = `用水量: ${waterAmount.toFixed(2)} kg`;
             }
 
-            const totalBags = Math.ceil(totalWeight / 25);
+            const totalBags = (totalWeight / 25).toFixed(2); // 四捨五入至小數點第二位
             document.getElementById("result").textContent = `包數: ${totalBags} 包`;
             document.getElementById("weight").textContent = `重量: ${totalWeight.toFixed(2)} kg`;
         }
@@ -233,11 +208,8 @@
             const topRadius = topDiameter / 10 / 2;
             const bottomRadius = bottomDiameter / 10 / 2;
             const heightCm = height / 10;
-            return (1 / 3) * Math.PI * heightCm * (Math.pow(topRadius, 2) + topRadius * bottomRadius + Math.pow(bottomRadius, 2));
+            return (Math.PI * heightCm / 3) * (Math.pow(topRadius, 2) + topRadius * bottomRadius + Math.pow(bottomRadius, 2));
         }
-
-        // 初始化顯示模式
-        switchMode();
     </script>
 </body>
 </html>
