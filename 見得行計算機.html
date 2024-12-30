@@ -148,9 +148,12 @@
         </div>
 
         <button onclick="calculate()">計算包數</button>
-        <div class="subresult" id="weight">重量: </div>
+
+        <!-- 用料重量顯示 -->
+        <div class="subresult" id="weight">用料重量: </div>
+
+        <!-- 包數顯示 -->
         <div class="result" id="result">包數: </div>
-        <div class="subresult" id="waterAmount">用水量 (kg): </div> <!-- 用水量結果顯示 -->
     </div>
 
     <script>
@@ -206,12 +209,7 @@
 
             // 顯示計算結果
             const weightResult = totalWeight.toFixed(2);
-            document.getElementById("weight").textContent = `重量: ${weightResult} kg`;
-
-            // 計算用水量並顯示
-            const moistureContent = parseFloat(document.getElementById("moistureContent").value) / 100;
-            const waterAmount = totalWeight * moistureContent;
-            document.getElementById("waterAmount").textContent = `用水量: ${waterAmount.toFixed(2)} kg`;
+            document.getElementById("weight").textContent = `用料重量: ${weightResult} kg`;
 
             // 顯示包數
             const packageCount = (totalWeight / 25).toFixed(0); // 每包25kg
