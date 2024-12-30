@@ -24,7 +24,7 @@
         label {
             display: inline-block;
             width: 50%;
-            text-align: right;
+            text-align: center;
             padding-right: 10px;
         }
         input, select, button {
@@ -40,6 +40,12 @@
             font-weight: bold;
             color: #333;
             margin-top: 20px;
+        }
+        .subresult {
+            font-size: 18px;
+            font-weight: normal;
+            color: #555;
+            margin-top: 10px;
         }
         h1 {
             font-size: 20px;
@@ -95,6 +101,7 @@
         </div>
 
         <button onclick="calculate()">計算包數</button>
+        <div class="subresult" id="weight">重量: </div>
         <div class="result" id="result">包數: </div>
     </div>
 
@@ -152,6 +159,7 @@
             }
 
             const packages = totalWeight / 25;
+            document.getElementById("weight").textContent = `重量: ${totalWeight.toFixed(2)} kg`;
             document.getElementById("result").textContent = `包數: ${packages.toFixed(2)}`;
         }
 
