@@ -27,11 +27,12 @@
             width: 50%;
             text-align: center;
             padding-right: 10px;
+            white-space: nowrap; /* 防止文字換行 */
         }
         input, select, button {
             padding: 12px;
             margin: 10px 0;
-            width: 50%; /* 調整寬度為50%以便置中 */
+            width: 70%; /* 增加欄位寬度為 70% */
             text-align: center;
             font-size: 16px;
             box-sizing: border-box;
@@ -73,6 +74,7 @@
             display: flex;
             justify-content: space-between; /* 調整為靠近左右邊緣，縮小間隔 */
             gap: 5%; /* 增加兩欄之間的間隔，縮小內桶和外盆之間的空隙 */
+            flex-wrap: wrap; /* 使內容能夠換行 */
         }
 
         .flex-container > div {
@@ -190,9 +192,10 @@
                 totalWeight = ((volumeOuter - volumeInner) * materialDensity) / 1000;
             }
 
-            const packages = totalWeight / 25;
+            const bagWeight = 25; // 每包用料重量25kg
+            const totalBags = Math.ceil(totalWeight / bagWeight);
+            document.getElementById("result").textContent = `包數: ${totalBags}`;
             document.getElementById("weight").textContent = `重量: ${totalWeight.toFixed(2)} kg`;
-            document.getElementById("result").textContent = `包數: ${packages.toFixed(2)}`;
         }
 
         function calculateTruncatedConeVolume(topDiameter, bottomDiameter, height) {
