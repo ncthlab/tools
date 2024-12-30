@@ -73,7 +73,7 @@
         }
 
         .flex-container > div {
-            width: 85%; /* 外盆內桶欄位寬度增加15% */
+            width: 90%; /* 增加欄位寬度至90% */
             margin: 0 10px;
         }
 
@@ -202,12 +202,12 @@
                 const materialAmount = volumeOuter - volumeInner;
                 const moisturePercentage = parseFloat(document.getElementById("moisturePercentage").value);
 
-                totalWeight = materialAmount * 3.1; // 使用密度 3.1
+                totalWeight = materialAmount * 3.1;
                 const waterAmount = totalWeight * (moisturePercentage / 100);
                 document.getElementById("waterAmount").textContent = `用水量: ${waterAmount.toFixed(2)} kg`;
             }
 
-            const totalBags = (totalWeight / 25).toFixed(2); // 四捨五入至小數點第二位
+            const totalBags = (totalWeight / 25).toFixed(2);
             document.getElementById("result").textContent = `包數: ${totalBags} 包`;
             document.getElementById("weight").textContent = `重量: ${totalWeight.toFixed(2)} kg`;
         }
