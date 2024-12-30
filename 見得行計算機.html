@@ -204,8 +204,13 @@
 
                 const volumeOuter = Math.PI * (Math.pow(topDiameterOuter / 2, 2) * heightOuter - Math.pow(bottomDiameterOuter / 2, 2) * heightOuter);
                 const volumeInner = Math.PI * (Math.pow(topDiameterInner / 2, 2) * heightInner - Math.pow(bottomDiameterInner / 2, 2) * heightInner);
-                totalWeight = (volumeOuter - volumeInner) * 2.5 / 1000; // 假設密度為2.5 g/cm³
+                totalWeight = (volumeOuter - volumeInner) * 3.1 / 1000; // 假設密度為3.1 g/cm³
             }
+
+		// 計算用水量並顯示
+                const moistureContent = parseFloat(document.getElementById("moistureContent").value) / 100;
+                const waterAmount = totalWeight * moistureContent;
+                document.getElementById("waterAmount").textContent = `用水量: ${waterAmount.toFixed(2)} kg`;
 
             // 顯示計算結果
             const weightResult = totalWeight.toFixed(2);
