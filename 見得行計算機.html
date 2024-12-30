@@ -64,15 +64,15 @@
             display: none;
         }
 
-        /* 設置築盆部分為左右兩欄 */
-        .flex-container {
-            display: flex;
-            justify-content: space-between;
-        }
+/* 設置築盆部分為左右兩欄並減少間距 */
+.flex-container {
+    display: flex;
+    justify-content: space-evenly; /* 使內桶與外盆欄位均勻分布並減少間隔 */
+}
 
-        .flex-container > div {
-            width: 48%; /* 左右兩欄各佔48% */
-        }
+.flex-container > div {
+    width: 72%; /* 左右兩欄各佔72% */
+}
     </style>
 </head>
 <body>
