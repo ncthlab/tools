@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>見得行築爐爐底用料包數計算機</title>
+    <title>見得行築爐與築盆用料包數計算機</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
             background-color: #ffffff;
             border-radius: 10px;
             padding: 20px;
-            max-width: 100%; /* 避免超出螢幕 */
+            max-width: 100%;
             width: 100%;
             margin: 0 auto;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -24,9 +24,9 @@
         input, select, button {
             padding: 12px;
             margin: 10px 0;
-            width: 100%; /* 寬度調整為100%以適應螢幕 */
+            width: 100%;
             font-size: 16px;
-            box-sizing: border-box; /* 使 padding 和 margin 不影響寬度 */
+            box-sizing: border-box;
         }
         .result {
             font-size: 24px;
@@ -35,58 +35,124 @@
             margin-top: 20px;
         }
         h1 {
-            font-size: 20px; /* 標題字體大小調整 */
+            font-size: 20px;
             margin-bottom: 20px;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>見得行築爐爐底用料包數計算機</h1>
-        <label for="diameter">爐底直徑 (mm):</label>
-        <input type="number" id="diameter" placeholder="輸入爐底直徑">
-        
-        <label for="height">爐底高度 (mm):</label>
-        <input type="number" id="height" placeholder="輸入爐底高度">
-        
-        <label for="material">用料:</label>
-        <select id="material">
-            <option value="2">電熔氧化矽 GQ</option>
-            <option value="1.9">電熔氧化矽 GQ35</option>
-            <option value="2.9">氧化鋁 10V16</option>
+        <h1>見得行築爐與築盆用料包數計算機</h1>
+        <label for="mode">選擇計算模式:</label>
+        <select id="mode" onchange="switchMode()">
+            <option value="炉底">築爐爐底用料包數</option>
+            <option value="盆">築盆用料包數</option>
         </select>
-        
+
+        <div id="炉底" class="mode">
+            <label for="diameter">爐底直徑 (mm):</label>
+            <input type="number" id="diameter" placeholder="輸入爐底直徑">
+
+            <label for="height">爐底高度 (mm):</label>
+            <input type="number" id="height" placeholder="輸入爐底高度">
+
+            <label for="material">用料:</label>
+            <select id="material">
+                <option value="2">電熔氧化矽 GQ</option>
+                <option value="1.9">電熔氧化矽 GQ35</option>
+                <option value="2.9">氧化鋁 10V16</option>
+            </select>
+        </div>
+
+        <div id="盆" class="mode hidden">
+            <label for="topDiameterOuter">外盆頂直徑 (mm):</label>
+            <input type="number" id="topDiameterOuter" placeholder="輸入外盆頂直徑">
+
+            <label for="bottomDiameterOuter">外盆底直徑 (mm):</label>
+            <input type="number" id="bottomDiameterOuter" placeholder="輸入外盆底直徑">
+
+            <label for="heightOuter">外盆高度 (mm):</label>
+            <input type="number" id="heightOuter" placeholder="輸入外盆高度">
+
+            <label for="topDiameterInner">內桶頂直徑 (mm):</label>
+            <input type="number" id="topDiameterInner" placeholder="輸入內桶頂直徑">
+
+            <label for="bottomDiameterInner">內桶底直徑 (mm):</label>
+            <input type="number" id="bottomDiameterInner" placeholder="輸入內桶底直徑">
+
+            <label for="heightInner">內桶高度 (mm):</label>
+            <input type="number" id="heightInner" placeholder="輸入內桶高度">
+        </div>
+
         <button onclick="calculate()">計算包數</button>
-        
         <div class="result" id="result">包數: </div>
     </div>
 
     <script>
-        function calculate() {
-            // 獲取用戶輸入的值
-            const diameter = parseFloat(document.getElementById("diameter").value);
-            const height = parseFloat(document.getElementById("height").value);
-            const materialDensity = parseFloat(document.getElementById("material").value);
+        function switchMode() {
+            const modes = document.querySelectorAll('.mode');
+            const selectedMode = document.getElementById('mode').value;
 
-            // 驗證輸入是否有效
-            if (isNaN(diameter) || isNaN(height) || isNaN(materialDensity)) {
-                document.getElementById("result").textContent = "請輸入有效數值";
-                return;
+            modes.forEach(mode => {
+                mode.classList.add('hidden');
+            });
+
+            document.getElementById(selectedMode).classList.remove('hidden');
+        }
+
+        function calculate() {
+            const selectedMode = document.getElementById('mode').value;
+            let totalWeight = 0;
+
+            if (selectedMode === '炉底') {
+                const diameter = parseFloat(document.getElementById("diameter").value);
+                const height = parseFloat(document.getElementById("height").value);
+                const materialDensity = parseFloat(document.getElementById("material").value);
+
+                if (isNaN(diameter) || isNaN(height) || isNaN(materialDensity)) {
+                    document.getElementById("result").textContent = "請輸入有效數值";
+                    return;
+                }
+
+                const radius = diameter / 10 / 2;
+                const heightCm = height / 10;
+                const volume = Math.PI * radius * radius * heightCm;
+                totalWeight = (volume * materialDensity) / 1000;
+            } else if (selectedMode === '盆') {
+                const topDiameterOuter = parseFloat(document.getElementById("topDiameterOuter").value);
+                const bottomDiameterOuter = parseFloat(document.getElementById("bottomDiameterOuter").value);
+                const heightOuter = parseFloat(document.getElementById("heightOuter").value);
+                const topDiameterInner = parseFloat(document.getElementById("topDiameterInner").value);
+                const bottomDiameterInner = parseFloat(document.getElementById("bottomDiameterInner").value);
+                const heightInner = parseFloat(document.getElementById("heightInner").value);
+
+                if (
+                    isNaN(topDiameterOuter) || isNaN(bottomDiameterOuter) || isNaN(heightOuter) ||
+                    isNaN(topDiameterInner) || isNaN(bottomDiameterInner) || isNaN(heightInner)
+                ) {
+                    document.getElementById("result").textContent = "請輸入有效數值";
+                    return;
+                }
+
+                const volumeOuter = calculateTruncatedConeVolume(topDiameterOuter, bottomDiameterOuter, heightOuter);
+                const volumeInner = calculateTruncatedConeVolume(topDiameterInner, bottomDiameterInner, heightInner);
+                const materialDensity = 2; // 假設密度為2
+
+                totalWeight = ((volumeOuter - volumeInner) * materialDensity) / 1000;
             }
 
-            // 計算體積 (cm³)
-            const radius = diameter / 10 / 2; // 轉換為公分並計算半徑
-            const heightCm = height / 10; // 轉換為公分
-            const volume = Math.PI * radius * radius * heightCm; // 體積公式
-
-            // 計算總重量 (kg)
-            const totalWeight = (volume * materialDensity) / 1000; // 轉換為公斤
-
-            // 計算包數
-            const packages = totalWeight / 25; // 每包25kg
-
-            // 顯示結果
+            const packages = totalWeight / 25;
             document.getElementById("result").textContent = `包數: ${packages.toFixed(2)}`;
+        }
+
+        function calculateTruncatedConeVolume(topDiameter, bottomDiameter, height) {
+            const topRadius = topDiameter / 10 / 2;
+            const bottomRadius = bottomDiameter / 10 / 2;
+            const heightCm = height / 10;
+            return (1 / 3) * Math.PI * heightCm * (topRadius ** 2 + topRadius * bottomRadius + bottomRadius ** 2);
         }
     </script>
 </body>
