@@ -107,7 +107,7 @@
             const selectedMode = document.getElementById('mode').value;
             let totalWeight = 0;
 
-            if (selectedMode === '炉底') {
+            if (selectedMode === '爐底') {
                 const diameter = parseFloat(document.getElementById("diameter").value);
                 const height = parseFloat(document.getElementById("height").value);
                 const materialDensity = parseFloat(document.getElementById("material").value);
@@ -139,7 +139,7 @@
 
                 const volumeOuter = calculateTruncatedConeVolume(topDiameterOuter, bottomDiameterOuter, heightOuter);
                 const volumeInner = calculateTruncatedConeVolume(topDiameterInner, bottomDiameterInner, heightInner);
-                const materialDensity = 2; // 假設密度為2
+                const materialDensity = 3.1; // 築盆用料密度
 
                 totalWeight = ((volumeOuter - volumeInner) * materialDensity) / 1000;
             }
