@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            font-weight: bold; /* 設定整體字型為粗體 */
         }
         .container {
             background-color: #ffffff;
@@ -30,20 +31,28 @@
         input, select, button {
             padding: 12px;
             margin: 10px 0;
-            width: 25%;
+            width: 50%; /* 調整寬度為50%以便置中 */
             text-align: center;
             font-size: 16px;
             box-sizing: border-box;
+            margin-left: auto; /* 使元素水平居中 */
+            margin-right: auto; /* 使元素水平居中 */
+            background-color: #f2f2f2; /* 輸入框和按鈕的背景顏色為淡灰色 */
+        }
+        select {
+            background-color: #d4edda; /* 下拉選單填色為淡綠色 */
+        }
+        button {
+            background-color: #003366; /* 按鈕背景顏色深藍色 */
+            color: white; /* 按鈕文字顏色為白色 */
         }
         .result {
             font-size: 24px;
-            font-weight: bold;
             color: #333;
             margin-top: 20px;
         }
         .subresult {
             font-size: 18px;
-            font-weight: normal;
             color: #555;
             margin-top: 10px;
         }
@@ -53,6 +62,16 @@
         }
         .hidden {
             display: none;
+        }
+
+        /* 設置築盆部分為左右兩欄 */
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .flex-container > div {
+            width: 48%; /* 左右兩欄各佔48% */
         }
     </style>
 </head>
@@ -81,23 +100,31 @@
         </div>
 
         <div id="盆" class="mode hidden">
-            <label for="topDiameterOuter">外盆頂直徑 (mm):</label>
-            <input type="number" id="topDiameterOuter" placeholder="輸入外盆頂直徑">
+            <div class="flex-container">
+                <!-- 外盆欄 -->
+                <div>
+                    <label for="topDiameterOuter">外盆頂直徑 (mm):</label>
+                    <input type="number" id="topDiameterOuter" placeholder="輸入外盆頂直徑">
 
-            <label for="bottomDiameterOuter">外盆底直徑 (mm):</label>
-            <input type="number" id="bottomDiameterOuter" placeholder="輸入外盆底直徑">
+                    <label for="bottomDiameterOuter">外盆底直徑 (mm):</label>
+                    <input type="number" id="bottomDiameterOuter" placeholder="輸入外盆底直徑">
 
-            <label for="heightOuter">外盆高度 (mm):</label>
-            <input type="number" id="heightOuter" placeholder="輸入外盆高度">
+                    <label for="heightOuter">外盆高度 (mm):</label>
+                    <input type="number" id="heightOuter" placeholder="輸入外盆高度">
+                </div>
 
-            <label for="topDiameterInner">內桶頂直徑 (mm):</label>
-            <input type="number" id="topDiameterInner" placeholder="輸入內桶頂直徑">
+                <!-- 內桶欄 -->
+                <div>
+                    <label for="topDiameterInner">內桶頂直徑 (mm):</label>
+                    <input type="number" id="topDiameterInner" placeholder="輸入內桶頂直徑">
 
-            <label for="bottomDiameterInner">內桶底直徑 (mm):</label>
-            <input type="number" id="bottomDiameterInner" placeholder="輸入內桶底直徑">
+                    <label for="bottomDiameterInner">內桶底直徑 (mm):</label>
+                    <input type="number" id="bottomDiameterInner" placeholder="輸入內桶底直徑">
 
-            <label for="heightInner">內桶高度 (mm):</label>
-            <input type="number" id="heightInner" placeholder="輸入內桶高度">
+                    <label for="heightInner">內桶高度 (mm):</label>
+                    <input type="number" id="heightInner" placeholder="輸入內桶高度">
+                </div>
+            </div>
         </div>
 
         <button onclick="calculate()">計算包數</button>
