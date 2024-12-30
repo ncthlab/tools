@@ -44,6 +44,9 @@
             background-color: #d4edda; /* 下拉選單填色為淡綠色 */
             font-weight: bold; /* 設定下拉選單文字為粗體 */
         }
+        #material {
+            background-color: #fff3cd; /* 淡黃色 */
+        }
         option {
             font-weight: bold; /* 設定選項文字為粗體 */
         }
@@ -69,16 +72,20 @@
             display: none;
         }
 
-        /* 設置築盆部分為左右兩欄並減少間距 */
         .flex-container {
             display: flex;
             justify-content: space-between; /* 調整為靠近左右邊緣，縮小間隔 */
-            gap: 2%; /* 增加兩欄之間的間隔，縮小內桶和外盆之間的空隙 */
+            gap: 2%;
             flex-wrap: wrap; /* 使內容能夠換行 */
         }
 
         .flex-container > div {
-            width: 48%; /* 左右兩欄各佔48% */
+            width: 48%;
+        }
+
+        /* 設定水分需求量欄位的顏色 */
+        #moistureContent {
+            background-color: #d1ecf1; /* 淡藍色 */
         }
     </style>
 </head>
@@ -108,7 +115,6 @@
 
         <div id="盆" class="mode hidden">
             <div class="flex-container">
-                <!-- 外盆欄 -->
                 <div>
                     <label for="topDiameterOuter">外盆頂直徑 (mm):</label>
                     <input type="number" id="topDiameterOuter" placeholder="輸入外盆頂直徑">
@@ -120,7 +126,6 @@
                     <input type="number" id="heightOuter" placeholder="輸入外盆高度">
                 </div>
 
-                <!-- 內桶欄 -->
                 <div>
                     <label for="topDiameterInner">內桶頂直徑 (mm):</label>
                     <input type="number" id="topDiameterInner" placeholder="輸入內桶頂直徑">
@@ -132,10 +137,15 @@
                     <input type="number" id="heightInner" placeholder="輸入內桶高度">
                 </div>
             </div>
+
+            <label for="moistureContent">水分需求量 (%):</label>
+            <input type="number" id="moistureContent" value="6.17" step="0.01" placeholder="輸入水分需求量">
         </div>
 
         <button onclick="calculate()">計算包數</button>
-        <div class="subresult" id="weight">重量: </div>
+
+        <div class="subresult" id="weight">用料重量: </div>
+        <div class="subresult" id="waterAmount">用水重量: </div>
         <div class="result" id="result">包數: </div>
     </div>
 
@@ -169,44 +179,40 @@
                 const heightCm = height / 10;
                 const volume = Math.PI * radius * radius * heightCm;
                 totalWeight = (volume * materialDensity) / 1000;
+
+                document.getElementById("weight").textContent = `用料重量: ${totalWeight.toFixed(2)} kg`;
+                document.getElementById("waterAmount").textContent = ""; // 不顯示用水重量
             } else if (selectedMode === '盆') {
                 const topDiameterOuter = parseFloat(document.getElementById("topDiameterOuter").value);
                 const bottomDiameterOuter = parseFloat(document.getElementById("bottomDiameterOuter").value);
                 const heightOuter = parseFloat(document.getElementById("heightOuter").value);
+
                 const topDiameterInner = parseFloat(document.getElementById("topDiameterInner").value);
                 const bottomDiameterInner = parseFloat(document.getElementById("bottomDiameterInner").value);
                 const heightInner = parseFloat(document.getElementById("heightInner").value);
 
-                if (
-                    isNaN(topDiameterOuter) || isNaN(bottomDiameterOuter) || isNaN(heightOuter) ||
-                    isNaN(topDiameterInner) || isNaN(bottomDiameterInner) || isNaN(heightInner)
-                ) {
+                const moistureContent = parseFloat(document.getElementById("moistureContent").value) / 100;
+
+                if (isNaN(topDiameterOuter) || isNaN(bottomDiameterOuter) || isNaN(heightOuter) ||
+                    isNaN(topDiameterInner) || isNaN(bottomDiameterInner) || isNaN(heightInner) || isNaN(moistureContent)) {
                     document.getElementById("result").textContent = "請輸入有效數值";
                     return;
                 }
 
-                const volumeOuter = calculateTruncatedConeVolume(topDiameterOuter, bottomDiameterOuter, heightOuter);
-                const volumeInner = calculateTruncatedConeVolume(topDiameterInner, bottomDiameterInner, heightInner);
-                const materialDensity = 3.1; // 築盆用料密度
+                const volumeOuter = Math.PI * Math.pow(topDiameterOuter / 2, 2) * heightOuter - Math.PI * Math.pow(bottomDiameterOuter / 2, 2) * heightOuter;
+                const volumeInner = Math.PI * Math.pow(topDiameterInner / 2, 2) * heightInner - Math.PI * Math.pow(bottomDiameterInner / 2, 2) * heightInner;
 
-                totalWeight = ((volumeOuter - volumeInner) * materialDensity) / 1000;
+                const materialWeight = ((volumeOuter - volumeInner) * 3.1) / 1000;
+                const waterWeight = materialWeight * moistureContent;
+                totalWeight = materialWeight;
+
+                document.getElementById("weight").textContent = `用料重量: ${materialWeight.toFixed(2)} kg`;
+                document.getElementById("waterAmount").textContent = `用水重量: ${waterWeight.toFixed(2)} kg`;
             }
 
-            const bagWeight = 25; // 每包用料重量25kg
-            const totalBags = Math.ceil(totalWeight / bagWeight);
-            document.getElementById("result").textContent = `包數: ${totalBags} 包`;
-            document.getElementById("weight").textContent = `重量: ${totalWeight.toFixed(2)} kg`;
+            const packageCount = (totalWeight / 25).toFixed(2);
+            document.getElementById("result").textContent = `包數: ${packageCount} 包`;
         }
-
-        function calculateTruncatedConeVolume(topDiameter, bottomDiameter, height) {
-            const topRadius = topDiameter / 10 / 2;
-            const bottomRadius = bottomDiameter / 10 / 2;
-            const heightCm = height / 10;
-            return (1 / 3) * Math.PI * heightCm * (Math.pow(topRadius, 2) + topRadius * bottomRadius + Math.pow(bottomRadius, 2));
-        }
-
-        // 初始化顯示模式
-        switchMode();
     </script>
 </body>
 </html>
