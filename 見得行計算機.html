@@ -44,6 +44,9 @@
             background-color: #d4edda; /* 下拉選單填色為淡綠色 */
             font-weight: bold; /* 設定下拉選單文字為粗體 */
         }
+        #material {
+            background-color: #fff3cd; /* 淡黃色 */
+        }
         option {
             font-weight: bold; /* 設定選項文字為粗體 */
         }
@@ -199,14 +202,11 @@
         }
 
         function calculateTruncatedConeVolume(topDiameter, bottomDiameter, height) {
-            const topRadius = topDiameter / 10 / 2;
-            const bottomRadius = bottomDiameter / 10 / 2;
+            const radiusTop = topDiameter / 10 / 2;
+            const radiusBottom = bottomDiameter / 10 / 2;
             const heightCm = height / 10;
-            return (1 / 3) * Math.PI * heightCm * (Math.pow(topRadius, 2) + topRadius * bottomRadius + Math.pow(bottomRadius, 2));
+            return (1 / 3) * Math.PI * heightCm * (radiusTop * radiusTop + radiusTop * radiusBottom + radiusBottom * radiusBottom);
         }
-
-        // 初始化顯示模式
-        switchMode();
     </script>
 </body>
 </html>
