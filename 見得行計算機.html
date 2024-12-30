@@ -31,21 +31,21 @@
         input, select, button {
             padding: 12px;
             margin: 10px 0;
-            width: 50%; /* 調整寬度為50%以便置中 */
+            width: 50%; /* 調整寬度為50% */
             text-align: center;
             font-size: 16px;
             box-sizing: border-box;
-            margin-left: auto; /* 使元素水平居中 */
-            margin-right: auto; /* 使元素水平居中 */
-            background-color: #f2f2f2; /* 輸入框和按鈕的背景顏色為淡灰色 */
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #f2f2f2;
         }
         select {
-            background-color: #d4edda; /* 下拉選單填色為淡綠色 */
             font-weight: bold; /* 下拉選單文字粗體 */
+            background-color: #d4edda; /* 選擇計算模式的下拉選單填色淡綠色 */
         }
         button {
             background-color: #003366; /* 按鈕背景顏色深藍色 */
-            color: white; /* 按鈕文字顏色為白色 */
+            color: white;
         }
         .result {
             font-size: 24px;
@@ -79,6 +79,13 @@
         #moisturePercentage {
             background-color: #d9f2ff; /* 設定水分需求量欄位的背景色為淡藍色 */
             font-weight: bold; /* 設定文字為粗體 */
+            width: 25%; /* 水分需求量欄位的寬度設為25% */
+            text-align: center; /* 水分需求量欄位文字置中 */
+        }
+
+        /* 設定築爐用料下拉選單的背景色為淡黃色 */
+        #material {
+            background-color: #fff3cd; /* 淡黃色背景 */
         }
     </style>
 </head>
@@ -193,7 +200,7 @@
                 const materialAmount = volumeOuter - volumeInner;
                 const moisturePercentage = parseFloat(document.getElementById("moisturePercentage").value);
 
-                totalWeight = materialAmount * 2.6 / 1000; // 假設每立方毫米材料密度為2.6
+                totalWeight = materialAmount * 3.1; // 使用密度 3.1
 
                 const waterAmount = totalWeight * (moisturePercentage / 100);
                 document.getElementById("waterAmount").textContent = `用水量: ${waterAmount.toFixed(2)} kg`;
