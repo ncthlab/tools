@@ -201,10 +201,12 @@
 
                 var moistureContent = parseFloat(document.getElementById("moistureContent").value);
                 var waterWeight = materialWeight * moistureContent / 100; // 計算水重量
-
+		
+		    
+		    document.getElementById("waterWeight").textContent = waterWeight.toFixed(2);
                 document.getElementById("materialWeight").textContent = materialWeight.toFixed(2);
                 document.getElementById("packageCount").textContent = packageCount;
-                document.getElementById("waterWeight").textContent = waterWeight.toFixed(2);
+                
             }
         }
     </script>
