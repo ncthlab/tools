@@ -87,6 +87,7 @@
         /* 設定水分需求量欄位的顏色 */
         #moistureContent {
             background-color: #d1ecf1; /* 淡藍色 */
+            font-weight: bold; /* 設定為粗體 */
         }
     </style>
 </head>
@@ -152,6 +153,9 @@
         <!-- 用料重量顯示 -->
         <div class="subresult" id="weight">用料重量: </div>
 
+        <!-- 用水重量顯示 -->
+        <div class="subresult" id="waterWeight">用水重量: </div>
+
         <!-- 包數顯示 -->
         <div class="result" id="result">包數: </div>
     </div>
@@ -171,6 +175,7 @@
         function calculate() {
             const selectedMode = document.getElementById('mode').value;
             let totalWeight = 0;
+            let waterWeight = 0;
 
             if (selectedMode === '爐底') {
                 const diameter = parseFloat(document.getElementById("diameter").value);
@@ -202,23 +207,20 @@
                     return;
                 }
 
-                const volumeOuter = Math.PI * (Math.pow(topDiameterOuter / 2, 2) * heightOuter - Math.pow(bottomDiameterOuter / 2, 2) * heightOuter);
-                const volumeInner = Math.PI * (Math.pow(topDiameterInner / 2, 2) * heightInner - Math.pow(bottomDiameterInner / 2, 2) * heightInner);
-                totalWeight = (volumeOuter - volumeInner) * 3.1 / 1000; // 假設密度為3.1 g/cm³
+                const volumeOuter = Math.PI * (Math.pow(topDiameterOuter / 2, 2) - Math.pow(bottomDiameterOuter / 2, 2)) * (heightOuter / 10);
+                const volumeInner = Math.PI * (Math.pow(topDiameterInner / 2, 2) - Math.pow(bottomDiameterInner / 2, 2)) * (heightInner / 10);
+                const totalVolume = volumeOuter - volumeInner;
+                const moistureContent = parseFloat(document.getElementById("moistureContent").value) / 100;
+                totalWeight = (totalVolume * (1 + moistureContent)) / 1000; // 轉換為公斤
+
+                // 計算用水重量
+                waterWeight = totalWeight * moistureContent;
             }
 
-		// 計算用水量並顯示
-                const moistureContent = parseFloat(document.getElementById("moistureContent").value) / 100;
-                const waterAmount = totalWeight * moistureContent;
-                document.getElementById("waterAmount").textContent = `用水量: ${waterAmount.toFixed(2)} kg`;
-
             // 顯示計算結果
-            const weightResult = totalWeight.toFixed(2);
-            document.getElementById("weight").textContent = `用料重量: ${weightResult} kg`;
-
-            // 顯示包數
-            const packageCount = (totalWeight / 25).toFixed(0); // 每包25kg
-            document.getElementById("result").textContent = `包數: ${packageCount}`;
+            document.getElementById("weight").textContent = "用料重量: " + totalWeight.toFixed(2) + " 公斤";
+            document.getElementById("waterWeight").textContent = "用水重量: " + waterWeight.toFixed(2) + " 公斤"; // 顯示水重量
+            document.getElementById("result").textContent = "包數: " + (totalWeight / 25).toFixed(2); // 假設每包重量為25公斤
         }
     </script>
 </body>
