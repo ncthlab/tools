@@ -46,6 +46,8 @@
         select {
             background-color: #d4edda; /* 下拉選單填色為淡綠色 */
             font-weight: bold; /* 設定下拉選單文字為粗體 */
+		cursor: pointer; /* 滑鼠指標變手形 */
+
         }
         #material {
             background-color: #fff3cd; /* 淡黃色 */
@@ -57,8 +59,11 @@
             background-color: #003366; /* 按鈕背景顏色深藍色 */
             color: white; /* 按鈕文字顏色為白色 */
 		 width: auto; /* 自動適應內容寬度，讓按鈕不會過大 */
+		padding: 5px 10px; /* 縮小內邊距 */
             min-width: 100px; /* 設定最小寬度 */
 	font-weight: bold;
+	cursor: pointer; /* 滑鼠指標變手形 */
+
         }
         .result {
             font-size: 24px;
@@ -99,6 +104,21 @@
         #wetSand {
             display: none;
         }
+
+		#screenshotButton {
+            margin-left: auto; /* 自動將左側間距填滿 */
+            display: block; /* 確保是區塊級元素 */
+		background-color: #808080; /* 灰色背景 */
+            color: black; /* 黑色文字 */
+            padding: 5px 10px; /* 縮小內邊距 */
+            font-size: 14px; /* 字體大小 */
+            font-weight: normal; /* 文字粗體 */
+   	idth: auto; /* 自動適應內容寬度，讓按鈕不會過大 */
+            min-width: 100px; /* 設定最小寬度 */
+	font-weight: bold;
+            cursor: pointer; /* 滑鼠指標變手形 */
+		}	
+
     </style>
 	
 </head>
