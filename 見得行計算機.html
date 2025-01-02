@@ -95,10 +95,13 @@
             display: none;
         }
     </style>
+
+	
 </head>
 <body>
     <div class="container">
         <h1>見得行計算機</h1>
+	 <p id="current-time"></p>
         <label for="mode">選擇計算模式:</label>
         <select id="mode" onchange="switchMode()">
             <option value="爐底">築爐爐底用料包數</option>
@@ -170,10 +173,29 @@
             <p id="packageCountResult">包數: <span id="packageCount"></span> 包</p>
             <p id="standardSampleWeightResult" class="hidden">標準試片預估重量: <span id="standardSampleWeight"></span> g</p> <!-- 顯示標準試片預估重量 -->
 	    <p id="sampleWeightHint" class="hidden" style="color: #808080; font-size: 14px;">請依預估重量製作試片，並由試片高度對應至標準試片高度50±1mm，每1mm差增減3g砂子</p>
+
+	
+
         </div>
     </div>
 
     <script>
+
+	function updateTime() {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = (now.getMonth() + 1).toString().padStart(2, '0'); // 月份補零
+            var day = now.getDate().toString().padStart(2, '0'); // 日期補零
+            var hours = now.getHours().toString().padStart(2, '0'); // 小時補零
+            var minutes = now.getMinutes().toString().padStart(2, '0'); // 分鐘補零
+
+            var formattedTime = '現在時間：' + year + '／' + month + '／' + day + '　' + hours + '：' + minutes;
+            document.getElementById('current-time').textContent = formattedTime;
+        }
+
+        // 每秒更新時間
+        setInterval(updateTime, 1000);
+	
         function switchMode() {
             var mode = document.getElementById("mode").value;
 
