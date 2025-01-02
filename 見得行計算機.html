@@ -183,12 +183,17 @@
                 document.getElementById("盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "none";
                 document.getElementById("waterWeightResult").classList.add("hidden");
+		document.getElementById("materialWeightResult").classList.remove("hidden");
+		document.getElementById("packageCountResult").classList.remove("hidden");
                 document.getElementById("standardSampleWeightResult").classList.add("hidden");
             } else if (mode === "盆") {
                 document.getElementById("爐底").style.display = "none";
                 document.getElementById("盆").style.display = "block";
                 document.getElementById("濕砂檢測").style.display = "none";
                 document.getElementById("waterWeightResult").classList.remove("hidden");
+		document.getElementById("materialWeightResult").classList.remove("hidden");
+		document.getElementById("packageCountResult").classList.remove("hidden");
+
                 document.getElementById("standardSampleWeightResult").classList.add("hidden");
             } else if (mode === "濕砂檢測") {
                 document.getElementById("爐底").style.display = "none";
