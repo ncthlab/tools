@@ -128,7 +128,7 @@
     <div class="container">
         <h1>見得行計算機</h1>
 	 <p id="current-time"></p>
-        <label for="mode">選擇計算模式:</label>
+        <label for="mode">選擇計算模式：</label>
         <select id="mode" onchange="switchMode()">
             <option value="爐底">築爐爐底用料包數</option>
             <option value="盆">築盆用料包數</option>
@@ -137,13 +137,13 @@
 
         <!-- 篩選的計算模式 -->
         <div id="爐底" class="mode">
-            <label for="diameter">爐底直徑 (mm):</label>
+            <label for="diameter">爐底直徑 (mm)：</label>
             <input type="number" id="diameter" placeholder="輸入爐底直徑">
 
-            <label for="height">爐底高度 (mm):</label>
+            <label for="height">爐底高度 (mm)：</label>
             <input type="number" id="height" placeholder="輸入爐底高度">
 
-            <label for="material">用料:</label>
+            <label for="material">用料：</label>
             <select id="material">
                 <option value="2">電熔氧化矽 GQ</option>
                 <option value="1.9">電熔氧化矽 GQ35</option>
@@ -155,49 +155,49 @@
             <div class="flex-container">
                 <!-- 外盆欄 -->
                 <div>
-                    <label for="topDiameterOuter">外盆頂直徑 (mm):</label>
+                    <label for="topDiameterOuter">外盆頂直徑 (mm)：</label>
                     <input type="number" id="topDiameterOuter" placeholder="輸入外盆頂直徑">
 
-                    <label for="bottomDiameterOuter">外盆底直徑 (mm):</label>
+                    <label for="bottomDiameterOuter">外盆底直徑 (mm)：</label>
                     <input type="number" id="bottomDiameterOuter" placeholder="輸入外盆底直徑">
 
-                    <label for="heightOuter">外盆高度 (mm):</label>
+                    <label for="heightOuter">外盆高度 (mm)：</label>
                     <input type="number" id="heightOuter" placeholder="輸入外盆高度">
                 </div>
 
                 <!-- 內桶欄 -->
                 <div>
-                    <label for="topDiameterInner">內桶頂直徑 (mm):</label>
+                    <label for="topDiameterInner">內桶頂直徑 (mm)：</label>
                     <input type="number" id="topDiameterInner" placeholder="輸入內桶頂直徑">
 
-                    <label for="bottomDiameterInner">內桶底直徑 (mm):</label>
+                    <label for="bottomDiameterInner">內桶底直徑 (mm)：</label>
                     <input type="number" id="bottomDiameterInner" placeholder="輸入內桶底直徑">
 
-                    <label for="heightInner">內桶高度 (mm):</label>
+                    <label for="heightInner">內桶高度 (mm)：</label>
                     <input type="number" id="heightInner" placeholder="輸入內桶高度">
                 </div>
             </div>
 
             <!-- 水分需求量欄位 -->
-            <label for="moistureContent">水分需求量 (%):</label>
+            <label for="moistureContent">水分需求量 (%)：</label>
 	<input type="number" id="moistureContent" placeholder="輸入水分需求量" value="6.17">
         </div>
 
         <div id="濕砂檢測" class="mode hidden">
-            <label for="cbValue">CB值 (%):</label>
+            <label for="cbValue">CB值 (%)：</label>
             <input type="number" id="cbValue" placeholder="輸入CB值">
 
-            <label for="sampleWeight">試片重量 (g):</label>
+            <label for="sampleWeight">試片重量 (g)：</label>
             <input type="number" id="sampleWeight" placeholder="輸入試片重量">
         </div>
 
         <button onclick="calculate()">計算</button>
 
         <div class="result">
-            <p id="materialWeightResult">用料重量: <span id="materialWeight"></span> kg</p>
-            <p id="waterWeightResult" class="hidden">用水重量: <span id="waterWeight"></span> kg</p>
-            <p id="packageCountResult">包數: <span id="packageCount"></span> 包</p>
-            <p id="standardSampleWeightResult" class="hidden">標準試片預估重量: <span id="standardSampleWeight"></span> g</p> <!-- 顯示標準試片預估重量 -->
+            <p id="materialWeightResult">用料重量： <span id="materialWeight"></span> kg</p>
+            <p id="waterWeightResult" class="hidden">用水重量： <span id="waterWeight"></span> kg</p>
+            <p id="packageCountResult">包數： <span id="packageCount"></span> 包</p>
+            <p id="standardSampleWeightResult" class="hidden">標準試片預估重量： <span id="standardSampleWeight"></span> g</p> <!-- 顯示標準試片預估重量 -->
 	    <p id="sampleWeightHint" class="hidden" style="color: #808080; font-size: 14px;">請依預估重量製作試片，並由試片高度對應至標準試片高度50±1mm，每1mm增減3g砂子</p>
 
 	
