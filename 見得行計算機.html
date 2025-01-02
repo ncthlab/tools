@@ -188,8 +188,10 @@
             var day = now.getDate().toString().padStart(2, '0'); // 日期補零
             var hours = now.getHours().toString().padStart(2, '0'); // 小時補零
             var minutes = now.getMinutes().toString().padStart(2, '0'); // 分鐘補零
+		var daysOfWeek = ["日", "一", "二", "三", "四", "五", "六"];
+    var weekday = daysOfWeek[now.getDay()]; // 取得星期幾
 
-            var formattedTime = '現在時間：' + year + '／' + month + '／' + day + '　' + hours + '：' + minutes;
+            var formattedTime = '現在時間：' + year + '／' + month + '／' + day  + '　星期' + weekday　+ '　' + hours + '：' + minutes;
             document.getElementById('current-time').textContent = formattedTime;
         }
 
