@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>見得行計算機</title>
+	<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,6 +56,9 @@
         button {
             background-color: #003366; /* 按鈕背景顏色深藍色 */
             color: white; /* 按鈕文字顏色為白色 */
+		 width: auto; /* 自動適應內容寬度，讓按鈕不會過大 */
+            min-width: 100px; /* 設定最小寬度 */
+	font-weight: bold;
         }
         .result {
             font-size: 24px;
@@ -95,12 +100,13 @@
             display: none;
         }
     </style>
-
 	
 </head>
 <body>
+
     <div class="container">
         <h1>見得行計算機</h1>
+	<button id="screenshotButton">截圖儲存</button>
 	 <p id="current-time"></p>
         <label for="mode">選擇計算模式:</label>
         <select id="mode" onchange="switchMode()">
@@ -180,6 +186,23 @@
     </div>
 
     <script>
+		
+		document.getElementById('screenshotButton').addEventListener('click', () => {
+            html2canvas(document.body, {
+                scrollX: 0, // 確保從頂部開始
+                scrollY: 0,
+                useCORS: true // 確保跨域資源正確載入
+            }).then(canvas => {
+                // 將畫布轉換為圖片並下載
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'webpage_screenshot.png';
+                link.click();
+            }).catch(error => {
+                console.error('截圖失敗：', error);
+            });
+        });
+
 
 	function updateTime() {
             var now = new Date();
@@ -191,7 +214,7 @@
 		var daysOfWeek = ["日", "一", "二", "三", "四", "五", "六"];
     var weekday = daysOfWeek[now.getDay()]; // 取得星期幾
 
-            var formattedTime = '現在時間：' + year + '／' + month + '／' + day  + '　星期' + weekday　+ '　' + hours + '：' + minutes;
+            var formattedTime = '現在時間：' + year + '／' + month + '／' + day  + '　(星期' + weekday　+ ')　' + hours + '：' + minutes;
             document.getElementById('current-time').textContent = formattedTime;
         }
 
@@ -284,7 +307,9 @@
 
                 document.getElementById("standardSampleWeight").textContent = standardSampleWeight.toFixed(2); // 顯示標準試片預估重量
             }
-        }
+        }	
+
     </script>
+
 </body>
 </html>
