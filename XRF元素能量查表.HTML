@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XRF元素能量查表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+font-weight: bold;
+
+        }
+
+        .container {
+            display: flex;
+            align-items: flex-start; /* 垂直對齊 */
+font-weight: bold;
+
+        }
+
+        .dropdown-container {
+            display: flex;
+            flex-direction: column; /* 垂直排列 */
+            gap: 10px; /* 調整下拉選單之間的間距 */
+            margin-right: 20px; /* 與表格之間的間距 */
+font-weight: bold;
+
+        }
+
+        select {
+            width: 100px;
+            height: 40px;
+            font-size: 14px;
+            border: 3px solid black;
+            border-radius: 5px;
+            padding: 5px;
+            box-sizing: border-box;
+            text-align: center; /* 文字置中 */
+            text-align-last: center; /* 針對選中的選項置中 */
+		font-weight: bold;
+cursor: pointer;
+
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #003366;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+font-weight: bold;
+
+        }
+
+        button:hover {
+            background-color: #0055aa;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: fixed;
+font-size: 16px;
+        }
+
+        th, td {
+            border: 3px solid black;
+            padding: 5px;
+            text-align: center;
+            font-weight: bold;
+            width: 11%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #003366;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>XRF元素能量查表</h1>
+
+    <div class="container">
+        <!-- 左側搜尋下拉選單 -->
+        <div class="dropdown-container">
+            <select id="element1">
+                <option value="">-- 請選擇 --</option>
+                <option value="Li">Li</option>
+<option value="Be">Be</option>
+<option value="B">B</option>
+<option value="C">C</option>
+<option value="N">N</option>
+<option value="O">O</option>
+<option value="F">F</option>
+<option value="Ne">Ne</option>
+<option value="Na">Na</option>
+<option value="Mg">Mg</option>
+<option value="Al">Al</option>
+<option value="Si">Si</option>
+<option value="P">P</option>
+<option value="S">S</option>
+<option value="Cl">Cl</option>
+<option value="Ar">Ar</option>
+<option value="K">K</option>
+<option value="Ca">Ca</option>
+<option value="Sc">Sc</option>
+<option value="Ti">Ti</option>
+<option value="V">V</option>
+<option value="Cr">Cr</option>
+<option value="Mn">Mn</option>
+<option value="Fe">Fe</option>
+<option value="Co">Co</option>
+<option value="Ni">Ni</option>
+<option value="Cu">Cu</option>
+<option value="Zn">Zn</option>
+<option value="Ga">Ga</option>
+<option value="Ge">Ge</option>
+<option value="As">As</option>
+<option value="Se">Se</option>
+<option value="Br">Br</option>
+<option value="Kr">Kr</option>
+<option value="Rb">Rb</option>
+<option value="Sr">Sr</option>
+<option value="Y">Y</option>
+<option value="Zr">Zr</option>
+<option value="Nb">Nb</option>
+<option value="Mo">Mo</option>
+<option value="Tc">Tc</option>
+<option value="Ru">Ru</option>
+<option value="Rh">Rh</option>
+<option value="Pd">Pd</option>
+<option value="Ag">Ag</option>
+<option value="Cd">Cd</option>
+<option value="In">In</option>
+<option value="Sn">Sn</option>
+<option value="Sb">Sb</option>
+<option value="I">I</option>
+<option value="Xe">Xe</option>
+<option value="Cs">Cs</option>
+<option value="Ba">Ba</option>
+<option value="La">La</option>
+<option value="Ce">Ce</option>
+<option value="Pr">Pr</option>
+<option value="Nd">Nd</option>
+<option value="Pm">Pm</option>
+<option value="Sm">Sm</option>
+<option value="Eu">Eu</option>
+<option value="Gd">Gd</option>
+<option value="Tb">Tb</option>
+<option value="Dy">Dy</option>
+<option value="Ho">Ho</option>
+<option value="Er">Er</option>
+<option value="Tm">Tm</option>
+<option value="Yb">Yb</option>
+<option value="Lu">Lu</option>
+<option value="Hf">Hf</option>
+<option value="Ta">Ta</option>
+<option value="W">W</option>
+<option value="Re">Re</option>
+<option value="Os">Os</option>
+<option value="Ir">Ir</option>
+<option value="Pt">Pt</option>
+<option value="Au">Au</option>
+<option value="Hg">Hg</option>
+<option value="Tl">Tl</option>
+<option value="Pb">Pb</option>
+<option value="Bi">Bi</option>
+<option value="Po">Po</option>
+<option value="At">At</option>
+<option value="Rn">Rn</option>
+<option value="Fr">Fr</option>
+<option value="Ra">Ra</option>
+<option value="Ac">Ac</option>
+<option value="Th">Th</option>
+<option value="Pa">Pa</option>
+<option value="U">U</option>
+<option value="Np">Np</option>
+<option value="Pu">Pu</option>
+<option value="Am">Am</option>
+
+            </select>
+
+            <select id="element2">
+                <option value="">-- 請選擇 --</option>
+                <option value="Li">Li</option>
+<option value="Be">Be</option>
+<option value="B">B</option>
+<option value="C">C</option>
+<option value="N">N</option>
+<option value="O">O</option>
+<option value="F">F</option>
+<option value="Ne">Ne</option>
+<option value="Na">Na</option>
+<option value="Mg">Mg</option>
+<option value="Al">Al</option>
+<option value="Si">Si</option>
+<option value="P">P</option>
+<option value="S">S</option>
+<option value="Cl">Cl</option>
+<option value="Ar">Ar</option>
+<option value="K">K</option>
+<option value="Ca">Ca</option>
+<option value="Sc">Sc</option>
+<option value="Ti">Ti</option>
+<option value="V">V</option>
+<option value="Cr">Cr</option>
+<option value="Mn">Mn</option>
+<option value="Fe">Fe</option>
+<option value="Co">Co</option>
+<option value="Ni">Ni</option>
+<option value="Cu">Cu</option>
+<option value="Zn">Zn</option>
+<option value="Ga">Ga</option>
+<option value="Ge">Ge</option>
+<option value="As">As</option>
+<option value="Se">Se</option>
+<option value="Br">Br</option>
+<option value="Kr">Kr</option>
+<option value="Rb">Rb</option>
+<option value="Sr">Sr</option>
+<option value="Y">Y</option>
+<option value="Zr">Zr</option>
+<option value="Nb">Nb</option>
+<option value="Mo">Mo</option>
+<option value="Tc">Tc</option>
+<option value="Ru">Ru</option>
+<option value="Rh">Rh</option>
+<option value="Pd">Pd</option>
+<option value="Ag">Ag</option>
+<option value="Cd">Cd</option>
+<option value="In">In</option>
+<option value="Sn">Sn</option>
+<option value="Sb">Sb</option>
+<option value="I">I</option>
+<option value="Xe">Xe</option>
+<option value="Cs">Cs</option>
+<option value="Ba">Ba</option>
+<option value="La">La</option>
+<option value="Ce">Ce</option>
+<option value="Pr">Pr</option>
+<option value="Nd">Nd</option>
+<option value="Pm">Pm</option>
+<option value="Sm">Sm</option>
+<option value="Eu">Eu</option>
+<option value="Gd">Gd</option>
+<option value="Tb">Tb</option>
+<option value="Dy">Dy</option>
+<option value="Ho">Ho</option>
+<option value="Er">Er</option>
+<option value="Tm">Tm</option>
+<option value="Yb">Yb</option>
+<option value="Lu">Lu</option>
+<option value="Hf">Hf</option>
+<option value="Ta">Ta</option>
+<option value="W">W</option>
+<option value="Re">Re</option>
+<option value="Os">Os</option>
+<option value="Ir">Ir</option>
+<option value="Pt">Pt</option>
+<option value="Au">Au</option>
+<option value="Hg">Hg</option>
+<option value="Tl">Tl</option>
+<option value="Pb">Pb</option>
+<option value="Bi">Bi</option>
+<option value="Po">Po</option>
+<option value="At">At</option>
+<option value="Rn">Rn</option>
+<option value="Fr">Fr</option>
+<option value="Ra">Ra</option>
+<option value="Ac">Ac</option>
+<option value="Th">Th</option>
+<option value="Pa">Pa</option>
+<option value="U">U</option>
+<option value="Np">Np</option>
+<option value="Pu">Pu</option>
+<option value="Am">Am</option>
+
+            </select>
+
+            <select id="element3">
+                <option value="">-- 請選擇 --</option>
+               <option value="Li">Li</option>
+<option value="Be">Be</option>
+<option value="B">B</option>
+<option value="C">C</option>
+<option value="N">N</option>
+<option value="O">O</option>
+<option value="F">F</option>
+<option value="Ne">Ne</option>
+<option value="Na">Na</option>
+<option value="Mg">Mg</option>
+<option value="Al">Al</option>
+<option value="Si">Si</option>
+<option value="P">P</option>
+<option value="S">S</option>
+<option value="Cl">Cl</option>
+<option value="Ar">Ar</option>
+<option value="K">K</option>
+<option value="Ca">Ca</option>
+<option value="Sc">Sc</option>
+<option value="Ti">Ti</option>
+<option value="V">V</option>
+<option value="Cr">Cr</option>
+<option value="Mn">Mn</option>
+<option value="Fe">Fe</option>
+<option value="Co">Co</option>
+<option value="Ni">Ni</option>
+<option value="Cu">Cu</option>
+<option value="Zn">Zn</option>
+<option value="Ga">Ga</option>
+<option value="Ge">Ge</option>
+<option value="As">As</option>
+<option value="Se">Se</option>
+<option value="Br">Br</option>
+<option value="Kr">Kr</option>
+<option value="Rb">Rb</option>
+<option value="Sr">Sr</option>
+<option value="Y">Y</option>
+<option value="Zr">Zr</option>
+<option value="Nb">Nb</option>
+<option value="Mo">Mo</option>
+<option value="Tc">Tc</option>
+<option value="Ru">Ru</option>
+<option value="Rh">Rh</option>
+<option value="Pd">Pd</option>
+<option value="Ag">Ag</option>
+<option value="Cd">Cd</option>
+<option value="In">In</option>
+<option value="Sn">Sn</option>
+<option value="Sb">Sb</option>
+<option value="I">I</option>
+<option value="Xe">Xe</option>
+<option value="Cs">Cs</option>
+<option value="Ba">Ba</option>
+<option value="La">La</option>
+<option value="Ce">Ce</option>
+<option value="Pr">Pr</option>
+<option value="Nd">Nd</option>
+<option value="Pm">Pm</option>
+<option value="Sm">Sm</option>
+<option value="Eu">Eu</option>
+<option value="Gd">Gd</option>
+<option value="Tb">Tb</option>
+<option value="Dy">Dy</option>
+<option value="Ho">Ho</option>
+<option value="Er">Er</option>
+<option value="Tm">Tm</option>
+<option value="Yb">Yb</option>
+<option value="Lu">Lu</option>
+<option value="Hf">Hf</option>
+<option value="Ta">Ta</option>
+<option value="W">W</option>
+<option value="Re">Re</option>
+<option value="Os">Os</option>
+<option value="Ir">Ir</option>
+<option value="Pt">Pt</option>
+<option value="Au">Au</option>
+<option value="Hg">Hg</option>
+<option value="Tl">Tl</option>
+<option value="Pb">Pb</option>
+<option value="Bi">Bi</option>
+<option value="Po">Po</option>
+<option value="At">At</option>
+<option value="Rn">Rn</option>
+<option value="Fr">Fr</option>
+<option value="Ra">Ra</option>
+<option value="Ac">Ac</option>
+<option value="Th">Th</option>
+<option value="Pa">Pa</option>
+<option value="U">U</option>
+<option value="Np">Np</option>
+<option value="Pu">Pu</option>
+<option value="Am">Am</option>
+
+            </select>
+
+            <select id="element4">
+                <option value="">-- 請選擇 --</option>
+                <option value="Li">Li</option>
+<option value="Be">Be</option>
+<option value="B">B</option>
+<option value="C">C</option>
+<option value="N">N</option>
+<option value="O">O</option>
+<option value="F">F</option>
+<option value="Ne">Ne</option>
+<option value="Na">Na</option>
+<option value="Mg">Mg</option>
+<option value="Al">Al</option>
+<option value="Si">Si</option>
+<option value="P">P</option>
+<option value="S">S</option>
+<option value="Cl">Cl</option>
+<option value="Ar">Ar</option>
+<option value="K">K</option>
+<option value="Ca">Ca</option>
+<option value="Sc">Sc</option>
+<option value="Ti">Ti</option>
+<option value="V">V</option>
+<option value="Cr">Cr</option>
+<option value="Mn">Mn</option>
+<option value="Fe">Fe</option>
+<option value="Co">Co</option>
+<option value="Ni">Ni</option>
+<option value="Cu">Cu</option>
+<option value="Zn">Zn</option>
+<option value="Ga">Ga</option>
+<option value="Ge">Ge</option>
+<option value="As">As</option>
+<option value="Se">Se</option>
+<option value="Br">Br</option>
+<option value="Kr">Kr</option>
+<option value="Rb">Rb</option>
+<option value="Sr">Sr</option>
+<option value="Y">Y</option>
+<option value="Zr">Zr</option>
+<option value="Nb">Nb</option>
+<option value="Mo">Mo</option>
+<option value="Tc">Tc</option>
+<option value="Ru">Ru</option>
+<option value="Rh">Rh</option>
+<option value="Pd">Pd</option>
+<option value="Ag">Ag</option>
+<option value="Cd">Cd</option>
+<option value="In">In</option>
+<option value="Sn">Sn</option>
+<option value="Sb">Sb</option>
+<option value="I">I</option>
+<option value="Xe">Xe</option>
+<option value="Cs">Cs</option>
+<option value="Ba">Ba</option>
+<option value="La">La</option>
+<option value="Ce">Ce</option>
+<option value="Pr">Pr</option>
+<option value="Nd">Nd</option>
+<option value="Pm">Pm</option>
+<option value="Sm">Sm</option>
+<option value="Eu">Eu</option>
+<option value="Gd">Gd</option>
+<option value="Tb">Tb</option>
+<option value="Dy">Dy</option>
+<option value="Ho">Ho</option>
+<option value="Er">Er</option>
+<option value="Tm">Tm</option>
+<option value="Yb">Yb</option>
+<option value="Lu">Lu</option>
+<option value="Hf">Hf</option>
+<option value="Ta">Ta</option>
+<option value="W">W</option>
+<option value="Re">Re</option>
+<option value="Os">Os</option>
+<option value="Ir">Ir</option>
+<option value="Pt">Pt</option>
+<option value="Au">Au</option>
+<option value="Hg">Hg</option>
+<option value="Tl">Tl</option>
+<option value="Pb">Pb</option>
+<option value="Bi">Bi</option>
+<option value="Po">Po</option>
+<option value="At">At</option>
+<option value="Rn">Rn</option>
+<option value="Fr">Fr</option>
+<option value="Ra">Ra</option>
+<option value="Ac">Ac</option>
+<option value="Th">Th</option>
+<option value="Pa">Pa</option>
+<option value="U">U</option>
+<option value="Np">Np</option>
+<option value="Pu">Pu</option>
+<option value="Am">Am</option>
+
+            </select>
+
+            <select id="element5">
+                <option value="">-- 請選擇 --</option>
+               <option value="Li">Li</option>
+<option value="Be">Be</option>
+<option value="B">B</option>
+<option value="C">C</option>
+<option value="N">N</option>
+<option value="O">O</option>
+<option value="F">F</option>
+<option value="Ne">Ne</option>
+<option value="Na">Na</option>
+<option value="Mg">Mg</option>
+<option value="Al">Al</option>
+<option value="Si">Si</option>
+<option value="P">P</option>
+<option value="S">S</option>
+<option value="Cl">Cl</option>
+<option value="Ar">Ar</option>
+<option value="K">K</option>
+<option value="Ca">Ca</option>
+<option value="Sc">Sc</option>
+<option value="Ti">Ti</option>
+<option value="V">V</option>
+<option value="Cr">Cr</option>
+<option value="Mn">Mn</option>
+<option value="Fe">Fe</option>
+<option value="Co">Co</option>
+<option value="Ni">Ni</option>
+<option value="Cu">Cu</option>
+<option value="Zn">Zn</option>
+<option value="Ga">Ga</option>
+<option value="Ge">Ge</option>
+<option value="As">As</option>
+<option value="Se">Se</option>
+<option value="Br">Br</option>
+<option value="Kr">Kr</option>
+<option value="Rb">Rb</option>
+<option value="Sr">Sr</option>
+<option value="Y">Y</option>
+<option value="Zr">Zr</option>
+<option value="Nb">Nb</option>
+<option value="Mo">Mo</option>
+<option value="Tc">Tc</option>
+<option value="Ru">Ru</option>
+<option value="Rh">Rh</option>
+<option value="Pd">Pd</option>
+<option value="Ag">Ag</option>
+<option value="Cd">Cd</option>
+<option value="In">In</option>
+<option value="Sn">Sn</option>
+<option value="Sb">Sb</option>
+<option value="I">I</option>
+<option value="Xe">Xe</option>
+<option value="Cs">Cs</option>
+<option value="Ba">Ba</option>
+<option value="La">La</option>
+<option value="Ce">Ce</option>
+<option value="Pr">Pr</option>
+<option value="Nd">Nd</option>
+<option value="Pm">Pm</option>
+<option value="Sm">Sm</option>
+<option value="Eu">Eu</option>
+<option value="Gd">Gd</option>
+<option value="Tb">Tb</option>
+<option value="Dy">Dy</option>
+<option value="Ho">Ho</option>
+<option value="Er">Er</option>
+<option value="Tm">Tm</option>
+<option value="Yb">Yb</option>
+<option value="Lu">Lu</option>
+<option value="Hf">Hf</option>
+<option value="Ta">Ta</option>
+<option value="W">W</option>
+<option value="Re">Re</option>
+<option value="Os">Os</option>
+<option value="Ir">Ir</option>
+<option value="Pt">Pt</option>
+<option value="Au">Au</option>
+<option value="Hg">Hg</option>
+<option value="Tl">Tl</option>
+<option value="Pb">Pb</option>
+<option value="Bi">Bi</option>
+<option value="Po">Po</option>
+<option value="At">At</option>
+<option value="Rn">Rn</option>
+<option value="Fr">Fr</option>
+<option value="Ra">Ra</option>
+<option value="Ac">Ac</option>
+<option value="Th">Th</option>
+<option value="Pa">Pa</option>
+<option value="U">U</option>
+<option value="Np">Np</option>
+<option value="Pu">Pu</option>
+<option value="Am">Am</option>
+
+            </select>
+
+            <button onclick="displayData()">查詢</button>
+        </div>
+
+        <!-- 右側輸出結果表格 -->
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        const elementsData = {
+           
+	"Li": { atomicNumber: 3, symbol: "Li", name: "Lithium", chineseName: "鋰", Kalpha1: "", Kbeta1: "", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    	"Be": { atomicNumber: 4, symbol: "Be", name: "Beryllium", chineseName: "鈹", Kalpha1: "1.08", Kbeta1: "", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    	"B": { atomicNumber: 5, symbol: "B", name: "Boron", chineseName: "硼", Kalpha1: "0.183", Kbeta1: "0.204", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "C": { atomicNumber: 6, symbol: "C", name: "Carbon", chineseName: "碳", Kalpha1: "0.277", Kbeta1: "0.306", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "N": { atomicNumber: 7, symbol: "N", name: "Nitrogen", chineseName: "氮", Kalpha1: "0.392", Kbeta1: "0.429", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "O": { atomicNumber: 8, symbol: "O", name: "Oxygen", chineseName: "氧", Kalpha1: "0.525", Kbeta1: "0.577", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "F": { atomicNumber: 9, symbol: "F", name: "Fluorine", chineseName: "氟", Kalpha1: "0.677", Kbeta1: "0.746", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "Ne": { atomicNumber: 10, symbol: "Ne", name: "Neon", chineseName: "氖", Kalpha1: "0.849", Kbeta1: "0.931", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "Na": { atomicNumber: 11, symbol: "Na", name: "Sodium", chineseName: "鈉", Kalpha1: "1.040", Kbeta1: "1.140", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "Mg": { atomicNumber: 12, symbol: "Mg", name: "Magnesium", chineseName: "鎂", Kalpha1: "1.254", Kbeta1: "1.345", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "Al": { atomicNumber: 13, symbol: "Al", name: "Aluminum", chineseName: "鋁", Kalpha1: "1.486", Kbeta1: "1.557", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "Si": { atomicNumber: 14, symbol: "Si", name: "Silicon", chineseName: "矽", Kalpha1: "1.740", Kbeta1: "1.837", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "P": { atomicNumber: 15, symbol: "P", name: "Phosphorus", chineseName: "磷", Kalpha1: "2.010", Kbeta1: "2.139", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "S": { atomicNumber: 16, symbol: "S", name: "Sulfur", chineseName: "硫", Kalpha1: "2.309", Kbeta1: "2.465", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "Cl": { atomicNumber: 17, symbol: "Cl", name: "Chlorine", chineseName: "氯", Kalpha1: "2.622", Kbeta1: "2.812", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "Ar": { atomicNumber: 18, symbol: "Ar", name: "Argon", chineseName: "氬", Kalpha1: "2.958", Kbeta1: "3.190", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "K": { atomicNumber: 19, symbol: "K", name: "Potassium", chineseName: "鉀", Kalpha1: "3.314", Kbeta1: "3.590", Lalpha1: "", Lbeta1: "", Malpha1: "", Mbeta1: "" },
+    "Ca": { atomicNumber: 20, symbol: "Ca", name: "Calcium", chineseName: "鈣", Kalpha1: "3.692", Kbeta1: "4.013", Lalpha1: "0.341", Lbeta1: "0.345", Malpha1: "", Mbeta1: "" },
+    "Sc": { atomicNumber: 21, symbol: "Sc", name: "Scandium", chineseName: "鈧", Kalpha1: "4.093", Kbeta1: "4.464", Lalpha1: "0.395", Lbeta1: "0.400", Malpha1: "", Mbeta1: "" },
+    "Ti": { atomicNumber: 22, symbol: "Ti", name: "Titanium", chineseName: "鈦", Kalpha1: "4.512", Kbeta1: "4.933", Lalpha1: "0.452", Lbeta1: "0.458", Malpha1: "", Mbeta1: "" },
+    "V": { atomicNumber: 23, symbol: "V", name: "Vanadium", chineseName: "鉻", Kalpha1: "4.953", Kbeta1: "5.428", Lalpha1: "0.510", Lbeta1: "0.518", Malpha1: "", Mbeta1: "" },
+    "Cr": { atomicNumber: 24, symbol: "Cr", name: "Chromium", chineseName: "鉻", Kalpha1: "5.405", Kbeta1: "5.917", Lalpha1: "0.572", Lbeta1: "0.581", Malpha1: "", Mbeta1: "" },
+    "Mn": { atomicNumber: 25, symbol: "Mn", name: "Manganese", chineseName: "錳", Kalpha1: "5.878", Kbeta1: "6.431", Lalpha1: "0.638", Lbeta1: "0.649", Malpha1: "", Mbeta1: "" },
+    "Fe": { atomicNumber: 26, symbol: "Fe", name: "Iron", chineseName: "鐵", Kalpha1: "6.372", Kbeta1: "6.970", Lalpha1: "0.707", Lbeta1: "0.721", Malpha1: "", Mbeta1: "" },
+    "Co": { atomicNumber: 27, symbol: "Co", name: "Cobalt", chineseName: "鈷", Kalpha1: "6.760", Kbeta1: "7.400", Lalpha1: "0.776", Lbeta1: "0.791", Malpha1: "", Mbeta1: "" },
+    "Ni": { atomicNumber: 28, symbol: "Ni", name: "Nickel", chineseName: "鎳", Kalpha1: "7.186", Kbeta1: "7.860", Lalpha1: "0.848", Lbeta1: "0.864", Malpha1: "", Mbeta1: "" },
+    "Cu": { atomicNumber: 29, symbol: "Cu", name: "Copper", chineseName: "銅", Kalpha1: "7.660", Kbeta1: "8.370", Lalpha1: "0.925", Lbeta1: "0.942", Malpha1: "", Mbeta1: "" },
+    "Zn": { atomicNumber: 30, symbol: "Zn", name: "Zinc", chineseName: "鋅", Kalpha1: "8.073", Kbeta1: "8.810", Lalpha1: "1.000", Lbeta1: "1.017", Malpha1: "", Mbeta1: "" },
+    "Ga": { atomicNumber: 31, symbol: "Ga", name: "Gallium", chineseName: "鎵", Kalpha1: "8.458", Kbeta1: "9.210", Lalpha1: "1.077", Lbeta1: "1.094", Malpha1: "", Mbeta1: "" },
+    "Ge": { atomicNumber: 32, symbol: "Ge", name: "Germanium", chineseName: "鍺", Kalpha1: "8.909", Kbeta1: "9.680", Lalpha1: "1.159", Lbeta1: "1.177", Malpha1: "", Mbeta1: "" },
+    "As": { atomicNumber: 33, symbol: "As", name: "Arsenic", chineseName: "砷", Kalpha1: "9.280", Kbeta1: "10.060", Lalpha1: "1.244", Lbeta1: "1.263", Malpha1: "", Mbeta1: "" },
+    "Se": { atomicNumber: 34, symbol: "Se", name: "Selenium", chineseName: "硒", Kalpha1: "9.665", Kbeta1: "10.460", Lalpha1: "1.333", Lbeta1: "1.352", Malpha1: "", Mbeta1: "" },
+    "Br": { atomicNumber: 35, symbol: "Br", name: "Bromine", chineseName: "溴", Kalpha1: "10.000", Kbeta1: "10.820", Lalpha1: "1.426", Lbeta1: "1.446", Malpha1: "", Mbeta1: "" },
+    "Kr": { atomicNumber: 36, symbol: "Kr", name: "Krypton", chineseName: "氪", Kalpha1: "10.400", Kbeta1: "11.230", Lalpha1: "1.523", Lbeta1: "1.544", Malpha1: "", Mbeta1: "" },
+    "Rb": { atomicNumber: 37, symbol: "Rb", name: "Rubidium", chineseName: "銣", Kalpha1: "10.660", Kbeta1: "11.510", Lalpha1: "1.624", Lbeta1: "1.646", Malpha1: "", Mbeta1: "" },
+    "Sr": { atomicNumber: 38, symbol: "Sr", name: "Strontium", chineseName: "鍶", Kalpha1: "11.010", Kbeta1: "11.880", Lalpha1: "1.728", Lbeta1: "1.751", Malpha1: "", Mbeta1: "" },
+    "Y": { atomicNumber: 39, symbol: "Y", name: "Yttrium", chineseName: "鉺", Kalpha1: "11.380", Kbeta1: "12.270", Lalpha1: "1.835", Lbeta1: "1.859", Malpha1: "", Mbeta1: "" },
+    "Zr": { atomicNumber: 40, symbol: "Zr", name: "Zirconium", chineseName: "鋯", Kalpha1: "11.760", Kbeta1: "12.670", Lalpha1: "1.946", Lbeta1: "1.971", Malpha1: "", Mbeta1: "" },
+    "Nb": { atomicNumber: 41, symbol: "Nb", name: "Niobium", chineseName: "鈮", Kalpha1: "12.140", Kbeta1: "13.070", Lalpha1: "2.060", Lbeta1: "2.086", Malpha1: "", Mbeta1: "" },
+    "Mo": { atomicNumber: 42, symbol: "Mo", name: "Molybdenum", chineseName: "鉬", Kalpha1: "12.530", Kbeta1: "13.480", Lalpha1: "2.178", Lbeta1: "2.206", Malpha1: "", Mbeta1: "" },
+    "Tc": { atomicNumber: 43, symbol: "Tc", name: "Technetium", chineseName: "鍀", Kalpha1: "12.930", Kbeta1: "13.890", Lalpha1: "2.298", Lbeta1: "2.326", Malpha1: "", Mbeta1: "" },
+    "Ru": { atomicNumber: 44, symbol: "Ru", name: "Ruthenium", chineseName: "銠", Kalpha1: "13.330", Kbeta1: "14.300", Lalpha1: "2.420", Lbeta1: "2.449", Malpha1: "", Mbeta1: "" },
+    "Rh": { atomicNumber: 45, symbol: "Rh", name: "Rhodium", chineseName: "銠", Kalpha1: "13.740", Kbeta1: "14.710", Lalpha1: "2.546", Lbeta1: "2.576", Malpha1: "", Mbeta1: "" },
+    "Pd": { atomicNumber: 46, symbol: "Pd", name: "Palladium", chineseName: "鈀", Kalpha1: "14.140", Kbeta1: "15.120", Lalpha1: "2.672", Lbeta1: "2.703", Malpha1: "", Mbeta1: "" },
+    "Ag": { atomicNumber: 47, symbol: "Ag", name: "Silver", chineseName: "銀", Kalpha1: "14.540", Kbeta1: "15.520", Lalpha1: "2.800", Lbeta1: "2.832", Malpha1: "", Mbeta1: "" },
+    "Cd": { atomicNumber: 48, symbol: "Cd", name: "Cadmium", chineseName: "鎘", Kalpha1: "14.950", Kbeta1: "15.940", Lalpha1: "2.930", Lbeta1: "2.963", Malpha1: "", Mbeta1: "" },
+    "In": { atomicNumber: 49, symbol: "In", name: "Indium", chineseName: "銦", Kalpha1: "15.350", Kbeta1: "16.350", Lalpha1: "3.063", Lbeta1: "3.096", Malpha1: "", Mbeta1: "" },
+    "Sn": { atomicNumber: 50, symbol: "Sn", name: "Tin", chineseName: "錫", Kalpha1: "15.760", Kbeta1: "16.770", Lalpha1: "3.196", Lbeta1: "3.230", Malpha1: "", Mbeta1: "" },
+    "Sb": { atomicNumber: 51, symbol: "Sb", name: "Antimony", chineseName: "銻", Kalpha1: "16.160", Kbeta1: "17.180", Lalpha1: "3.333", Lbeta1: "3.368", Malpha1: "", Mbeta1: "" },
+    "I": { atomicNumber: 52, symbol: "I", name: "Iodine", chineseName: "碘", Kalpha1: "16.570", Kbeta1: "17.600", Lalpha1: "3.470", Lbeta1: "3.506", Malpha1: "", Mbeta1: "" },
+    "Te": { atomicNumber: 53, symbol: "Te", name: "Tellurium", chineseName: "碲", Kalpha1: "16.980", Kbeta1: "18.020", Lalpha1: "3.608", Lbeta1: "3.645", Malpha1: "", Mbeta1: "" },
+    "I": { atomicNumber: 54, symbol: "Xe", name: "Xenon", chineseName: "氙", Kalpha1: "17.390", Kbeta1: "18.420", Lalpha1: "3.746", Lbeta1: "3.784", Malpha1: "", Mbeta1: "" },
+"Cs": { atomicNumber: 55, symbol: "Cs", name: "Cesium", chineseName: "銫", Kalpha1: "17.790", Kbeta1: "18.830", Lalpha1: "3.883", Lbeta1: "3.922", Malpha1: "", Mbeta1: "" },
+    "Ba": { atomicNumber: 56, symbol: "Ba", name: "Barium", chineseName: "鋇", Kalpha1: "18.220", Kbeta1: "19.270", Lalpha1: "4.024", Lbeta1: "4.063", Malpha1: "", Mbeta1: "" },
+    "La": { atomicNumber: 57, symbol: "La", name: "Lanthanum", chineseName: "鑭", Kalpha1: "18.640", Kbeta1: "19.700", Lalpha1: "4.168", Lbeta1: "4.208", Malpha1: "", Mbeta1: "" },
+    "Ce": { atomicNumber: 58, symbol: "Ce", name: "Cerium", chineseName: "鈰", Kalpha1: "19.060", Kbeta1: "20.130", Lalpha1: "4.313", Lbeta1: "4.354", Malpha1: "", Mbeta1: "" },
+    "Pr": { atomicNumber: 59, symbol: "Pr", name: "Praseodymium", chineseName: "鈧", Kalpha1: "19.490", Kbeta1: "20.560", Lalpha1: "4.461", Lbeta1: "4.503", Malpha1: "", Mbeta1: "" },
+    "Nd": { atomicNumber: 60, symbol: "Nd", name: "Neodymium", chineseName: "釹", Kalpha1: "19.920", Kbeta1: "21.000", Lalpha1: "4.611", Lbeta1: "4.654", Malpha1: "", Mbeta1: "" },
+    "Pm": { atomicNumber: 61, symbol: "Pm", name: "Promethium", chineseName: "鉕", Kalpha1: "20.350", Kbeta1: "21.430", Lalpha1: "4.762", Lbeta1: "4.805", Malpha1: "", Mbeta1: "" },
+    "Sm": { atomicNumber: 62, symbol: "Sm", name: "Samarium", chineseName: "鈰", Kalpha1: "20.780", Kbeta1: "21.870", Lalpha1: "4.915", Lbeta1: "4.959", Malpha1: "", Mbeta1: "" },
+    "Eu": { atomicNumber: 63, symbol: "Eu", name: "Europium", chineseName: "鈮", Kalpha1: "21.210", Kbeta1: "22.310", Lalpha1: "5.070", Lbeta1: "5.114", Malpha1: "", Mbeta1: "" },
+    "Gd": { atomicNumber: 64, symbol: "Gd", name: "Gadolinium", chineseName: "鉺", Kalpha1: "21.640", Kbeta1: "22.740", Lalpha1: "5.228", Lbeta1: "5.273", Malpha1: "", Mbeta1: "" },
+    "Tb": { atomicNumber: 65, symbol: "Tb", name: "Terbium", chineseName: "鉿", Kalpha1: "22.070", Kbeta1: "23.190", Lalpha1: "5.387", Lbeta1: "5.432", Malpha1: "", Mbeta1: "" },
+    "Dy": { atomicNumber: 66, symbol: "Dy", name: "Dysprosium", chineseName: "鈷", Kalpha1: "22.500", Kbeta1: "23.640", Lalpha1: "5.548", Lbeta1: "5.594", Malpha1: "", Mbeta1: "" },
+    "Ho": { atomicNumber: 67, symbol: "Ho", name: "Holmium", chineseName: "鉿", Kalpha1: "22.940", Kbeta1: "24.080", Lalpha1: "5.711", Lbeta1: "5.757", Malpha1: "", Mbeta1: "" },
+    "Er": { atomicNumber: 68, symbol: "Er", name: "Erbium", chineseName: "鐿", Kalpha1: "23.380", Kbeta1: "24.540", Lalpha1: "5.876", Lbeta1: "5.923", Malpha1: "", Mbeta1: "" },
+    "Tm": { atomicNumber: 69, symbol: "Tm", name: "Thulium", chineseName: "鐵", Kalpha1: "23.820", Kbeta1: "24.990", Lalpha1: "6.042", Lbeta1: "6.090", Malpha1: "", Mbeta1: "" },
+    "Yb": { atomicNumber: 70, symbol: "Yb", name: "Ytterbium", chineseName: "鉺", Kalpha1: "24.270", Kbeta1: "25.450", Lalpha1: "6.211", Lbeta1: "6.259", Malpha1: "", Mbeta1: "" },
+    "Lu": { atomicNumber: 71, symbol: "Lu", name: "Lutetium", chineseName: "鉺", Kalpha1: "24.710", Kbeta1: "25.890", Lalpha1: "6.380", Lbeta1: "6.429", Malpha1: "", Mbeta1: "" },
+    "Hf": { atomicNumber: 72, symbol: "Hf", name: "Hafnium", chineseName: "鉿", Kalpha1: "25.150", Kbeta1: "26.340", Lalpha1: "6.552", Lbeta1: "6.602", Malpha1: "", Mbeta1: "" },
+    "Ta": { atomicNumber: 73, symbol: "Ta", name: "Tantalum", chineseName: "鉭", Kalpha1: "25.590", Kbeta1: "26.790", Lalpha1: "6.725", Lbeta1: "6.775", Malpha1: "", Mbeta1: "" },
+    "W": { atomicNumber: 74, symbol: "W", name: "Tungsten", chineseName: "鎢", Kalpha1: "26.030", Kbeta1: "27.240", Lalpha1: "6.900", Lbeta1: "6.951", Malpha1: "", Mbeta1: "" },
+    "Re": { atomicNumber: 75, symbol: "Re", name: "Rhenium", chineseName: "銥", Kalpha1: "26.470", Kbeta1: "27.690", Lalpha1: "7.077", Lbeta1: "7.128", Malpha1: "", Mbeta1: "" },
+    "Os": { atomicNumber: 76, symbol: "Os", name: "Osmium", chineseName: "鋨", Kalpha1: "26.900", Kbeta1: "28.130", Lalpha1: "7.255", Lbeta1: "7.307", Malpha1: "", Mbeta1: "" },
+    "Ir": { atomicNumber: 77, symbol: "Ir", name: "Iridium", chineseName: "銥", Kalpha1: "27.340", Kbeta1: "28.570", Lalpha1: "7.436", Lbeta1: "7.489", Malpha1: "", Mbeta1: "" },
+    "Pt": { atomicNumber: 78, symbol: "Pt", name: "Platinum", chineseName: "鉑", Kalpha1: "27.780", Kbeta1: "29.020", Lalpha1: "7.618", Lbeta1: "7.671", Malpha1: "", Mbeta1: "" },
+    "Au": { atomicNumber: 79, symbol: "Au", name: "Gold", chineseName: "金", Kalpha1: "28.220", Kbeta1: "29.460", Lalpha1: "7.802", Lbeta1: "7.856", Malpha1: "", Mbeta1: "" },
+    "Hg": { atomicNumber: 80, symbol: "Hg", name: "Mercury", chineseName: "汞", Kalpha1: "28.660", Kbeta1: "29.910", Lalpha1: "7.987", Lbeta1: "8.042", Malpha1: "", Mbeta1: "" },
+    "Tl": { atomicNumber: 81, symbol: "Tl", name: "Thallium", chineseName: "銣", Kalpha1: "29.100", Kbeta1: "30.360", Lalpha1: "8.173", Lbeta1: "8.229", Malpha1: "", Mbeta1: "" },
+    "Pb": { atomicNumber: 82, symbol: "Pb", name: "Lead", chineseName: "鉛", Kalpha1: "29.540", Kbeta1: "30.810", Lalpha1: "8.361", Lbeta1: "8.417", Malpha1: "", Mbeta1: "" },
+    "Bi": { atomicNumber: 83, symbol: "Bi", name: "Bismuth", chineseName: "鉍", Kalpha1: "29.980", Kbeta1: "31.250", Lalpha1: "8.550", Lbeta1: "8.606", Malpha1: "", Mbeta1: "" },
+    "Po": { atomicNumber: 84, symbol: "Po", name: "Polonium", chineseName: "釙", Kalpha1: "30.420", Kbeta1: "31.690", Lalpha1: "8.741", Lbeta1: "8.798", Malpha1: "", Mbeta1: "" },
+    "At": { atomicNumber: 85, symbol: "At", name: "Astatine", chineseName: "砷", Kalpha1: "30.860", Kbeta1: "32.140", Lalpha1: "8.933", Lbeta1: "8.990", Malpha1: "", Mbeta1: "" },
+    "Rn": { atomicNumber: 86, symbol: "Rn", name: "Radon", chineseName: "氡", Kalpha1: "31.300", Kbeta1: "32.590", Lalpha1: "9.126", Lbeta1: "9.184", Malpha1: "", Mbeta1: "" },
+    "Fr": { atomicNumber: 87, symbol: "Fr", name: "Francium", chineseName: "鈁", Kalpha1: "31.740", Kbeta1: "33.030", Lalpha1: "9.320", Lbeta1: "9.379", Malpha1: "", Mbeta1: "" },
+    "Ra": { atomicNumber: 88, symbol: "Ra", name: "Radium", chineseName: "鐳", Kalpha1: "32.180", Kbeta1: "33.490", Lalpha1: "9.514", Lbeta1: "9.573", Malpha1: "", Mbeta1: "" },
+    "Ac": { atomicNumber: 89, symbol: "Ac", name: "Actinium", chineseName: "鍶", Kalpha1: "32.620", Kbeta1: "33.940", Lalpha1: "9.710", Lbeta1: "9.770", Malpha1: "", Mbeta1: "" },
+    "Th": { atomicNumber: 90, symbol: "Th", name: "Thorium", chineseName: "鈍", Kalpha1: "33.060", Kbeta1: "34.390", Lalpha1: "9.906", Lbeta1: "9.967", Malpha1: "", Mbeta1: "" },
+    "Pa": { atomicNumber: 91, symbol: "Pa", name: "Protactinium", chineseName: "鈈", Kalpha1: "33.500", Kbeta1: "34.840", Lalpha1: "10.103", Lbeta1: "10.164", Malpha1: "", Mbeta1: "" },
+    "U": { atomicNumber: 92, symbol: "U", name: "Uranium", chineseName: "鈾", Kalpha1: "33.940", Kbeta1: "35.280", Lalpha1: "10.301", Lbeta1: "10.362", Malpha1: "", Mbeta1: "" },
+    "Np": { atomicNumber: 93, symbol: "Np", name: "Neptunium", chineseName: "鈽", Kalpha1: "34.380", Kbeta1: "35.730", Lalpha1: "10.500", Lbeta1: "10.561", Malpha1: "", Mbeta1: "" },
+    "Pu": { atomicNumber: 94, symbol: "Pu", name: "Plutonium", chineseName: "鈽", Kalpha1: "34.820", Kbeta1: "36.180", Lalpha1: "10.699", Lbeta1: "10.760", Malpha1: "", Mbeta1: "" },
+    "Am": { atomicNumber: 95, symbol: "Am", name: "Americium", chineseName: "美", Kalpha1: "35.260", Kbeta1: "36.630", Lalpha1: "10.899", Lbeta1: "10.960", Malpha1: "", Mbeta1: "" },
+        };
+
+        function displayData() {
+            let outputHtml = "<table><tr><th>原子序</th><th>元素名稱</th><th>元素符號</th><th>中文名稱</th><th>Kα1</th><th>Kβ1</th><th>Lα1</th><th>Lβ1</th><th>Mα1</th><th>Mβ1</th></tr>";
+            for (let i = 1; i <= 5; i++) {
+                let element = document.getElementById("element" + i).value;
+                if (element) {
+                    const elementData = elementsData[element];
+                    outputHtml += `<tr>
+                        <td>${elementData.atomicNumber}</td>
+                        <td>${elementData.name}</td>
+                        <td>${elementData.symbol}</td>
+                        <td>${elementData.chineseName}</td>
+                        <td>${elementData.Kalpha1}</td>
+                        <td>${elementData.Kbeta1}</td>
+                        <td>${elementData.Lalpha1}</td>
+                        <td>${elementData.Lbeta1}</td>
+                        <td>${elementData.Malpha1}</td>
+                        <td>${elementData.Mbeta1}</td>
+                    </tr>`;
+                }
+            }
+            outputHtml += "</table>";
+            document.getElementById("output").innerHTML = outputHtml;
+        }
+    </script>
+
+</body>
+</html>
