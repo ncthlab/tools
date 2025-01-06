@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>執行 JavaScript 於 Console</title>
+</head>
+<body>
+    <h1>執行 JavaScript 於 Console</h1>
+    <form id="urlForm">
+        <label for="urlInput">請輸入URL：</label>
+        <input type="text" id="urlInput" placeholder="輸入目標頁面URL">
+        <button type="submit">執行腳本</button>
+    </form>
+
+    <script>
+        // 下載頁面的邏輯
+        function getPageCanvas(pageNo) {
+            return document.getElementById(`page_${pageNo}`);
+        }
+
+        function getPageCount() {
+            const pageNumInput = document.getElementById("pageNumInput");
+            if (!pageNumInput) throw new Error("Couldn't find element containing total page count");
+            return parseInt(pageNumInput.parentNode.innerText.replaceAll(" ", "").replaceAll("/", ""));
+        }
+
+        async function downloadPages(options = {}) {
+            const imageFormat = 'png'; // 這裡設定圖片格式為 PNG，您可以根據需要更改
+            const pageImageHandler = {
+                initialize: () => console.log('Initializing page handler'),
+                handlePageImage: (pageNo, imageBlob, imageFilename) => console.log('Handling page image: ' + pageNo),
+                finalize: () => console.log('Finalizing handler')
+            };
+            await revealAllPagePlaceholders();
+            const { fromPage = 1, toPage = getPageCount() } = options;
+            await pageImageHandler.initialize();
+
+            for (let pageNo = fromPage; pageNo <= toPage; pageNo++) {
+                const pageCanvas = getPageCanvas(pageNo);
+                if (!pageCanvas) break;
+                const imageFilename = `page_${pageNo}.${imageFormat}`;
+                await preloadPage(pageNo, pageCanvas);
+                const imageBlob = await captureAsImageBlob(pageCanvas, imageFormat);
+                await pageImageHandler.handlePageImage(pageNo, imageBlob, imageFilename);
+            }
+
+            await pageImageHandler.finalize();
+            console.log(`Finished downloading pages ${fromPage}-${toPage}`);
+        }
+
+        // 表單提交時的處理
+        document.getElementById('urlForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = document.getElementById('urlInput').value;
+
+            // 開啟新頁面
+            const targetWindow = window.open(url, '_blank');
+            
+            targetWindow.onload = function () {
+                targetWindow.console.log('新頁面已經加載，開始執行下載腳本');
+
+                // 在新頁面中動態插入腳本來執行下載邏輯
+                const script = targetWindow.document.createElement('script');
+                script.type = 'text/javascript';
+                script.innerHTML = `
+                    // 確保頁面中的下載邏輯可以正確執行
+                    function getPageCanvas(pageNo) {
+                        return document.getElementById('page_' + pageNo);
+                    }
+
+                    function getPageCount() {
+                        const pageNumInput = document.getElementById('pageNumInput');
+                        if (!pageNumInput) throw new Error("Couldn't find element containing total page count");
+                        return parseInt(pageNumInput.parentNode.innerText.replaceAll(" ", "").replaceAll("/", ""));
+                    }
+
+                    async function downloadPages(options = {}) {
+                        const imageFormat = 'png'; // 設定圖片格式
+                        const pageImageHandler = {
+                            initialize: () => console.log('Initializing page handler'),
+                            handlePageImage: (pageNo, imageBlob, imageFilename) => console.log('Handling page image: ' + pageNo),
+                            finalize: () => console.log('Finalizing handler')
+                        };
+                        await revealAllPagePlaceholders();
+                        const { fromPage = 1, toPage = getPageCount() } = options;
+                        await pageImageHandler.initialize();
+
+                        for (let pageNo = fromPage; pageNo <= toPage; pageNo++) {
+                            const pageCanvas = getPageCanvas(pageNo);
+                            if (!pageCanvas) break;
+                            const imageFilename = 'page_' + pageNo + '.' + imageFormat;
+                            await preloadPage(pageNo, pageCanvas);
+                            const imageBlob = await captureAsImageBlob(pageCanvas, imageFormat);
+                            await pageImageHandler.handlePageImage(pageNo, imageBlob, imageFilename);
+                        }
+
+                        await pageImageHandler.finalize();
+                        console.log('Finished downloading pages ' + fromPage + '-' + toPage);
+                    }
+
+                    // 執行下載操作，從第1頁到最後一頁
+                    downloadPages({ fromPage: 1, toPage: getPageCount() });
+                `;
+                targetWindow.document.body.appendChild(script);
+            };
+        });
+    </script>
+</body>
+</html>
