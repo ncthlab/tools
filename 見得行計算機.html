@@ -132,7 +132,8 @@
         <select id="mode" onchange="switchMode()">
             <option value="爐底">築爐爐底用料包數</option>
             <option value="盆">築盆用料包數</option>
-            <option value="濕砂檢測">濕砂檢測 標準試片預估重量</option> <!-- 新增濕砂檢測模式 -->
+            <option value="濕砂檢測">濕砂檢測 標準試片預估重量</option>
+		<option value="黏土轉換">濕模砂 黏土轉換預估天數</option>
         </select>
 
         <!-- 篩選的計算模式 -->
@@ -191,6 +192,23 @@
             <input type="number" id="sampleWeight" placeholder="輸入試片重量">
         </div>
 
+	<div id="黏土轉換" class="mode hidden">
+		<label for="sandStorage">儲砂桶儲砂量 (噸)：</label>
+            	<input type="number" id="SandStorage" step="0.1" placeholder="輸入儲砂量">
+		
+		<label for="MullerCapacity">混砂機容量 (噸)：</label>
+            	<input type="number" id="MullerCapacity" step="0.1" placeholder="輸入混砂機容量">
+		
+		<label for="dailyBatches">單日混砂批次 (次)：</label>
+            	<input type="number" id="DailyBatches" step="1" placeholder="輸入單日混砂批次">
+		
+		<label for="ActiveClayContent">活性黏土含量 (%)：</label>
+        	<input type="number" id="ActiveClayContent" step="0.1" placeholder="輸入活性黏土含量">
+        	
+		<label for="clayAddition">黏土添加量 (%)：</label>
+        	<input type="number" id="ClayAddition" step="0.1" placeholder="輸入黏土添加量">
+	</div>
+
         <button onclick="calculate()">計算</button>
 
         <div class="result">
@@ -199,7 +217,9 @@
             <p id="packageCountResult">包數： <span id="packageCount"></span> 包</p>
             <p id="standardSampleWeightResult" class="hidden">標準試片預估重量： <span id="standardSampleWeight"></span> g</p> <!-- 顯示標準試片預估重量 -->
 	    <p id="sampleWeightHint" class="hidden" style="color: #808080; font-size: 14px;">請依預估重量製作試片，並由試片高度對應至標準試片高度50±1mm，每1mm增減3g砂子</p>
-
+		<p id="DailyCyclesResult" class="hidden" >單日砂循環次數： <span id="DailyCycles"></span> 次</p>
+		<p id="TransferDaysResult" class="hidden" >黏土轉換預估工作天： <span id="TransferDays"></span> 天</p>
+		<p id="TransferDaysResultHint" class="hidden" style="color: #808080; font-size: 14px;">因材料添加回到儲砂桶之分佈可能不均，故預估天數已乘以2倍。</p>
 	
 		<button id="screenshotButton">截圖儲存</button>
         </div>
@@ -239,31 +259,62 @@
                 document.getElementById("爐底").style.display = "block";
                 document.getElementById("盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "none";
+		document.getElementById("黏土轉換").style.display = "none";
+
                 document.getElementById("waterWeightResult").classList.add("hidden");
 		document.getElementById("materialWeightResult").classList.remove("hidden");
 		document.getElementById("packageCountResult").classList.remove("hidden");
                 document.getElementById("standardSampleWeightResult").classList.add("hidden");
 		document.getElementById("sampleWeightHint").classList.add("hidden");
+		document.getElementById("DailyCyclesResult").classList.add("hidden");
+		document.getElementById("TransferDaysResult").classList.add("hidden");
+		document.getElementById("TransferDaysResultHint").classList.add("hidden");
+
             } else if (mode === "盆") {
                 document.getElementById("爐底").style.display = "none";
                 document.getElementById("盆").style.display = "block";
                 document.getElementById("濕砂檢測").style.display = "none";
+		document.getElementById("黏土轉換").style.display = "none";
+		
                 document.getElementById("waterWeightResult").classList.remove("hidden");
 		document.getElementById("materialWeightResult").classList.remove("hidden");
 		document.getElementById("packageCountResult").classList.remove("hidden");
 		document.getElementById("sampleWeightHint").classList.add("hidden");
                 document.getElementById("standardSampleWeightResult").classList.add("hidden");
+		document.getElementById("DailyCyclesResult").classList.add("hidden");
+		document.getElementById("TransferDaysResult").classList.add("hidden");
+		document.getElementById("TransferDaysResultHint").classList.add("hidden");		
+
             } else if (mode === "濕砂檢測") {
                 document.getElementById("爐底").style.display = "none";
                 document.getElementById("盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "block";
+		document.getElementById("黏土轉換").style.display = "none";
 
 		document.getElementById("materialWeightResult").classList.add("hidden");
 		document.getElementById("packageCountResult").classList.add("hidden");
-
                 document.getElementById("waterWeightResult").classList.add("hidden");
                 document.getElementById("standardSampleWeightResult").classList.remove("hidden");
-		document.getElementById("sampleWeightHint").classList.remove("hidden"); // 顯示提示文字
+		document.getElementById("sampleWeightHint").classList.remove("hidden"); 
+		document.getElementById("DailyCyclesResult").classList.add("hidden");
+		document.getElementById("TransferDaysResult").classList.add("hidden");
+		document.getElementById("TransferDaysResultHint").classList.add("hidden");
+		
+		} else if (mode === "黏土轉換") {
+		document.getElementById("爐底").style.display = "none";
+                document.getElementById("盆").style.display = "none";
+                document.getElementById("濕砂檢測").style.display = "none";
+		document.getElementById("黏土轉換").style.display = "block";
+
+		document.getElementById("materialWeightResult").classList.add("hidden");
+		document.getElementById("packageCountResult").classList.add("hidden");
+                document.getElementById("waterWeightResult").classList.add("hidden");
+                document.getElementById("standardSampleWeightResult").classList.add("hidden");
+		document.getElementById("sampleWeightHint").classList.add("hidden"); 
+		document.getElementById("DailyCyclesResult").classList.remove("hidden");
+		document.getElementById("TransferDaysResult").classList.remove("hidden");
+		document.getElementById("TransferDaysResultHint").classList.remove("hidden");
+
             }
 
             // 清空計算結果
@@ -271,6 +322,9 @@
             document.getElementById("packageCount").textContent = "";
             document.getElementById("waterWeight").textContent = "";
             document.getElementById("standardSampleWeight").textContent = "";
+		document.getElementById("DailyCycles").textContent = "";
+		document.getElementById("TransferDays").textContent = "";
+
         }
 	
 	var SelectedMode = document.getElementById('mode').options[document.getElementById('mode').selectedIndex].text;
@@ -304,7 +358,8 @@
 
                 document.getElementById("materialWeight").textContent = materialWeight.toFixed(2); // 用料重量
                 document.getElementById("packageCount").textContent = packageCount; // 包數
-            } else if (mode === "盆") {
+            
+	} else if (mode === "盆") {
                 var topDiameterOuter = parseFloat(document.getElementById("topDiameterOuter").value); // 保持為mm
                 var bottomDiameterOuter = parseFloat(document.getElementById("bottomDiameterOuter").value); // 保持為mm
                 var heightOuter = parseFloat(document.getElementById("heightOuter").value); // 保持為mm
@@ -334,6 +389,26 @@
                 var standardSampleWeight = (sampleWeight * 5) / (-(cbValue / 100 * 12 - 12));
 
                 document.getElementById("standardSampleWeight").textContent = standardSampleWeight.toFixed(2); // 顯示標準試片預估重量
+		
+	} else if (mode === "黏土轉換") {
+		
+		var SandStorage = parseFloat(document.getElementById("SandStorage").value);
+		
+                var MullerCapacity = parseFloat(document.getElementById("MullerCapacity").value);
+		var DailyBatches = parseFloat(document.getElementById("DailyBatches").value);
+				
+		var DailyCycles = MullerCapacity * DailyBatches / SandStorage ;
+		
+		var ActiveClayContent = parseFloat(document.getElementById("ActiveClayContent").value);
+		var ClayAddition = parseFloat(document.getElementById("ClayAddition").value);
+
+		var TransferDays = ActiveClayContent / ClayAddition / DailyCycles * 2;
+
+		document.getElementById("DailyCycles").textContent = DailyCycles.toFixed(1);
+		document.getElementById("TransferDays").textContent = TransferDays.toFixed(1);
+		
+		
+		
             }
         }	
 
