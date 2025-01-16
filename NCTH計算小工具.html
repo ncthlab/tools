@@ -133,8 +133,10 @@
             <option value="爐底">築爐爐底用料包數</option>
             <option value="盆">築盆用料包數</option>
             <option value="濕砂檢測">濕砂檢測 標準試片預估重量</option>
-		<option value="黏土轉換">濕模砂 黏土轉換預估天數</option>
-        </select>
+	    <option value="黏土轉換">濕模砂 黏土轉換預估天數</option>
+            <option value="砂鐵比">濕模砂 砂鐵比計算</option>
+        
+	</select>
 
         <!-- 篩選的計算模式 -->
         <div id="爐底" class="mode">
@@ -209,6 +211,17 @@
         	<input type="number" id="ClayAddition" step="0.1" placeholder="輸入黏土添加量">
 	</div>
 
+	<div id="砂鐵比" class="mode hidden">
+            <label for="MoldWeight">每模砂重 (kg)：</label>
+            <input type="number" id="MoldWeight" placeholder="輸入每模砂重">
+
+            <label for="CastingWeight">鑄件重量 (kg)：</label>
+            <input type="number" id="CastingWeight" placeholder="輸入鑄件重量">
+<p>砂鐵比計算示意圖：</p>
+    		<img src="https://raw.githubusercontent.com/ncthlab/tools/main/SMRATIO.png" alt="砂鐵比範圍(Suranaree University of Technology)" style="max-width: 70%; height: auto;">
+        </div>
+
+
         <button onclick="calculate()">計算</button>
 
         <div class="result">
@@ -220,7 +233,9 @@
 		<p id="DailyCyclesResult" class="hidden" >單日砂循環次數： <span id="DailyCycles"></span> 次</p>
 		<p id="TransferDaysResult" class="hidden" >黏土轉換預估工作天： <span id="TransferDays"></span> 天</p>
 		<p id="TransferDaysResultHint" class="hidden" style="color: #808080; font-size: 14px;">因材料添加回到儲砂桶之分佈可能不均，故預估天數已多一倍。</p>
-	
+		<p id="SandMetalRatioResult" class="hidden" >砂鐵比 =  <span id="SandMetalRatio"> </p>
+
+
 		<button id="screenshotButton">截圖儲存</button>
         </div>
     </div>
@@ -260,6 +275,8 @@
                 document.getElementById("盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "none";
 		document.getElementById("黏土轉換").style.display = "none";
+		document.getElementById("砂鐵比").style.display = "none";
+
 
                 document.getElementById("waterWeightResult").classList.add("hidden");
 		document.getElementById("materialWeightResult").classList.remove("hidden");
@@ -269,12 +286,16 @@
 		document.getElementById("DailyCyclesResult").classList.add("hidden");
 		document.getElementById("TransferDaysResult").classList.add("hidden");
 		document.getElementById("TransferDaysResultHint").classList.add("hidden");
+		document.getElementById("MoldWeight").classList.add("hidden");
+		document.getElementById("CastingWeight").classList.add("hidden");
+		document.getElementById("SandMetalRatioResult").classList.add("hidden");
 
             } else if (mode === "盆") {
                 document.getElementById("爐底").style.display = "none";
                 document.getElementById("盆").style.display = "block";
                 document.getElementById("濕砂檢測").style.display = "none";
 		document.getElementById("黏土轉換").style.display = "none";
+		document.getElementById("砂鐵比").style.display = "none";
 		
                 document.getElementById("waterWeightResult").classList.remove("hidden");
 		document.getElementById("materialWeightResult").classList.remove("hidden");
@@ -283,13 +304,17 @@
                 document.getElementById("standardSampleWeightResult").classList.add("hidden");
 		document.getElementById("DailyCyclesResult").classList.add("hidden");
 		document.getElementById("TransferDaysResult").classList.add("hidden");
-		document.getElementById("TransferDaysResultHint").classList.add("hidden");		
+		document.getElementById("TransferDaysResultHint").classList.add("hidden");
+		document.getElementById("MoldWeight").classList.add("hidden");
+		document.getElementById("CastingWeight").classList.add("hidden");
+		document.getElementById("SandMetalRatioResult").classList.add("hidden");		
 
             } else if (mode === "濕砂檢測") {
                 document.getElementById("爐底").style.display = "none";
                 document.getElementById("盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "block";
 		document.getElementById("黏土轉換").style.display = "none";
+		document.getElementById("砂鐵比").style.display = "none";
 
 		document.getElementById("materialWeightResult").classList.add("hidden");
 		document.getElementById("packageCountResult").classList.add("hidden");
@@ -299,12 +324,16 @@
 		document.getElementById("DailyCyclesResult").classList.add("hidden");
 		document.getElementById("TransferDaysResult").classList.add("hidden");
 		document.getElementById("TransferDaysResultHint").classList.add("hidden");
+		document.getElementById("MoldWeight").classList.add("hidden");
+		document.getElementById("CastingWeight").classList.add("hidden");
+		document.getElementById("SandMetalRatioResult").classList.add("hidden");
 		
 		} else if (mode === "黏土轉換") {
 		document.getElementById("爐底").style.display = "none";
                 document.getElementById("盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "none";
 		document.getElementById("黏土轉換").style.display = "block";
+		document.getElementById("砂鐵比").style.display = "none";
 
 		document.getElementById("materialWeightResult").classList.add("hidden");
 		document.getElementById("packageCountResult").classList.add("hidden");
@@ -314,6 +343,28 @@
 		document.getElementById("DailyCyclesResult").classList.remove("hidden");
 		document.getElementById("TransferDaysResult").classList.remove("hidden");
 		document.getElementById("TransferDaysResultHint").classList.remove("hidden");
+		document.getElementById("MoldWeight").classList.add("hidden");
+		document.getElementById("CastingWeight").classList.add("hidden");
+		document.getElementById("SandMetalRatioResult").classList.add("hidden");
+
+		} else if (mode === "砂鐵比") {
+		document.getElementById("爐底").style.display = "none";
+                document.getElementById("盆").style.display = "none";
+                document.getElementById("濕砂檢測").style.display = "none";
+		document.getElementById("黏土轉換").style.display = "none";
+		document.getElementById("砂鐵比").style.display = "block";		
+
+		document.getElementById("materialWeightResult").classList.add("hidden");
+		document.getElementById("packageCountResult").classList.add("hidden");
+                document.getElementById("waterWeightResult").classList.add("hidden");
+                document.getElementById("standardSampleWeightResult").classList.add("hidden");
+		document.getElementById("sampleWeightHint").classList.add("hidden"); 
+		document.getElementById("DailyCyclesResult").classList.add("hidden");
+		document.getElementById("TransferDaysResult").classList.add("hidden");
+		document.getElementById("TransferDaysResultHint").classList.add("hidden");
+		document.getElementById("MoldWeight").classList.remove("hidden");
+		document.getElementById("CastingWeight").classList.remove("hidden");
+		document.getElementById("SandMetalRatioResult").classList.remove("hidden");
 
             }
 
@@ -324,6 +375,7 @@
             document.getElementById("standardSampleWeight").textContent = "";
 		document.getElementById("DailyCycles").textContent = "";
 		document.getElementById("TransferDays").textContent = "";
+		document.getElementById("SandMetalRatio").textContent = "";
 
         }
 	
@@ -407,8 +459,15 @@
 		document.getElementById("DailyCycles").textContent = DailyCycles.toFixed(1);
 		document.getElementById("TransferDays").textContent = TransferDays.toFixed(1);
 		
+	} else if (mode === "砂鐵比") {
+
+		var MoldWeight = parseFloat(document.getElementById("MoldWeight").value);
+		var CastingWeight = parseFloat(document.getElementById("CastingWeight").value);		
+		var SandMetalRatio = MoldWeight / CastingWeight ;
 		
+		document.getElementById("SandMetalRatio").textContent = SandMetalRatio.toFixed(1);
 		
+
             }
         }	
 
