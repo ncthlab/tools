@@ -206,9 +206,18 @@
       });
 
       finishButton.addEventListener("click", () => {
+        // 確保最後的圖片也被加入
+        const timestamp = formatDate(new Date());
+        const formattedTimestamp = timestamp.replace("T", "_");
+        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+        const fileName = `${customFileName}_${formattedTimestamp}`;
+        const fileBlob = previewCanvas.toDataURL("image/jpeg");
+        images.push({ fileBlob, fileName });
+
         generateZip();
       });
 
+      // 重置預覽畫面
       function resetPreview() {
         previewCanvas.width = 0;
         previewCanvas.height = 0;
