@@ -1,37 +1,167 @@
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  canvas {
-    display: block;
-    margin-top: 10px;
-    width: 100%;
-  }
-  button {
-    margin: 10px 5px;
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  input[type="text"] {
-    margin: 10px 0;
-    padding: 8px;
-    font-size: 14px;
-    width: calc(100% - 20px);
-  }
-  #infoText {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  .infoLine {
-    font-size: 16px;
-    margin-bottom: 5px;
-  }
-  #currentTime {
-    font-size: 12px; /* 調整這裡的字型大小 */
-    text-align: right;
-    margin-bottom: 20px;
-  }
-</style>
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貨櫃拍照上傳系統</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      canvas {
+        display: block;
+        margin-top: 10px;
+        width: 100%;
+      }
+      button {
+        margin: 10px 5px;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      input[type="text"] {
+        margin: 10px 0;
+        padding: 8px;
+        font-size: 14px;
+        width: calc(100% - 20px);
+      }
+      #infoText {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .infoLine {
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+      #currentTime {
+        font-size: 12px; /* 調整這裡的字型大小 */
+        text-align: right;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>貨櫃拍照系統</h2>
+
+    <!-- 初始頁面輸入欄位 -->
+    <div id="initialPage">
+      <label for="containerNumber">貨櫃櫃號：</label>
+      <input type="text" id="containerNumber" placeholder="請輸入貨櫃櫃號">
+      <label for="batchNumber">產品批號：</label>
+      <input type="text" id="batchNumber" placeholder="請輸入產品批號">
+      <button id="startButton" disabled>開始拍攝</button>
+    </div>
+
+    <!-- 拍攝頁面 -->
+    <div id="capturePage" style="display:none;">
+      <div id="currentTime"></div> <!-- 顯示即時時間 -->
+      <div id="infoText">
+        <div class="infoLine">貨櫃櫃號：<span id="containerNumberDisplay"></span></div>
+        <div class="infoLine">產品批號：<span id="batchNumberDisplay"></span></div>
+        <div class="infoLine">當前拍攝位置：<span id="currentLocation"></span></div>
+      </div>
+      <canvas id="previewCanvas"></canvas>
+      <input type="text" id="fileName" placeholder="檔名 (預設：當前拍攝位置)">
+      <div>
+        <button id="nextButton">拍攝下一張</button>
+        <button id="retakeButton">重新拍攝</button>
+        <button id="finishButton">結束拍攝</button>
+      </div>
+    </div>
+
+    <script>
+      let currentIndex = 0;
+      const locations = [
+        "卸櫃前前面", "卸櫃前右側", "卸櫃前後面", "封條", "卸櫃前左側", 
+        "開櫃", "空櫃上面", "空櫃右側", "空櫃左側", "空櫃地板", "空櫃正面"
+      ];
+      let containerNumber = '';
+      let batchNumber = '';
+      const containerNumberInput = document.getElementById('containerNumber');
+      const batchNumberInput = document.getElementById('batchNumber');
+      const startButton = document.getElementById('startButton');
+      const containerNumberDisplay = document.getElementById('containerNumberDisplay');
+      const batchNumberDisplay = document.getElementById('batchNumberDisplay');
+      const currentLocationDisplay = document.getElementById('currentLocation');
+      const previewCanvas = document.getElementById('previewCanvas');
+      const fileNameInput = document.getElementById('fileName');
+      const currentTimeDisplay = document.getElementById('currentTime');
+      const nextButton = document.getElementById('nextButton');
+      const retakeButton = document.getElementById('retakeButton');
+      const finishButton = document.getElementById('finishButton');
+      
+      // 當前時間顯示
+      function updateCurrentTime() {
+        const now = new Date();
+        const timeString = now.toISOString().replace('T', ' ').substring(0, 19);
+        currentTimeDisplay.textContent = `目前時間：${timeString}`;
+      }
+
+      setInterval(updateCurrentTime, 1000);  // 每秒更新時間
+
+      containerNumberInput.addEventListener('input', enableStartButton);
+      batchNumberInput.addEventListener('input', enableStartButton);
+
+      function enableStartButton() {
+        containerNumber = containerNumberInput.value.trim();
+        batchNumber = batchNumberInput.value.trim();
+        if (containerNumber && batchNumber) {
+          startButton.disabled = false;
+        } else {
+          startButton.disabled = true;
+        }
+      }
+
+      startButton.addEventListener('click', startCapture);
+
+      function startCapture() {
+        document.getElementById('initialPage').style.display = 'none';
+        document.getElementById('capturePage').style.display = 'block';
+        containerNumberDisplay.textContent = containerNumber;
+        batchNumberDisplay.textContent = batchNumber;
+        loadNextLocation();
+      }
+
+      function loadNextLocation() {
+        if (currentIndex >= locations.length) {
+          alert('所有拍攝已完成！');
+          return;
+        }
+
+        const location = locations[currentIndex];
+        currentLocationDisplay.textContent = location;
+        fileNameInput.value = location;
+
+        previewCanvas.style.display = 'block';
+        // 這裡可以放置攝像頭拍照並顯示預覽照片的邏輯
+      }
+
+      nextButton.addEventListener('click', () => {
+        let fileName = fileNameInput.value.trim();
+        if (!fileName) {
+          fileName = locations[currentIndex];
+        }
+        fileName += `_${new Date().toISOString().replace('T', '_').substring(0, 19)}.jpg`;
+        console.log('檔名：', fileName); // 模擬檔名輸出
+
+        // 當檔名有被修改後，保留當前拍攝位置，否則跳至下一位置
+        if (!fileNameInput.value.trim()) {
+          currentIndex++;
+        }
+
+        loadNextLocation();
+      });
+
+      retakeButton.addEventListener('click', () => {
+        loadNextLocation();
+      });
+
+      finishButton.addEventListener('click', () => {
+        // 完成拍攝後，打包ZIP檔案
+        alert('打包ZIP檔案...');
+      });
+    </script>
+  </body>
+</html>
