@@ -43,7 +43,6 @@
     </style>
   </head>
   <body>
-    <!-- 當前時間顯示區域 -->
     <div id="currentTime"></div>
 
     <!-- 初始頁面 -->
@@ -80,8 +79,8 @@
       let currentIndex = 0;
       let containerId = '';
       let batchId = '';
-      let images = []; // 用來儲存每一張拍攝的圖片
-      let customFileNameModified = false; // 檢查檔名是否有被修改
+      let images = [];
+      let customFileNameModified = false;
 
       const containerIdInput = document.getElementById("containerId");
       const batchIdInput = document.getElementById("batchId");
@@ -100,16 +99,14 @@
       const goToLocationButton = document.getElementById("goToLocationButton");
       const currentTimeElement = document.getElementById("currentTime");
 
-      // 顯示當前時間
       function updateCurrentTime() {
         const now = new Date();
         const formattedTime = formatDate(now);
         currentTimeElement.textContent = `目前時間：${formattedTime}`;
       }
 
-      setInterval(updateCurrentTime, 1000); // 每秒更新一次時間
+      setInterval(updateCurrentTime, 1000);
 
-      // 格式化時間為 YYYY-MM-DD HH:MM:SS
       function formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -120,7 +117,6 @@
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       }
 
-      // 確認是否兩個輸入欄位都填寫
       function checkInputs() {
         containerId = containerIdInput.value.trim();
         batchId = batchIdInput.value.trim();
@@ -130,7 +126,6 @@
       containerIdInput.addEventListener("input", checkInputs);
       batchIdInput.addEventListener("input", checkInputs);
 
-      // 顯示開始拍攝畫面
       startButton.addEventListener("click", () => {
         startSection.style.display = "none";
         photoSection.style.display = "block";
@@ -138,26 +133,22 @@
         nextDirection();
       });
 
-      // 顯示下一個拍攝位置
       function nextDirection() {
         if (currentIndex >= directions.length) {
           alert("所有照片已完成拍攝!");
           return;
         }
         updateInfo();
-        // 預設檔名填入當前位置
         customFileNameInput.value = directions[currentIndex];
-        customFileNameModified = false; // 重置檔名修改狀態
+        customFileNameModified = false;
         cameraInput.click();
       }
 
-      // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
       function updateInfo() {
         containerInfo.textContent = `貨櫃櫃號：${containerId}`;
         batchInfo.textContent = `產品批號：${batchId}`;
         directionInfo.textContent = `當前拍攝位置：${directions[currentIndex]}`;
         
-        // 顯示上一個拍攝位置（若不是第一個拍攝位置）
         if (currentIndex > 0) {
           previousDirectionInfo.textContent = `上一個拍攝位置：${directions[currentIndex - 1]}`;
           previousDirectionInfo.style.display = "block";
@@ -188,11 +179,6 @@
             ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
             ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
             document.getElementById("controls").style.display = "block";
-
-            // 若拍攝的是空櫃正面，隱藏「拍攝下一張」按鈕
-            if (directions[currentIndex] === "空櫃正面") {
-              nextButton.style.display = "none";
-            }
           };
 
           reader.readAsDataURL(file);
@@ -200,15 +186,13 @@
       });
 
       nextButton.addEventListener("click", () => {
-        // 檢查檔名是否修改過，若有修改則繼續保持當前拍攝位置，若未修改則跳往下一個拍攝位置
         const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace("T", "_"); // 使用 "_" 代替 "T"
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`; 
-        const fileName = `${customFileName}_${formattedTimestamp}`; // 產生新的檔名
+        const formattedTimestamp = timestamp.replace("T", "_");
+        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+        const fileName = `${customFileName}_${formattedTimestamp}`;
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
-        images.push({ fileBlob, fileName }); // 儲存圖片和檔名
+        images.push({ fileBlob, fileName });
 
-        // 若檔名未修改，則前往下一個拍攝位置
         if (!customFileNameModified) {
           currentIndex++;
         }
@@ -223,7 +207,6 @@
       });
 
       finishButton.addEventListener("click", () => {
-        // 確保最後的圖片也被加入
         const timestamp = formatDate(new Date());
         const formattedTimestamp = timestamp.replace("T", "_");
         let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
@@ -234,14 +217,24 @@
         generateZip();
       });
 
-      // 重置預覽畫面
+      goToLocationButton.addEventListener("click", () => {
+        const location = prompt("請輸入目標拍攝位置：");
+        const index = directions.indexOf(location);
+        if (index !== -1) {
+          currentIndex = index;
+          updateInfo();
+          cameraInput.click();
+        } else {
+          alert("該位置無效");
+        }
+      });
+
       function resetPreview() {
         previewCanvas.width = 0;
         previewCanvas.height = 0;
         document.getElementById("controls").style.display = "none";
       }
 
-      // 生成 ZIP 檔案並下載
       function generateZip() {
         if (images.length === 0) {
           alert("沒有照片可以生成 ZIP 檔案");
@@ -259,7 +252,7 @@
         zip.generateAsync({ type: "blob" }).then((content) => {
           const link = document.createElement("a");
           link.href = URL.createObjectURL(content);
-          link.download = `${folderName}.zip`; // 使用資料夾名稱作為 ZIP 檔名
+          link.download = `${folderName}.zip`;
           link.click();
         });
       }
