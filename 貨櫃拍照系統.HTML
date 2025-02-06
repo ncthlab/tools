@@ -282,6 +282,7 @@
         locationSelectContainer.style.display = "block"; // 顯示下拉選單
       });
 
+    let serialNumber = 1;  // 初始化序號為 1
       function updatePhotoList() {
         const fileName = `${directions[currentIndex]}_${formatDate(new Date()).replace(" ", "_").replace(":", "-")}.jpg`;
         const row = document.createElement("tr");
