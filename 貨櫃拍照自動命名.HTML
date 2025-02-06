@@ -148,6 +148,7 @@
         }
 
         document.getElementById("initialInputs").style.display = "none";
+        document.getElementById("controls").style.display = "block"; // 顯示後續拍攝按鈕
         nextDirection();
       });
 
@@ -208,7 +209,6 @@
       function resetPreview() {
         ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         previewCanvas.style.display = "none";
-        document.getElementById("controls").style.display = "none";
       }
     </script>
   </body>
