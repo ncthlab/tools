@@ -3,32 +3,57 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>貨櫃拍照上傳</title>
+    <title>貨櫃拍照上傳系統</title>
     <style>
-      body { font-family: Arial, sans-serif; padding: 20px; }
-      canvas { display: none; margin-top: 10px; }
-      button { margin: 10px 5px; padding: 10px; font-size: 16px; cursor: pointer; }
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      canvas {
+        display: none;
+        margin-top: 10px;
+      }
+      button {
+        margin: 10px 5px;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      input[type="text"] {
+        margin: 10px 0;
+        padding: 8px;
+        font-size: 14px;
+        width: calc(100% - 20px);
+      }
     </style>
   </head>
   <body>
     <h2>貨櫃拍照系統</h2>
-    <p>請依順序拍攝：正面、封條、後側、左側、右側</p>
-    
+    <p>請依順序拍攝：卸櫃前前面、卸櫃前右側、卸櫃前後面、封條、卸櫃前左側、開櫃、空櫃上面、空櫃右側、空櫃左側、空櫃地板、空櫃正面</p>
+    <p>如需拍攝細節，請點選「其他細節」</p>
+
     <input type="file" id="cameraInput" accept="image/*" capture="environment">
     <canvas id="previewCanvas"></canvas>
-    
+
     <div id="controls" style="display: none;">
+      <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名">
       <button id="confirmButton">確認上傳</button>
       <button id="retakeButton">重新拍攝</button>
+      <button id="detailButton">其他細節</button>
     </div>
 
     <script>
-      const directions = ["正面", "封條", "後側", "左側", "右側"];
+      const directions = [
+        "卸櫃前前面", "卸櫃前右側", "卸櫃前後面", "封條", "卸櫃前左側", 
+        "開櫃", "空櫃上面", "空櫃右側", "空櫃左側", "空櫃地板", "空櫃正面"
+      ];
       let currentIndex = 0;
       const cameraInput = document.getElementById("cameraInput");
       const previewCanvas = document.getElementById("previewCanvas");
       const confirmButton = document.getElementById("confirmButton");
       const retakeButton = document.getElementById("retakeButton");
+      const detailButton = document.getElementById("detailButton");
+      const customFileNameInput = document.getElementById("customFileName");
       const ctx = previewCanvas.getContext("2d");
 
       function nextDirection() {
@@ -64,8 +89,9 @@
 
       confirmButton.addEventListener("click", () => {
         previewCanvas.toBlob((blob) => {
-          const fileName = `貨櫃_${directions[currentIndex]}_${new Date().toISOString().replace(/:/g, "-").split(".")[0]}.jpg`;
+          let fileName = customFileNameInput.value.trim() || `貨櫃_${directions[currentIndex]}_${new Date().toISOString().replace(/:/g, "-").split(".")[0]}.jpg`;
           uploadImage(blob, fileName);
+          customFileNameInput.value = "";
           currentIndex++;
           resetPreview();
           nextDirection();
@@ -77,6 +103,11 @@
         cameraInput.click();
       });
 
+      detailButton.addEventListener("click", () => {
+        directions.splice(currentIndex + 1, 0, "其他細節");
+        alert("已新增其他細節拍攝項目");
+      });
+
       function resetPreview() {
         ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         previewCanvas.style.display = "none";
@@ -86,12 +117,20 @@
       function uploadImage(blob, fileName) {
         const formData = new FormData();
         formData.append("file", blob, fileName);
-        // 模擬上傳處理，實際可替換為後端API
-        console.log(`上傳檔案: ${fileName}`);
-        // fetch("你的上傳伺服器路徑", {
-        //   method: "POST",
-        //   body: formData,
-        // }).then(response => alert("上傳成功!")).catch(error => alert("上傳失敗"));
+
+        fetch("http://localhost:3000/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert(`已成功上傳: ${fileName}`);
+            } else {
+              alert("上傳失敗");
+            }
+          })
+          .catch(() => alert("上傳失敗"));
       }
 
       // 啟動拍攝流程
@@ -99,3 +138,42 @@
     </script>
   </body>
 </html>
+
+<!-- Node.js server code (save as server.js) -->
+
+const express = require("express");
+const multer = require("multer");
+const fs = require("fs-extra");
+const path = require("path");
+
+const app = express();
+const upload = multer({ dest: "uploads/" });
+const outputDir = path.join(__dirname, "output");
+
+fs.ensureDirSync(outputDir);
+
+app.use(express.static(outputDir));
+
+function getTodayFolder() {
+  const today = new Date().toISOString().split("T")[0];
+  const folderPath = path.join(outputDir, today);
+  fs.ensureDirSync(folderPath);
+  return folderPath;
+}
+
+app.post("/upload", upload.single("file"), (req, res) => {
+  const todayFolder = getTodayFolder();
+  const fileName = req.file.originalname;
+  const destinationPath = path.join(todayFolder, fileName);
+
+  fs.move(req.file.path, destinationPath, { overwrite: true }, (err) => {
+    if (err) {
+      return res.json({ success: false });
+    }
+    res.json({ success: true });
+  });
+});
+
+app.listen(3000, () => {
+  console.log("伺服器已啟動，監聽 port 3000");
+});
