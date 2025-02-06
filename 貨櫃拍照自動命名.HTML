@@ -149,9 +149,10 @@
 
       nextButton.addEventListener("click", () => {
         previewCanvas.toBlob((blob) => {
-          const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+          const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19); // 格式：YYYY-MM-DD_HH-MM-SS
+          const formattedTimestamp = timestamp.replace("T", "_"); // 替換 T 為 _
           let customFileName = customFileNameInput.value.trim();
-          let fileName = customFileName ? `${containerNumber}_${productBatch}_${customFileName}_${timestamp}.jpg` : `${containerNumber}_${productBatch}_貨櫃_${directions[currentIndex]}_${timestamp}.jpg`;
+          let fileName = customFileName ? `${containerNumber}_${productBatch}_${customFileName}_${formattedTimestamp}.jpg` : `${containerNumber}_${productBatch}_貨櫃_${directions[currentIndex]}_${formattedTimestamp}.jpg`;
           
           // 確保圖像正確添加到 images 陣列
           images.push({ blob, fileName });
@@ -169,9 +170,10 @@
       });
 
       detailButton.addEventListener("click", () => {
-        const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19); // 格式：YYYY-MM-DD_HH-MM-SS
+        const formattedTimestamp = timestamp.replace("T", "_"); // 替換 T 為 _
         const customName = customFileNameInput.value.trim();
-        let fileName = customName ? `${containerNumber}_${productBatch}_${customName}_${timestamp}.jpg` : `${containerNumber}_${productBatch}_其他細節_${timestamp}.jpg`;
+        let fileName = customName ? `${containerNumber}_${productBatch}_${customName}_${formattedTimestamp}.jpg` : `${containerNumber}_${productBatch}_其他細節_${formattedTimestamp}.jpg`;
         previewCanvas.toBlob((blob) => {
           images.push({ blob, fileName });
           resetPreview();
