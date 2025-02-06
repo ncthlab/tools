@@ -74,6 +74,7 @@
 <div id="photoListSection">
   <h3>已拍攝照片檔名列表</h3>
   <ul id="photoList"></ul>
+
 </div>
     </div>
   
@@ -300,7 +301,7 @@
 }
 const photoListSection = document.createElement("div");
 photoListSection.style.display = "none"; // 初始隱藏
-document.body.appendChild(photoListSection);
+photoSection.appendChild(photoListSection); // 插入到 photoSection 的結尾處
 
 const photoTable = document.createElement("table");
 photoTable.border = "1";
@@ -331,6 +332,7 @@ function saveCurrentImage() {
     // 動態顯示表格，並新增拍攝記錄
     if (photoListSection.style.display === "none") {
       photoListSection.style.display = "block";
+
     }
 
     const row = document.createElement("tr");
