@@ -152,6 +152,8 @@
           const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
           let customFileName = customFileNameInput.value.trim();
           let fileName = customFileName ? `${containerNumber}_${productBatch}_${customFileName}_${timestamp}.jpg` : `${containerNumber}_${productBatch}_貨櫃_${directions[currentIndex]}_${timestamp}.jpg`;
+          
+          // 確保圖像正確添加到 images 陣列
           images.push({ blob, fileName });
           customFileNameInput.value = "";
           currentIndex++;
@@ -161,7 +163,7 @@
       });
 
       retakeButton.addEventListener("click", () => {
-        images.pop();
+        images.pop(); // 移除最後一張照片
         resetPreview();
         nextDirection();
       });
@@ -170,7 +172,7 @@
         const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
         const customName = customFileNameInput.value.trim();
         let fileName = customName ? `${containerNumber}_${productBatch}_${customName}_${timestamp}.jpg` : `${containerNumber}_${productBatch}_其他細節_${timestamp}.jpg`;
-        const blob = previewCanvas.toBlob((blob) => {
+        previewCanvas.toBlob((blob) => {
           images.push({ blob, fileName });
           resetPreview();
           customFileNameInput.value = "";
@@ -181,7 +183,7 @@
       finishButton.addEventListener("click", () => {
         const zip = new JSZip();
         images.forEach(image => {
-          zip.file(image.fileName, image.blob);
+          zip.file(image.fileName, image.blob); // 添加圖像到 ZIP 檔案
         });
         zip.generateAsync({ type: "blob" }).then(function(content) {
           const link = document.createElement("a");
