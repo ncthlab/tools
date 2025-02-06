@@ -27,6 +27,11 @@
         font-size: 14px;
         width: calc(100% - 20px);
       }
+      #currentDirection {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+      }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
@@ -40,7 +45,6 @@
     <div id="initialInputs">
       <button id="captureContainerNumberButton">拍攝貨櫃櫃號</button>
       <p id="containerNumberDisplay">貨櫃櫃號：未識別</p>
-      <!-- 可編輯的貨櫃櫃號輸入框 -->
       <input type="text" id="containerNumberInput" placeholder="若識別錯誤請手動修改貨櫃櫃號" style="display:none;">
       <br>
       <label for="productBatch">產品批號：</label>
@@ -51,6 +55,8 @@
 
     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
     <canvas id="previewCanvas"></canvas>
+
+    <div id="currentDirection"></div> <!-- 顯示當前拍攝順序 -->
 
     <div id="controls" style="display: none;">
       <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名">
@@ -82,6 +88,7 @@
       const captureContainerNumberButton = document.getElementById("captureContainerNumberButton");
       const containerNumberInput = document.getElementById("containerNumberInput");
       const productBatchInput = document.getElementById("productBatch");
+      const currentDirection = document.getElementById("currentDirection");
       const ctx = previewCanvas.getContext("2d");
 
       // 拍攝貨櫃櫃號的按鈕
@@ -121,7 +128,6 @@
             logger: (m) => console.log(m),
           }
         ).then(({ data: { text } }) => {
-          // 假設貨櫃櫃號為識別出的第一行文本
           containerNumber = text.split("\n")[0].trim();
           containerNumberDisplay.textContent = `貨櫃櫃號：${containerNumber}`;
           containerNumberInput.style.display = "block";
@@ -157,7 +163,7 @@
           alert("所有照片已完成拍攝!");
           return;
         }
-        alert(`請拍攝貨櫃的${directions[currentIndex]}照片`);
+        currentDirection.textContent = `請拍攝貨櫃的 ${directions[currentIndex]} 照片`;
         cameraInput.click();
       }
 
