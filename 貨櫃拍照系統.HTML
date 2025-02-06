@@ -250,6 +250,9 @@
     currentIndex = parseInt(event.target.value);
     resetPreview();
     nextDirection();
+
+// 顯示選擇的指定位置
+    alert(`您選擇的拍攝位置：${directions[currentIndex]}`);
     locationSelect.remove(); // 選擇後自動移除下拉選單
   });
   
