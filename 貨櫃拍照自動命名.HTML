@@ -196,6 +196,25 @@
         ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         previewCanvas.style.display = "none";
       }
+
+      // 顯示拍攝的圖片
+      cameraInput.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+              previewCanvas.width = img.width;
+              previewCanvas.height = img.height;
+              ctx.drawImage(img, 0, 0);
+              previewCanvas.style.display = "block"; // 顯示預覽圖片
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
     </script>
   </body>
 </html>
