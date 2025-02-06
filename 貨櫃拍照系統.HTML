@@ -170,6 +170,26 @@
         }
       }
 
+const photoList = document.getElementById("photoList");
+
+function saveCurrentImage() {
+  const timestamp = formatDate(new Date());
+  const formattedTimestamp = timestamp.replace("T", "_");
+  let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+  const fileName = `${customFileName}_${formattedTimestamp}`;
+  const fileBlob = previewCanvas.toDataURL("image/jpeg");
+
+  if (previewCanvas.width > 0 && previewCanvas.height > 0) {
+    images.push({ fileBlob, fileName });
+
+    // 更新照片檔名列表
+    const listItem = document.createElement("li");
+    listItem.textContent = fileName;
+    photoList.appendChild(listItem);
+  }
+}
+
+
       const cameraInput = document.createElement("input");
       cameraInput.type = "file";
       cameraInput.accept = "image/*";
@@ -291,28 +311,7 @@
     link.href = URL.createObjectURL(content);
     link.download = `${folderName}.zip`; // 設定 ZIP 檔案名稱
     link.click();
-  });
-
-  const photoList = document.getElementById("photoList");
-
-function saveCurrentImage() {
-  const timestamp = formatDate(new Date());
-  const formattedTimestamp = timestamp.replace("T", "_");
-  let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-  const fileName = `${customFileName}_${formattedTimestamp}`;
-  const fileBlob = previewCanvas.toDataURL("image/jpeg");
-
-  if (previewCanvas.width > 0 && previewCanvas.height > 0) {
-    images.push({ fileBlob, fileName });
-
-    // 更新照片檔名列表
-    const listItem = document.createElement("li");
-    listItem.textContent = fileName;
-    photoList.appendChild(listItem);
-  }
-}
-
-  
+  }); 
 }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
