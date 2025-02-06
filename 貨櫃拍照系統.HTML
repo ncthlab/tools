@@ -214,6 +214,7 @@
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
         images.push({ fileBlob, fileName });
 
+        // 生成ZIP並下載
         generateZip();
       });
 
