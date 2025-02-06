@@ -38,6 +38,10 @@
         font-size: 14px;
         color: gray;
       }
+      .infoLine {
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
     </style>
   </head>
   <body>
@@ -51,7 +55,11 @@
 
     <!-- 拍攝頁面 -->
     <div id="photoSection" style="display: none;">
-      <div id="infoText"></div>
+      <div id="infoText">
+        <div class="infoLine" id="containerInfo">貨櫃櫃號：</div>
+        <div class="infoLine" id="batchInfo">產品批號：</div>
+        <div class="infoLine" id="directionInfo">當前拍攝位置：</div>
+      </div>
       <canvas id="previewCanvas"></canvas>
       <div id="controls">
         <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名" />
@@ -78,6 +86,9 @@
       const startSection = document.getElementById("startSection");
       const photoSection = document.getElementById("photoSection");
       const infoText = document.getElementById("infoText");
+      const containerInfo = document.getElementById("containerInfo");
+      const batchInfo = document.getElementById("batchInfo");
+      const directionInfo = document.getElementById("directionInfo");
       const previewCanvas = document.getElementById("previewCanvas");
       const customFileNameInput = document.getElementById("customFileName");
       const nextButton = document.getElementById("nextButton");
@@ -105,6 +116,7 @@
       startButton.addEventListener("click", () => {
         startSection.style.display = "none";
         photoSection.style.display = "block";
+        updateInfo();
         nextDirection();
       });
 
@@ -114,8 +126,15 @@
           alert("所有照片已完成拍攝!");
           return;
         }
-        infoText.textContent = `貨櫃櫃號: ${containerId} 產品批號: ${batchId} - 拍攝位置: ${directions[currentIndex]}`;
+        updateInfo();
         cameraInput.click();
+      }
+
+      // 更新貨櫃櫃號、產品批號、當前拍攝位置顯示
+      function updateInfo() {
+        containerInfo.textContent = `貨櫃櫃號：${containerId}`;
+        batchInfo.textContent = `產品批號：${batchId}`;
+        directionInfo.textContent = `當前拍攝位置：${directions[currentIndex]}`;
       }
 
       const cameraInput = document.createElement("input");
