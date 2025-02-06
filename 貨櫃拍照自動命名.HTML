@@ -111,6 +111,8 @@
           return;
         }
         updateInfo();
+        // 預設檔名填入當前位置
+        customFileNameInput.value = directions[currentIndex];
         cameraInput.click();
       }
 
@@ -150,7 +152,10 @@
       });
 
       nextButton.addEventListener("click", () => {
-        const fileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${new Date().toISOString().replace(/:/g, "-").split(".")[0]}`;
+        // 加入時間戳，格式為 YYYY-MM-DD_HH-MM-SS
+        const timestamp = new Date().toISOString().replace(/:/g, "-").split(".")[0];
+        const customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${timestamp}`;
+        const fileName = `${customFileName}_${timestamp}`; // 產生新的檔名
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
         images.push({ fileBlob, fileName }); // 儲存圖片和檔名
         currentIndex++;
@@ -173,20 +178,13 @@
         document.getElementById("controls").style.display = "none";
       }
 
-      function downloadImage(blob, fileName) {
-        const link = document.createElement("a");
-        link.href = blob;
-        link.download = fileName;
-        link.click();
-      }
-
       // 生成 ZIP 檔案
       function generateZip() {
         const zip = new JSZip();
         const date = new Date().toISOString().split('T')[0];
         const zipFileName = `${containerId}_${batchId}_${date}.zip`;
 
-        images.forEach((image, index) => {
+        images.forEach((image) => {
           zip.file(`${image.fileName}.jpg`, image.fileBlob.split(',')[1], {base64: true});
         });
 
