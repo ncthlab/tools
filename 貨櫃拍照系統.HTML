@@ -217,22 +217,29 @@
       });
 
       selectLocationButton.addEventListener("click", () => {
-        const locationSelect = document.createElement("select");
-        directions.forEach((direction, index) => {
-          const option = document.createElement("option");
-          option.value = index;
-          option.textContent = direction;
-          locationSelect.appendChild(option);
-        });
+  // 檢查是否已經存在下拉選單，若存在則不再新增
+  let existingSelect = document.getElementById("locationSelect");
+  if (existingSelect) return;
 
-        locationSelect.addEventListener("change", (event) => {
-          currentIndex = parseInt(event.target.value);
-          resetPreview();
-          nextDirection();
-        });
+  const locationSelect = document.createElement("select");
+  locationSelect.id = "locationSelect"; // 設定 ID，方便檢查是否已存在
+  directions.forEach((direction, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = direction;
+    locationSelect.appendChild(option);
+  });
 
-        document.body.appendChild(locationSelect);
-      });
+  locationSelect.addEventListener("change", (event) => {
+    currentIndex = parseInt(event.target.value);
+    resetPreview();
+    nextDirection();
+    locationSelect.remove(); // 選擇後自動移除下拉選單
+  });
+
+  document.body.appendChild(locationSelect);
+});
+
 
       function resetPreview() {
         previewCanvas.width = 0;
