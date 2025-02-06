@@ -68,10 +68,7 @@
         <button id="nextButton">拍攝下一張</button>
         <button id="retakeButton">重新拍攝</button>
         <button id="finishButton">結束拍攝</button>
-        <button id="selectPositionButton">指定位置的下拉選單</button>
-        <select id="positionSelect" style="display: none;">
-          <!-- 順序將在 JavaScript 中填充 -->
-        </select>
+        <button id="selectLocationButton">指定位置的下拉選單</button>
       </div>
     </div>
 
@@ -100,8 +97,7 @@
       const nextButton = document.getElementById("nextButton");
       const retakeButton = document.getElementById("retakeButton");
       const finishButton = document.getElementById("finishButton");
-      const selectPositionButton = document.getElementById("selectPositionButton");
-      const positionSelect = document.getElementById("positionSelect");
+      const selectLocationButton = document.getElementById("selectLocationButton");
       const currentTimeElement = document.getElementById("currentTime");
 
       // 顯示當前時間
@@ -149,7 +145,6 @@
           return;
         }
         updateInfo();
-        // 預設檔名填入當前位置
         customFileNameInput.value = directions[currentIndex];
         customFileNameModified = false; // 重置檔名修改狀態
         cameraInput.click();
@@ -193,7 +188,6 @@
             ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
             document.getElementById("controls").style.display = "block";
 
-            // 若拍攝的是空櫃正面，隱藏「拍攝下一張」按鈕
             if (directions[currentIndex] === "空櫃正面") {
               nextButton.style.display = "none";
             }
@@ -204,15 +198,13 @@
       });
 
       nextButton.addEventListener("click", () => {
-        // 檢查檔名是否修改過，若有修改則繼續保持當前拍攝位置，若未修改則跳往下一個拍攝位置
         const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace("T", "_"); // 使用 "_" 代替 "T"
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;  
-        const fileName = `${customFileName}_${formattedTimestamp}`; // 產生新的檔名
+        const formattedTimestamp = timestamp.replace("T", "_");
+        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+        const fileName = `${customFileName}_${formattedTimestamp}`;
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
-        images.push({ fileBlob, fileName }); // 儲存圖片和檔名
+        images.push({ fileBlob, fileName });
 
-        // 若檔名未修改，則前往下一個拍攝位置
         if (!customFileNameModified) {
           currentIndex++;
         }
@@ -227,42 +219,49 @@
       });
 
       finishButton.addEventListener("click", () => {
-        // 確保最後的圖片也被加入
         const timestamp = formatDate(new Date());
         const formattedTimestamp = timestamp.replace("T", "_");
         let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
         const fileName = `${customFileName}_${formattedTimestamp}`;
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
-        images.push({ fileBlob, fileName });
+
+        if (previewCanvas.width > 0 && previewCanvas.height > 0) {
+          images.push({ fileBlob, fileName });
+        }
 
         generateZip();
       });
 
-      selectPositionButton.addEventListener("click", () => {
-        // 顯示或隱藏位置選擇下拉選單
-        positionSelect.style.display = positionSelect.style.display === "none" ? "block" : "none";
-        
-        // 填充下拉選單
-        if (positionSelect.options.length === 0) {
-          directions.forEach((direction, index) => {
-            const option = document.createElement("option");
-            option.value = index;
-            option.textContent = direction;
-            positionSelect.appendChild(option);
-          });
-        }
+      selectLocationButton.addEventListener("click", () => {
+        const locationSelect = document.createElement("select");
+        directions.forEach((direction, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = direction;
+          locationSelect.appendChild(option);
+        });
+
+        locationSelect.addEventListener("change", (event) => {
+          currentIndex = parseInt(event.target.value);
+          resetPreview();
+          nextDirection();
+        });
+
+        document.body.appendChild(locationSelect);
       });
 
-      positionSelect.addEventListener("change", () => {
-        const selectedIndex = parseInt(positionSelect.value, 10);
-        currentIndex = selectedIndex;
-        updateInfo();
-        nextDirection();
-        positionSelect.style.display = "none"; // 隱藏選單
-      });
+      function resetPreview() {
+        previewCanvas.width = 0;
+        previewCanvas.height = 0;
+        document.getElementById("controls").style.display = "none";
+      }
 
-      // 生成ZIP檔案並下載
       function generateZip() {
+        if (images.length === 0) {
+          alert("沒有照片可以生成 ZIP 檔案");
+          return;
+        }
+
         const zip = new JSZip();
         const imgFolder = zip.folder("images");
 
@@ -277,13 +276,7 @@
           link.click();
         });
       }
-
-      // 重設相機預覽
-      function resetPreview() {
-        previewCanvas.width = 0;
-        previewCanvas.height = 0;
-        document.getElementById("controls").style.display = "none";
-      }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
   </body>
 </html>
