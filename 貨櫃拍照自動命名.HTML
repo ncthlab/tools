@@ -70,13 +70,13 @@
       let currentIndex = 0;
       let containerId = '';
       let batchId = '';
+      let images = []; // 用來儲存每一張拍攝的圖片
 
       const containerIdInput = document.getElementById("containerId");
       const batchIdInput = document.getElementById("batchId");
       const startButton = document.getElementById("startButton");
       const startSection = document.getElementById("startSection");
       const photoSection = document.getElementById("photoSection");
-      const infoText = document.getElementById("infoText");
       const containerInfo = document.getElementById("containerInfo");
       const batchInfo = document.getElementById("batchInfo");
       const directionInfo = document.getElementById("directionInfo");
@@ -152,7 +152,7 @@
       nextButton.addEventListener("click", () => {
         const fileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${new Date().toISOString().replace(/:/g, "-").split(".")[0]}`;
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
-        downloadImage(fileBlob, fileName);
+        images.push({ fileBlob, fileName }); // 儲存圖片和檔名
         currentIndex++;
         resetPreview();
         nextDirection();
@@ -164,8 +164,7 @@
       });
 
       finishButton.addEventListener("click", () => {
-        alert("結束拍攝並生成 ZIP 檔案");
-        // 這裡可以增加生成 ZIP 檔案的邏輯
+        generateZip();
       });
 
       function resetPreview() {
@@ -180,6 +179,27 @@
         link.download = fileName;
         link.click();
       }
+
+      // 生成 ZIP 檔案
+      function generateZip() {
+        const zip = new JSZip();
+        const date = new Date().toISOString().split('T')[0];
+        const zipFileName = `${containerId}_${batchId}_${date}.zip`;
+
+        images.forEach((image, index) => {
+          zip.file(`${image.fileName}.jpg`, image.fileBlob.split(',')[1], {base64: true});
+        });
+
+        zip.generateAsync({ type: "blob" }).then(function(content) {
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(content);
+          link.download = zipFileName;
+          link.click();
+        });
+      }
     </script>
+
+    <!-- 引入JSZip庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   </body>
 </html>
