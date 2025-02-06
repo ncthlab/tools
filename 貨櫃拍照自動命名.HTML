@@ -104,12 +104,26 @@
       // 手動輸入貨櫃櫃號
       containerNumberInput.addEventListener("input", () => {
         containerNumber = containerNumberInput.value.trim();
+        toggleStartButton();
       });
+
+      // 手動輸入產品批號
+      productBatchInput.addEventListener("input", () => {
+        productBatch = productBatchInput.value.trim();
+        toggleStartButton();
+      });
+
+      // 根據輸入狀況來控制「開始拍攝」按鈕的顯示與否
+      function toggleStartButton() {
+        if (containerNumber && productBatch) {
+          startButton.style.display = "inline-block"; // 顯示開始拍攝按鈕
+        } else {
+          startButton.style.display = "none"; // 隱藏開始拍攝按鈕
+        }
+      }
 
       // 開始拍攝的按鈕處理
       startButton.addEventListener("click", () => {
-        productBatch = productBatchInput.value.trim();
-
         if (!containerNumber || !productBatch) {
           alert("請確保貨櫃櫃號和產品批號已填寫！");
           return;
