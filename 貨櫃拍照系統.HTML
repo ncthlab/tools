@@ -249,6 +249,8 @@
 
   locationSelect.addEventListener("change", (event) => {
     currentIndex = parseInt(event.target.value);
+      // 顯示選擇的指定位置
+    alert(`您選擇的拍攝位置：${directions[currentIndex]}`);
     resetPreview();
     nextDirection();
     locationSelect.remove(); // 選擇後自動移除下拉選單
