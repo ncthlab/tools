@@ -197,10 +197,12 @@
   }
 
   resetPreview();
-  
+
   if (currentIndex >= directions.length) {
     alert("所有照片已完成拍攝!");
     nextButton.style.display = "none";  // 隐藏“拍摄下一张”按钮
+    retakeButton.style.display = "block";  // 显示“重新拍摄”按钮
+    finishButton.style.display = "block";  // 显示“结束拍摄”按钮
   } else {
     nextDirection();
   }
