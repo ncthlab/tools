@@ -137,6 +137,9 @@
       // 顯示下一個拍攝位置
       function nextDirection() {
         if (currentIndex >= directions.length) {
+          nextButton.style.display = "none"; // 隱藏拍攝下一張按鈕
+          retakeButton.style.display = "inline-block"; // 顯示重新拍攝按鈕
+          finishButton.style.display = "inline-block"; // 顯示結束拍攝按鈕
           alert("所有照片已完成拍攝!");
           return;
         }
@@ -183,31 +186,22 @@
       });
 
       nextButton.addEventListener("click", () => {
-  // 檢查檔名是否修改過，若有修改則繼續保持當前拍攝位置，若未修改則跳往下一個拍攝位置
-  const timestamp = formatDate(new Date());
-  const formattedTimestamp = timestamp.replace("T", "_"); // 使用 "_" 代替 "T"
-  let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-  const fileName = `${customFileName}_${formattedTimestamp}`; // 產生新的檔名
-  const fileBlob = previewCanvas.toDataURL("image/jpeg");
-  images.push({ fileBlob, fileName }); // 儲存圖片和檔名
+        // 檢查檔名是否修改過，若有修改則繼續保持當前拍攝位置，若未修改則跳往下一個拍攝位置
+        const timestamp = formatDate(new Date());
+        const formattedTimestamp = timestamp.replace("T", "_"); // 使用 "_" 代替 "T"
+        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+        const fileName = `${customFileName}_${formattedTimestamp}`; // 產生新的檔名
+        const fileBlob = previewCanvas.toDataURL("image/jpeg");
+        images.push({ fileBlob, fileName }); // 儲存圖片和檔名
 
-  // 若檔名未修改，則前往下一個拍攝位置
-  if (!customFileNameModified) {
-    currentIndex++;
-  }
+        // 若檔名未修改，則前往下一個拍攝位置
+        if (!customFileNameModified) {
+          currentIndex++;
+        }
 
-  resetPreview();
-
-  if (currentIndex >= directions.length) {
-    alert("所有照片已完成拍攝!");
-    nextButton.style.display = "none";  // 隐藏“拍摄下一张”按钮
-    retakeButton.style.display = "block";  // 显示“重新拍摄”按钮
-    finishButton.style.display = "block";  // 显示“结束拍摄”按钮
-  } else {
-    nextDirection();
-  }
-});
-
+        resetPreview();
+        nextDirection();
+      });
 
       retakeButton.addEventListener("click", () => {
         resetPreview();
