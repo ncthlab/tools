@@ -293,6 +293,51 @@
     link.click();
   }); 
 }
+const photoListSection = document.createElement("div");
+photoListSection.style.display = "none"; // 初始隱藏
+document.body.appendChild(photoListSection);
+
+const photoTable = document.createElement("table");
+photoTable.border = "1";
+photoTable.style.width = "100%";
+photoTable.innerHTML = `
+  <thead>
+    <tr>
+      <th>序號</th>
+      <th>檔名</th>
+    </tr>
+  </thead>
+  <tbody id="photoTableBody"></tbody>
+`;
+photoListSection.appendChild(photoTable);
+
+const photoTableBody = document.getElementById("photoTableBody");
+
+function saveCurrentImage() {
+  const timestamp = formatDate(new Date());
+  const formattedTimestamp = timestamp.replace("T", "_");
+  let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+  const fileName = `${customFileName}_${formattedTimestamp}`;
+  const fileBlob = previewCanvas.toDataURL("image/jpeg");
+
+  if (previewCanvas.width > 0 && previewCanvas.height > 0) {
+    images.push({ fileBlob, fileName });
+
+    // 動態顯示表格，並新增拍攝記錄
+    if (photoListSection.style.display === "none") {
+      photoListSection.style.display = "block";
+    }
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${images.length}</td>
+      <td>${fileName}</td>
+    `;
+    photoTableBody.appendChild(row);
+  }
+}
+
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
   </body>
