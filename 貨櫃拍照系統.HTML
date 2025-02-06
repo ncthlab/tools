@@ -72,10 +72,10 @@
       </div>
     </div>
 
-  <div id="fileListSection">
-  <h3>已拍攝位置列表：</h3>
+  <div id="fileListSection" style="display: none;">
+  <h3>已拍攝檔名列表：</h3>
   <ul id="fileList"></ul>
-</div>
+</div>>
   
     <script>
       const directions = [
@@ -139,6 +139,7 @@
       startButton.addEventListener("click", () => {
         startSection.style.display = "none";
         photoSection.style.display = "block";
+        fileListSection.style.display = "block"; // 顯示檔名列表區域
         updateInfo();
  // 初次提示拍攝位置
   alert(`當前拍攝位置：${directions[currentIndex]}`);
