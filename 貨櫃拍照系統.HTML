@@ -223,6 +223,9 @@
             if (directions[currentIndex] === "空櫃正面") {
               nextButton.style.display = "none";
             }
+
+            saveCurrentImage();
+            updatePhotoList();
           };
 
           reader.readAsDataURL(file);
@@ -279,7 +282,8 @@
         locationSelectContainer.style.display = "block"; // 顯示下拉選單
       });
 
-      function updatePhotoList(fileName) {
+      function updatePhotoList() {
+        const fileName = `${directions[currentIndex]}_${formatDate(new Date()).replace(" ", "_").replace(":", "-")}.jpg`;
         const row = document.createElement("tr");
         const serialNumber = document.createElement("td");
         const fileNameCell = document.createElement("td");
@@ -290,28 +294,14 @@
         row.appendChild(serialNumber);
         row.appendChild(fileNameCell);
         photoListBody.appendChild(row);
-      }
-
-      function resetPreview() {
-        previewCanvas.width = 0;
-        previewCanvas.height = 0;
-        document.getElementById("controls").style.display = "none";
+        images.push(fileName);
       }
 
       function saveCurrentImage() {
-        const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace(" ", "_").replace(":", "-");
-        let customFileName = customFileNameInput.value.trim();
-        if (!customFileName) customFileName = directions[currentIndex];
-
+        const formattedTimestamp = formatDate(new Date()).replace(" ", "_").replace(":", "-");
+        const customFileName = customFileNameInput.value.trim() || directions[currentIndex];
         const fileName = `${customFileName}_${formattedTimestamp}.jpg`;
         images.push(fileName);
-
-        updatePhotoList(fileName);
-      }
-
-      function generateZip() {
-        // This function can be used to generate a zip file of the images when all are captured.
       }
     </script>
   </body>
