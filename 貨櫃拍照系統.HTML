@@ -131,15 +131,25 @@
         startSection.style.display = "none";
         photoSection.style.display = "block";
         updateInfo();
-        nextDirection();
-      });
+        function nextDirection() {
+  if (currentIndex >= directions.length) {
+    alert("所有照片已完成拍攝!");
+    return;
+  }
 
-      // 顯示下一個拍攝位置
-      function nextDirection() {
-        if (currentIndex >= directions.length) {
-          alert("所有照片已完成拍攝!");
-          return;
-        }
+  updateInfo();
+  customFileNameInput.value = directions[currentIndex];
+  customFileNameModified = false;
+
+  // 當拍攝到最後一個位置時，隱藏「拍攝下一張」按鈕
+  if (currentIndex === directions.length - 1) {
+    nextButton.style.display = "none";
+  } else {
+    nextButton.style.display = "inline-block";
+  }
+
+  cameraInput.click();
+}
         updateInfo();
         // 預設檔名填入當前位置
         customFileNameInput.value = directions[currentIndex];
