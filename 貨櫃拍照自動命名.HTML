@@ -32,6 +32,10 @@
         font-weight: bold;
         margin-top: 10px;
       }
+      #photoDetails {
+        font-size: 16px;
+        margin-top: 10px;
+      }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   </head>
@@ -54,6 +58,13 @@
     <canvas id="previewCanvas"></canvas>
 
     <div id="currentDirection"></div> <!-- 顯示當前拍攝順序 -->
+
+    <!-- 顯示櫃號、批號及當前拍攝位置 -->
+    <div id="photoDetails" style="display:none;">
+      <p id="displayContainerNumber">櫃號: </p>
+      <p id="displayProductBatch">批號: </p>
+      <p id="displayDirection">拍攝位置: </p>
+    </div>
 
     <div id="controls" style="display: none;">
       <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名">
@@ -84,6 +95,10 @@
       const containerNumberInput = document.getElementById("containerNumberInput");
       const productBatchInput = document.getElementById("productBatch");
       const currentDirection = document.getElementById("currentDirection");
+      const photoDetails = document.getElementById("photoDetails");
+      const displayContainerNumber = document.getElementById("displayContainerNumber");
+      const displayProductBatch = document.getElementById("displayProductBatch");
+      const displayDirection = document.getElementById("displayDirection");
       const ctx = previewCanvas.getContext("2d");
 
       // 手動輸入貨櫃櫃號
@@ -102,6 +117,7 @@
 
         document.getElementById("initialInputs").style.display = "none";
         document.getElementById("controls").style.display = "block"; // 顯示後續拍攝按鈕
+        photoDetails.style.display = "block"; // 顯示拍照資訊
         nextDirection();
       });
 
@@ -111,6 +127,9 @@
           return;
         }
         currentDirection.textContent = `請拍攝貨櫃的 ${directions[currentIndex]} 照片`;
+        displayContainerNumber.textContent = `櫃號: ${containerNumber}`;
+        displayProductBatch.textContent = `批號: ${productBatch}`;
+        displayDirection.textContent = `拍攝位置: ${directions[currentIndex]}`;
         cameraInput.click();
       }
 
