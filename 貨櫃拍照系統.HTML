@@ -44,16 +44,12 @@
   </head>
   <body>
     <div id="currentTime"></div>
-
-    <!-- 初始頁面 -->
     <h2>貨櫃拍照系統</h2>
     <div id="startSection">
       <input type="text" id="containerId" placeholder="請輸入貨櫃櫃號" />
       <input type="text" id="batchId" placeholder="請輸入產品批號" />
       <button id="startButton" disabled>開始拍攝</button>
     </div>
-
-    <!-- 拍攝頁面 -->
     <div id="photoSection" style="display: none;">
       <div id="infoText">
         <div class="infoLine" id="containerInfo">貨櫃櫃號：</div>
@@ -67,10 +63,11 @@
         <button id="nextButton">拍攝下一張</button>
         <button id="retakeButton">重新拍攝</button>
         <button id="finishButton">結束拍攝</button>
-        <button id="goToLocationButton">指定位置</button>
+        <button id="selectLocationButton">指定位置</button>
       </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
     <script>
       const directions = [
         "卸櫃前前面", "卸櫃前右側", "卸櫃前後面", "封條", "卸櫃前左側", 
@@ -80,7 +77,6 @@
       let containerId = '';
       let batchId = '';
       let images = [];
-      let customFileNameModified = false;
 
       const containerIdInput = document.getElementById("containerId");
       const batchIdInput = document.getElementById("batchId");
@@ -96,15 +92,13 @@
       const nextButton = document.getElementById("nextButton");
       const retakeButton = document.getElementById("retakeButton");
       const finishButton = document.getElementById("finishButton");
-      const goToLocationButton = document.getElementById("goToLocationButton");
+      const selectLocationButton = document.getElementById("selectLocationButton");
       const currentTimeElement = document.getElementById("currentTime");
 
       function updateCurrentTime() {
         const now = new Date();
-        const formattedTime = formatDate(now);
-        currentTimeElement.textContent = `目前時間：${formattedTime}`;
+        currentTimeElement.textContent = `目前時間：${formatDate(now)}`;
       }
-
       setInterval(updateCurrentTime, 1000);
 
       function formatDate(date) {
@@ -130,109 +124,15 @@
         startSection.style.display = "none";
         photoSection.style.display = "block";
         updateInfo();
-        nextDirection();
       });
-
-      function nextDirection() {
-        if (currentIndex >= directions.length) {
-          alert("所有照片已完成拍攝!");
-          return;
-        }
-        updateInfo();
-        customFileNameInput.value = directions[currentIndex];
-        customFileNameModified = false;
-        cameraInput.click();
-      }
 
       function updateInfo() {
         containerInfo.textContent = `貨櫃櫃號：${containerId}`;
         batchInfo.textContent = `產品批號：${batchId}`;
         directionInfo.textContent = `當前拍攝位置：${directions[currentIndex]}`;
-        
-        if (currentIndex > 0) {
-          previousDirectionInfo.textContent = `上一個拍攝位置：${directions[currentIndex - 1]}`;
-          previousDirectionInfo.style.display = "block";
-        } else {
-          previousDirectionInfo.style.display = "none";
-        }
-      }
-
-      const cameraInput = document.createElement("input");
-      cameraInput.type = "file";
-      cameraInput.accept = "image/*";
-      cameraInput.capture = "environment";
-
-      cameraInput.addEventListener("change", (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const img = new Image();
-          const reader = new FileReader();
-
-          reader.onload = (e) => {
-            img.src = e.target.result;
-          };
-
-          img.onload = () => {
-            previewCanvas.width = img.width / 4;
-            previewCanvas.height = img.height / 4;
-            const ctx = previewCanvas.getContext("2d");
-            ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-            ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
-            document.getElementById("controls").style.display = "block";
-          };
-
-          reader.readAsDataURL(file);
-        }
-      });
-
-      nextButton.addEventListener("click", () => {
-        const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace("T", "_");
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        const fileName = `${customFileName}_${formattedTimestamp}`;
-        const fileBlob = previewCanvas.toDataURL("image/jpeg");
-        images.push({ fileBlob, fileName });
-
-        if (!customFileNameModified) {
-          currentIndex++;
-        }
-
-        resetPreview();
-        nextDirection();
-      });
-
-      retakeButton.addEventListener("click", () => {
-        resetPreview();
-        cameraInput.click();
-      });
-
-      finishButton.addEventListener("click", () => {
-        const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace("T", "_");
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        const fileName = `${customFileName}_${formattedTimestamp}`;
-        const fileBlob = previewCanvas.toDataURL("image/jpeg");
-        images.push({ fileBlob, fileName });
-
-        generateZip();
-      });
-
-      goToLocationButton.addEventListener("click", () => {
-        const location = prompt("請輸入目標拍攝位置：");
-        const index = directions.indexOf(location);
-        if (index !== -1) {
-          currentIndex = index;
-          updateInfo();
-          cameraInput.click();
-        } else {
-          alert("該位置無效");
-        }
-      });
-
-      function resetPreview() {
-        previewCanvas.width = 0;
-        previewCanvas.height = 0;
-        document.getElementById("controls").style.display = "none";
+        previousDirectionInfo.textContent = currentIndex > 0 
+          ? `上一個拍攝位置：${directions[currentIndex - 1]}` 
+          : '';
       }
 
       function generateZip() {
@@ -240,13 +140,13 @@
           alert("沒有照片可以生成 ZIP 檔案");
           return;
         }
-
+        const timestamp = formatDate(new Date());
+        const folderName = `${containerId}_${batchId}_${timestamp.split(' ')[0]}`;
         const zip = new JSZip();
-        const folderName = `${containerId}_${batchId}_${formatDate(new Date()).slice(0, 10)}`;
         const imgFolder = zip.folder(folderName);
 
-        images.forEach((image, index) => {
-          imgFolder.file(`${image.fileName}.jpg`, image.fileBlob.split(',')[1], { base64: true });
+        images.forEach(({ fileBlob, fileName }) => {
+          imgFolder.file(`${fileName}.jpg`, fileBlob.split(',')[1], { base64: true });
         });
 
         zip.generateAsync({ type: "blob" }).then((content) => {
@@ -256,6 +156,8 @@
           link.click();
         });
       }
+
+      finishButton.addEventListener("click", generateZip);
     </script>
   </body>
 </html>
