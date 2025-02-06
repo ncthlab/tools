@@ -40,32 +40,13 @@
         text-align: right;
         margin-bottom: 20px;
       }
-      #photoList {
-        margin-top: 30px;
-        border-top: 2px solid #000;
-        width: 100%;
-        display: none;
-      }
-      #photoList table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      #photoList th, #photoList td {
-        padding: 10px;
-        border: 1px solid #ddd;
-        text-align: left;
-      }
-      #photoList th {
-        background-color: #f4f4f4;
-      }
-      #locationSelectContainer {
-        margin-bottom: 20px;
-        display: none;
-      }
     </style>
   </head>
   <body>
+    <!-- 當前時間顯示區域 -->
     <div id="currentTime"></div>
+
+    <!-- 初始頁面 -->
     <h2>貨櫃拍照系統</h2>
     <div id="startSection">
       <input type="text" id="containerId" placeholder="請輸入貨櫃櫃號" />
@@ -73,6 +54,7 @@
       <button id="startButton" disabled>開始拍攝</button>
     </div>
 
+    <!-- 拍攝頁面 -->
     <div id="photoSection" style="display: none;">
       <div id="infoText">
         <div class="infoLine" id="containerInfo">貨櫃櫃號：</div>
@@ -89,23 +71,7 @@
         <button id="selectLocationButton">指定位置</button>
       </div>
     </div>
-
-    <div id="locationSelectContainer"></div>
-
-    <div id="photoList">
-      <h3>已拍攝照片列表</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>序號</th>
-            <th>檔名</th>
-          </tr>
-        </thead>
-        <tbody id="photoListBody">
-        </tbody>
-      </table>
-    </div>
-
+  
     <script>
       const directions = [
         "卸櫃前前面", "卸櫃前右側", "卸櫃前後面", "封條", "卸櫃前左側", 
@@ -114,8 +80,8 @@
       let currentIndex = 0;
       let containerId = '';
       let batchId = '';
-      let images = [];
-      let customFileNameModified = false;
+      let images = []; // 用來儲存每一張拍攝的圖片
+      let customFileNameModified = false; // 檢查檔名是否有被修改
 
       const containerIdInput = document.getElementById("containerId");
       const batchIdInput = document.getElementById("batchId");
@@ -133,18 +99,17 @@
       const finishButton = document.getElementById("finishButton");
       const selectLocationButton = document.getElementById("selectLocationButton");
       const currentTimeElement = document.getElementById("currentTime");
-      const photoListBody = document.getElementById("photoListBody");
-      const photoList = document.getElementById("photoList");
-      const locationSelectContainer = document.getElementById("locationSelectContainer");
 
+      // 顯示當前時間
       function updateCurrentTime() {
         const now = new Date();
         const formattedTime = formatDate(now);
         currentTimeElement.textContent = `目前時間：${formattedTime}`;
       }
 
-      setInterval(updateCurrentTime, 1000);
+      setInterval(updateCurrentTime, 1000); // 每秒更新一次時間
 
+      // 格式化時間為 YYYY-MM-DD HH:MM:SS
       function formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -155,6 +120,7 @@
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       }
 
+      // 確認是否兩個輸入欄位都填寫
       function checkInputs() {
         containerId = containerIdInput.value.trim();
         batchId = batchIdInput.value.trim();
@@ -164,15 +130,17 @@
       containerIdInput.addEventListener("input", checkInputs);
       batchIdInput.addEventListener("input", checkInputs);
 
+      // 顯示開始拍攝畫面
       startButton.addEventListener("click", () => {
         startSection.style.display = "none";
         photoSection.style.display = "block";
-        photoList.style.display = "block";
         updateInfo();
-        alert(`當前拍攝位置：${directions[currentIndex]}`);
+ // 初次提示拍攝位置
+  alert(`當前拍攝位置：${directions[currentIndex]}`);
         nextDirection();
       });
 
+      // 顯示下一個拍攝位置
       function nextDirection() {
         if (currentIndex >= directions.length) {
           alert("所有照片已完成拍攝!");
@@ -180,15 +148,17 @@
         }
         updateInfo();
         customFileNameInput.value = directions[currentIndex];
-        customFileNameModified = false;
+        customFileNameModified = false; // 重置檔名修改狀態
         cameraInput.click();
       }
 
+      // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
       function updateInfo() {
         containerInfo.textContent = `貨櫃櫃號：${containerId}`;
         batchInfo.textContent = `產品批號：${batchId}`;
         directionInfo.textContent = `當前拍攝位置：${directions[currentIndex]}`;
         
+        // 顯示上一個拍攝位置（若不是第一個拍攝位置）
         if (currentIndex > 0) {
           previousDirectionInfo.textContent = `上一個拍攝位置：${directions[currentIndex - 1]}`;
           previousDirectionInfo.style.display = "block";
@@ -223,9 +193,6 @@
             if (directions[currentIndex] === "空櫃正面") {
               nextButton.style.display = "none";
             }
-
-            saveCurrentImage();
-            updatePhotoList();
           };
 
           reader.readAsDataURL(file);
@@ -233,20 +200,21 @@
       });
 
       nextButton.addEventListener("click", () => {
-        saveCurrentImage();
-        if (!customFileNameModified) {
-          currentIndex++;
-        }
+  saveCurrentImage();
+  if (!customFileNameModified) {
+    currentIndex++;
+  }
 
-        if (currentIndex < directions.length) {
-          alert(`下一張拍攝位置：${directions[currentIndex]}`);
-        } else {
-          alert("所有照片已完成拍攝!");
-        }
+  if (currentIndex < directions.length) {
+    alert(`下一張拍攝位置：${directions[currentIndex]}`);
+  } else {
+    alert("所有照片已完成拍攝!");
+  }
 
-        resetPreview();
-        nextDirection();
-      });
+  resetPreview();
+  nextDirection();
+});
+
 
       retakeButton.addEventListener("click", () => {
         resetPreview();
@@ -259,51 +227,70 @@
       });
 
       selectLocationButton.addEventListener("click", () => {
-        let existingSelect = document.getElementById("locationSelect");
-        if (existingSelect) return;
+  // 檢查是否已經存在下拉選單，若存在則不再新增
+  let existingSelect = document.getElementById("locationSelect");
+  if (existingSelect) return;
 
-        const locationSelect = document.createElement("select");
-        locationSelect.id = "locationSelect";
-        directions.forEach((direction, index) => {
-          const option = document.createElement("option");
-          option.value = index;
-          option.textContent = direction;
-          locationSelect.appendChild(option);
-        });
+  const locationSelect = document.createElement("select");
+  locationSelect.id = "locationSelect"; // 設定 ID，方便檢查是否已存在
+  directions.forEach((direction, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = direction;
+    locationSelect.appendChild(option);
+  });
 
-        locationSelect.addEventListener("change", (event) => {
-          currentIndex = parseInt(event.target.value);
-          resetPreview();
-          nextDirection();
-          locationSelectContainer.innerHTML = '';  // 移除下拉選單
-        });
+  locationSelect.addEventListener("change", (event) => {
+    currentIndex = parseInt(event.target.value);
+    resetPreview();
+    nextDirection();
+    locationSelect.remove(); // 選擇後自動移除下拉選單
+  });
 
-        locationSelectContainer.appendChild(locationSelect);
-        locationSelectContainer.style.display = "block"; // 顯示下拉選單
-      });
+  document.body.appendChild(locationSelect);
+});
 
-    let serialNumber = 1;  // 初始化序號為 1
-      function updatePhotoList() {
-        const fileName = `${directions[currentIndex]}_${formatDate(new Date()).replace(" ", "_").replace(":", "-")}.jpg`;
-        const row = document.createElement("tr");
-        const serialNumber = document.createElement("td");
-        const fileNameCell = document.createElement("td");
 
-        serialNumber.textContent = images.length + 1;  // 序號從1開始
-        fileNameCell.textContent = fileName;
-
-        row.appendChild(serialNumber);
-        row.appendChild(fileNameCell);
-        photoListBody.appendChild(row);
-        images.push(fileName);
+      function resetPreview() {
+        previewCanvas.width = 0;
+        previewCanvas.height = 0;
+        document.getElementById("controls").style.display = "none";
       }
 
       function saveCurrentImage() {
-        const formattedTimestamp = formatDate(new Date()).replace(" ", "_").replace(":", "-");
-        const customFileName = customFileNameInput.value.trim() || directions[currentIndex];
-        const fileName = `${customFileName}_${formattedTimestamp}.jpg`;
-        images.push(fileName);
+        const timestamp = formatDate(new Date());
+        const formattedTimestamp = timestamp.replace("T", "_");
+        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+        const fileName = `${customFileName}_${formattedTimestamp}`;
+        const fileBlob = previewCanvas.toDataURL("image/jpeg");
+
+        if (previewCanvas.width > 0 && previewCanvas.height > 0) {
+          images.push({ fileBlob, fileName });
+        }
       }
+
+      function generateZip() {
+  if (images.length === 0) {
+    alert("沒有照片可以生成 ZIP 檔案");
+    return;
+  }
+
+  const zip = new JSZip();
+  const folderName = `${containerId}_${batchId}_${formatDate(new Date()).slice(0, 10)}`;
+  const imgFolder = zip.folder(folderName);
+
+  images.forEach((image, index) => {
+    imgFolder.file(`${image.fileName}.jpg`, image.fileBlob.split(',')[1], { base64: true });
+  });
+
+  zip.generateAsync({ type: "blob" }).then((content) => {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = `${folderName}.zip`; // 設定 ZIP 檔案名稱
+    link.click();
+  }); 
+}
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
   </body>
 </html>
