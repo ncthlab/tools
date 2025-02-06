@@ -12,8 +12,8 @@
       canvas {
         display: block;
         margin-top: 10px;
-        max-width: 100%; /* 讓圖片顯示不會超過螢幕寬度 */
-        max-height: 80vh; /* 保持圖片不會超過螢幕高度的80% */
+        max-width: 100%;
+        max-height: 80vh;
       }
       button {
         margin: 10px 5px;
@@ -40,6 +40,8 @@
     <div id="initialInputs">
       <button id="captureContainerNumberButton">拍攝貨櫃櫃號</button>
       <p id="containerNumberDisplay">貨櫃櫃號：未識別</p>
+      <!-- 可編輯的貨櫃櫃號輸入框 -->
+      <input type="text" id="containerNumberInput" placeholder="若識別錯誤請手動修改貨櫃櫃號" style="display:none;">
       <br>
       <label for="productBatch">產品批號：</label>
       <input type="text" id="productBatch" placeholder="輸入產品批號" required>
@@ -78,6 +80,7 @@
       const startButton = document.getElementById("startButton");
       const containerNumberDisplay = document.getElementById("containerNumberDisplay");
       const captureContainerNumberButton = document.getElementById("captureContainerNumberButton");
+      const containerNumberInput = document.getElementById("containerNumberInput");
       const productBatchInput = document.getElementById("productBatch");
       const ctx = previewCanvas.getContext("2d");
 
@@ -113,20 +116,27 @@
       function recognizeContainerNumber(img) {
         Tesseract.recognize(
           img,
-          'eng', // 使用英語識別（可根據需求調整語言）
+          'eng',
           {
-            logger: (m) => console.log(m), // 用於顯示進度
+            logger: (m) => console.log(m),
           }
         ).then(({ data: { text } }) => {
           // 假設貨櫃櫃號為識別出的第一行文本
           containerNumber = text.split("\n")[0].trim();
           containerNumberDisplay.textContent = `貨櫃櫃號：${containerNumber}`;
+          containerNumberInput.style.display = "block";
+          containerNumberInput.value = containerNumber;
           startButton.style.display = "block"; // 顯示開始拍攝按鈕
         }).catch((error) => {
           console.error(error);
           alert("OCR識別失敗，請重新拍攝照片！");
         });
       }
+
+      // 編輯貨櫃櫃號
+      containerNumberInput.addEventListener("input", () => {
+        containerNumber = containerNumberInput.value.trim();
+      });
 
       // 開始拍攝的按鈕處理
       startButton.addEventListener("click", () => {
