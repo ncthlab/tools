@@ -301,17 +301,17 @@
       function saveCurrentImage() {
         const timestamp = formatDate(new Date());
         const formattedTimestamp = timestamp.replace(" ", "_").replace(":", "-");
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        images.push(customFileName);
-        updatePhotoList(customFileName);
+        let customFileName = customFileNameInput.value.trim();
+        if (!customFileName) customFileName = directions[currentIndex];
 
-        if (directions[currentIndex] === "卸櫃前前面") {
-          updatePhotoList(customFileName);  // 在這個位置更新列表
-        }
+        const fileName = `${customFileName}_${formattedTimestamp}.jpg`;
+        images.push(fileName);
+
+        updatePhotoList(fileName);
       }
 
       function generateZip() {
-        alert("壓縮檔案正在生成！");
+        // This function can be used to generate a zip file of the images when all are captured.
       }
     </script>
   </body>
