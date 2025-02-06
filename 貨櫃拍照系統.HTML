@@ -70,12 +70,6 @@
         <button id="finishButton">結束拍攝</button>
         <button id="selectLocationButton">指定位置</button>
       </div>
-
-<div id="photoListSection">
-  <h3>已拍攝照片檔名列表</h3>
-  <ul id="photoList"></ul>
-
-</div>
     </div>
   
     <script>
@@ -138,16 +132,11 @@
 
       // 顯示開始拍攝畫面
       startButton.addEventListener("click", () => {
-  startSection.style.display = "none";
-  photoSection.style.display = "block";
-  updateInfo();
-
-  // 初次提示拍攝位置
-  alert(`拍攝位置：${directions[currentIndex]}`);
-  
-  nextDirection();
-});
-
+        startSection.style.display = "none";
+        photoSection.style.display = "block";
+        updateInfo();
+        nextDirection();
+      });
 
       // 顯示下一個拍攝位置
       function nextDirection() {
@@ -299,58 +288,6 @@
     link.click();
   }); 
 }
-const photoListSection = document.createElement("div");
-photoListSection.style.display = "none"; // 初始隱藏
-photoSection.appendChild(photoListSection); // 插入到 photoSection 的結尾處
-
-// 建立拍攝照片列表區域與表格，初始隱藏
-const photoListSection = document.createElement("div");
-photoListSection.style.display = "none"; // 初始隱藏
-photoSection.appendChild(photoListSection); // 插入到 photoSection 的結尾處
-
-const photoTable = document.createElement("table");
-photoTable.border = "1";
-photoTable.style.width = "100%";
-photoTable.innerHTML = `
-  <thead>
-    <tr>
-      <th>序號</th>
-      <th>檔名</th>
-    </tr>
-  </thead>
-  <tbody id="photoTableBody"></tbody>
-`;
-photoListSection.appendChild(photoTable);
-
-const photoTableBody = document.getElementById("photoTableBody");
-
-// 更新 saveCurrentImage 函式
-function saveCurrentImage() {
-  const timestamp = formatDate(new Date());
-  const formattedTimestamp = timestamp.replace("T", "_");
-  let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-  const fileName = `${customFileName}_${formattedTimestamp}`;
-  const fileBlob = previewCanvas.toDataURL("image/jpeg");
-
-  if (previewCanvas.width > 0 && previewCanvas.height > 0) {
-    images.push({ fileBlob, fileName });
-
-    // 顯示表格，並新增拍攝記錄
-    if (photoListSection.style.display === "none") {
-      photoListSection.style.display = "block";
-    }
-
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${images.length}</td>
-      <td>${fileName}</td>
-    `;
-    photoTableBody.appendChild(row);
-  }
-}
-
-
-
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
   </body>
