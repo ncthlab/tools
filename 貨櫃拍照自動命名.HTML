@@ -34,18 +34,15 @@
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
   </head>
   <body>
     <h2>貨櫃拍照系統</h2>
     <p>請依順序拍攝：卸櫃前前面、卸櫃前右側、卸櫃前後面、封條、卸櫃前左側、開櫃、空櫃上面、空櫃右側、空櫃左側、空櫃地板、空櫃正面</p>
     <p>如需拍攝細節，請點選「其他細節」</p>
 
-    <!-- 讓使用者拍攝貨櫃櫃號 -->
+    <!-- 讓使用者手動輸入貨櫃櫃號 -->
     <div id="initialInputs">
-      <button id="captureContainerNumberButton">拍攝貨櫃櫃號（選擇性）</button>
-      <p id="containerNumberDisplay">貨櫃櫃號：未識別</p>
-      <input type="text" id="containerNumberInput" placeholder="若識別錯誤請手動修改貨櫃櫃號">
+      <input type="text" id="containerNumberInput" placeholder="請手動輸入貨櫃櫃號" required>
       <br>
       <label for="productBatch">產品批號：</label>
       <input type="text" id="productBatch" placeholder="輸入產品批號" required>
@@ -84,62 +81,12 @@
       const finishButton = document.getElementById("finishButton");
       const customFileNameInput = document.getElementById("customFileName");
       const startButton = document.getElementById("startButton");
-      const containerNumberDisplay = document.getElementById("containerNumberDisplay");
-      const captureContainerNumberButton = document.getElementById("captureContainerNumberButton");
       const containerNumberInput = document.getElementById("containerNumberInput");
       const productBatchInput = document.getElementById("productBatch");
       const currentDirection = document.getElementById("currentDirection");
       const ctx = previewCanvas.getContext("2d");
 
-      // 設定容許手動輸入貨櫃櫃號
-      captureContainerNumberButton.addEventListener("click", () => {
-        cameraInput.click(); // 如果需要也可以用OCR來識別
-      });
-
-      cameraInput.addEventListener("change", (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const img = new Image();
-          const reader = new FileReader();
-
-          reader.onload = (e) => {
-            img.src = e.target.result;
-          };
-
-          img.onload = () => {
-            previewCanvas.style.display = "block";
-            previewCanvas.width = img.width / 4;
-            previewCanvas.height = img.height / 4;
-            ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
-            document.getElementById("controls").style.display = "none";
-            recognizeContainerNumber(img);
-          };
-
-          reader.readAsDataURL(file);
-        }
-      });
-
-      // 使用Tesseract.js進行OCR識別貨櫃櫃號
-      function recognizeContainerNumber(img) {
-        Tesseract.recognize(
-          img,
-          'eng',
-          {
-            logger: (m) => console.log(m),
-          }
-        ).then(({ data: { text } }) => {
-          containerNumber = text.split("\n")[0].trim();
-          containerNumberDisplay.textContent = `貨櫃櫃號：${containerNumber}`;
-          containerNumberInput.style.display = "block";
-          containerNumberInput.value = containerNumber;
-          startButton.style.display = "block"; // 顯示開始拍攝按鈕
-        }).catch((error) => {
-          console.error(error);
-          alert("OCR識別失敗，請手動輸入貨櫃櫃號！");
-        });
-      }
-
-      // 編輯貨櫃櫃號
+      // 手動輸入貨櫃櫃號
       containerNumberInput.addEventListener("input", () => {
         containerNumber = containerNumberInput.value.trim();
       });
