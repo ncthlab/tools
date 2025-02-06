@@ -44,6 +44,7 @@
         margin-top: 30px;
         border-top: 2px solid #000;
         width: 100%;
+        display: none; /* 初始不顯示 */
       }
       #photoList table {
         width: 100%;
@@ -133,6 +134,7 @@
       const selectLocationButton = document.getElementById("selectLocationButton");
       const currentTimeElement = document.getElementById("currentTime");
       const photoListBody = document.getElementById("photoListBody");
+      const photoList = document.getElementById("photoList");
 
       // 顯示當前時間
       function updateCurrentTime() {
@@ -168,6 +170,7 @@
       startButton.addEventListener("click", () => {
         startSection.style.display = "none";
         photoSection.style.display = "block";
+        photoList.style.display = "block";  // 開始拍攝後顯示拍攝列表
         updateInfo();
         alert(`當前拍攝位置：${directions[currentIndex]}`);
         nextDirection();
