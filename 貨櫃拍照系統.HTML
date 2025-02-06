@@ -26,6 +26,16 @@
         font-size: 14px;
         width: calc(100% - 20px);
       }
+      select {
+        padding: 8px;
+        font-size: 14px;
+        margin-top: 10px;
+        height: 35px;
+        overflow: auto;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+      }
       #infoText {
         font-size: 18px;
         font-weight: bold;
@@ -39,11 +49,6 @@
         font-size: 14px;
         text-align: right;
         margin-bottom: 20px;
-      }
-      select {
-        padding: 8px;
-        font-size: 14px;
-        margin-top: 10px;
       }
     </style>
   </head>
@@ -64,9 +69,11 @@
       <div id="infoText">
         <div class="infoLine" id="containerInfo">貨櫃櫃號：</div>
         <div class="infoLine" id="batchInfo">產品批號：</div>
-        <div class="infoLine" id="previousDirectionInfo" style="color: lightgray;"></div>
-        <div class="infoLine">當前拍攝位置：</div>
-        <select id="directionSelect"></select>
+        <div class="infoLine" id="previousDirectionInfo" style="color: lightgray; display: none;">上一個拍攝位置：</div>
+        <div class="infoLine">
+          <label for="directionSelect">當前拍攝位置：</label>
+          <select id="directionSelect"></select>
+        </div>
       </div>
       <canvas id="previewCanvas"></canvas>
       <div id="controls">
@@ -139,40 +146,9 @@
         startSection.style.display = "none";
         photoSection.style.display = "block";
         updateInfo();
-        populateDirectionSelect();
+        updateDirectionSelect();
         nextDirection();
       });
-
-      // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
-      function updateInfo() {
-        containerInfo.textContent = `貨櫃櫃號：${containerId}`;
-        batchInfo.textContent = `產品批號：${batchId}`;
-        directionSelect.value = directions[currentIndex];
-
-        // 顯示上一個拍攝位置（若不是第一個拍攝位置）
-        if (currentIndex > 0) {
-          previousDirectionInfo.textContent = `上一個拍攝位置：${directions[currentIndex - 1]}`;
-          previousDirectionInfo.style.display = "block";
-        } else {
-          previousDirectionInfo.style.display = "none";
-        }
-      }
-
-      // 填充下拉選單
-      function populateDirectionSelect() {
-        directionSelect.innerHTML = '';
-        directions.forEach((direction, index) => {
-          const option = document.createElement("option");
-          option.value = index;
-          option.textContent = direction;
-          directionSelect.appendChild(option);
-        });
-
-        directionSelect.addEventListener("change", () => {
-          currentIndex = parseInt(directionSelect.value);
-          updateInfo();
-        });
-      }
 
       // 顯示下一個拍攝位置
       function nextDirection() {
@@ -181,10 +157,29 @@
           return;
         }
         updateInfo();
-        // 預設檔名填入當前位置
+        updateDirectionSelect();
         customFileNameInput.value = directions[currentIndex];
         customFileNameModified = false; // 重置檔名修改狀態
         cameraInput.click();
+      }
+
+      // 更新貨櫃櫃號、產品批號、當前拍攝位置顯示
+      function updateInfo() {
+        containerInfo.textContent = `貨櫃櫃號：${containerId}`;
+        batchInfo.textContent = `產品批號：${batchId}`;
+        previousDirectionInfo.style.display = currentIndex > 0 ? "block" : "none";
+      }
+
+      // 更新下拉選單
+      function updateDirectionSelect() {
+        directionSelect.innerHTML = '';
+        directions.forEach((direction, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = direction;
+          directionSelect.appendChild(option);
+        });
+        directionSelect.value = currentIndex;
       }
 
       const cameraInput = document.createElement("input");
@@ -209,11 +204,6 @@
             ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
             ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
             document.getElementById("controls").style.display = "block";
-
-            // 若拍攝的是空櫃正面，隱藏「拍攝下一張」按鈕
-            if (directions[currentIndex] === "空櫃正面") {
-              nextButton.style.display = "none";
-            }
           };
 
           reader.readAsDataURL(file);
@@ -221,15 +211,13 @@
       });
 
       nextButton.addEventListener("click", () => {
-        // 檢查檔名是否修改過，若有修改則繼續保持當前拍攝位置，若未修改則跳往下一個拍攝位置
         const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace("T", "_"); // 使用 "_" 代替 "T"
+        const formattedTimestamp = timestamp.replace("T", "_");
         let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        const fileName = `${customFileName}_${formattedTimestamp}`; // 產生新的檔名
+        const fileName = `${customFileName}_${formattedTimestamp}`;
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
-        images.push({ fileBlob, fileName }); // 儲存圖片和檔名
+        images.push({ fileBlob, fileName });
 
-        // 若檔名未修改，則前往下一個拍攝位置
         if (!customFileNameModified) {
           currentIndex++;
         }
@@ -244,7 +232,6 @@
       });
 
       finishButton.addEventListener("click", () => {
-        // 確保最後的圖片也被加入
         const timestamp = formatDate(new Date());
         const formattedTimestamp = timestamp.replace("T", "_");
         let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
@@ -255,7 +242,6 @@
         generateZip();
       });
 
-      // 重置預覽畫面
       function resetPreview() {
         previewCanvas.width = 0;
         previewCanvas.height = 0;
