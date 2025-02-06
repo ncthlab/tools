@@ -26,6 +26,7 @@
         width: calc(100% - 20px);
       }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   </head>
   <body>
     <h2>貨櫃拍照系統</h2>
@@ -40,6 +41,7 @@
       <button id="confirmButton">確認下載</button>
       <button id="retakeButton">重新拍攝</button>
       <button id="detailButton">其他細節</button>
+      <button id="downloadAllButton">下載所有照片</button>
     </div>
 
     <script>
@@ -48,12 +50,14 @@
         "開櫃", "空櫃上面", "空櫃右側", "空櫃左側", "空櫃地板", "空櫃正面"
       ];
       let currentIndex = 0;
+      let images = [];
       const cameraInput = document.getElementById("cameraInput");
       const previewCanvas = document.getElementById("previewCanvas");
       const confirmButton = document.getElementById("confirmButton");
       const retakeButton = document.getElementById("retakeButton");
       const detailButton = document.getElementById("detailButton");
       const customFileNameInput = document.getElementById("customFileName");
+      const downloadAllButton = document.getElementById("downloadAllButton");
       const ctx = previewCanvas.getContext("2d");
 
       function nextDirection() {
@@ -92,7 +96,7 @@
           const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19); // 格式化時間為 YYYY-MM-DD_HH-MM-SS
           let customFileName = customFileNameInput.value.trim();
           let fileName = customFileName ? `${customFileName}_${timestamp}.jpg` : `貨櫃_${directions[currentIndex]}_${timestamp}.jpg`;
-          downloadImage(blob, fileName);
+          images.push({ blob, fileName });
           customFileNameInput.value = "";
           currentIndex++;
           resetPreview();
@@ -110,18 +114,24 @@
         alert("已新增其他細節拍攝項目");
       });
 
+      downloadAllButton.addEventListener("click", () => {
+        const zip = new JSZip();
+        images.forEach(image => {
+          zip.file(image.fileName, image.blob);
+        });
+        zip.generateAsync({ type: "blob" }).then(function(content) {
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(content);
+          link.download = "貨櫃照片.zip";
+          link.click();
+          URL.revokeObjectURL(link.href);
+        });
+      });
+
       function resetPreview() {
         ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         previewCanvas.style.display = "none";
         document.getElementById("controls").style.display = "none";
-      }
-
-      function downloadImage(blob, fileName) {
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName;
-        link.click();
-        URL.revokeObjectURL(link.href);
       }
 
       // 啟動拍攝流程
