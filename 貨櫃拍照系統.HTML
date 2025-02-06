@@ -303,6 +303,11 @@ const photoListSection = document.createElement("div");
 photoListSection.style.display = "none"; // 初始隱藏
 photoSection.appendChild(photoListSection); // 插入到 photoSection 的結尾處
 
+// 建立拍攝照片列表區域與表格，初始隱藏
+const photoListSection = document.createElement("div");
+photoListSection.style.display = "none"; // 初始隱藏
+photoSection.appendChild(photoListSection); // 插入到 photoSection 的結尾處
+
 const photoTable = document.createElement("table");
 photoTable.border = "1";
 photoTable.style.width = "100%";
@@ -319,6 +324,7 @@ photoListSection.appendChild(photoTable);
 
 const photoTableBody = document.getElementById("photoTableBody");
 
+// 更新 saveCurrentImage 函式
 function saveCurrentImage() {
   const timestamp = formatDate(new Date());
   const formattedTimestamp = timestamp.replace("T", "_");
@@ -329,10 +335,9 @@ function saveCurrentImage() {
   if (previewCanvas.width > 0 && previewCanvas.height > 0) {
     images.push({ fileBlob, fileName });
 
-    // 動態顯示表格，並新增拍攝記錄
+    // 顯示表格，並新增拍攝記錄
     if (photoListSection.style.display === "none") {
       photoListSection.style.display = "block";
-
     }
 
     const row = document.createElement("tr");
@@ -343,6 +348,7 @@ function saveCurrentImage() {
     photoTableBody.appendChild(row);
   }
 }
+
 
 
     </script>
