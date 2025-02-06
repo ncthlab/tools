@@ -71,6 +71,7 @@
       let containerId = '';
       let batchId = '';
       let images = []; // 用來儲存每一張拍攝的圖片
+      let customFileNameModified = false; // 檢查檔名是否有被修改
 
       const containerIdInput = document.getElementById("containerId");
       const batchIdInput = document.getElementById("batchId");
@@ -113,6 +114,7 @@
         updateInfo();
         // 預設檔名填入當前位置
         customFileNameInput.value = directions[currentIndex];
+        customFileNameModified = false; // 重置檔名修改狀態
         cameraInput.click();
       }
 
@@ -152,13 +154,19 @@
       });
 
       nextButton.addEventListener("click", () => {
-        // 加入時間戳，格式為 YYYY-MM-DD_HH-MM-SS
+        // 檢查檔名是否修改過，若有修改則繼續保持當前拍攝位置，若未修改則跳往下一個拍攝位置
         const timestamp = new Date().toISOString().replace(/:/g, "-").split(".")[0];
-        const customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${timestamp}`;
-        const fileName = `${customFileName}_${timestamp}`; // 產生新的檔名
+        const formattedTimestamp = timestamp.replace("T", "_"); // 使用 "_" 代替 "T"
+        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+        const fileName = `${customFileName}_${formattedTimestamp}`; // 產生新的檔名
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
         images.push({ fileBlob, fileName }); // 儲存圖片和檔名
-        currentIndex++;
+
+        // 若檔名未修改，則前往下一個拍攝位置
+        if (!customFileNameModified) {
+          currentIndex++;
+        }
+
         resetPreview();
         nextDirection();
       });
@@ -195,6 +203,10 @@
           link.click();
         });
       }
+
+      customFileNameInput.addEventListener("input", () => {
+        customFileNameModified = true; // 檔名已被修改
+      });
     </script>
 
     <!-- 引入JSZip庫 -->
