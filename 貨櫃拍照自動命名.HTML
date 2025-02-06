@@ -37,7 +37,7 @@
 
     <div id="controls" style="display: none;">
       <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名">
-      <button id="confirmButton">確認上傳</button>
+      <button id="confirmButton">確認下載</button>
       <button id="retakeButton">重新拍攝</button>
       <button id="detailButton">其他細節</button>
     </div>
@@ -90,7 +90,7 @@
       confirmButton.addEventListener("click", () => {
         previewCanvas.toBlob((blob) => {
           let fileName = customFileNameInput.value.trim() || `貨櫃_${directions[currentIndex]}_${new Date().toISOString().replace(/:/g, "-").split(".")[0]}.jpg`;
-          uploadImage(blob, fileName);
+          downloadImage(blob, fileName);
           customFileNameInput.value = "";
           currentIndex++;
           resetPreview();
@@ -114,23 +114,12 @@
         document.getElementById("controls").style.display = "none";
       }
 
-      function uploadImage(blob, fileName) {
-        const formData = new FormData();
-        formData.append("file", blob, fileName);
-
-        fetch("http://localhost:3000/upload", {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              alert(`已成功上傳: ${fileName}`);
-            } else {
-              alert("上傳失敗");
-            }
-          })
-          .catch(() => alert("上傳失敗"));
+      function downloadImage(blob, fileName) {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+        URL.revokeObjectURL(link.href);
       }
 
       // 啟動拍攝流程
@@ -138,42 +127,3 @@
     </script>
   </body>
 </html>
-
-<!-- Node.js server code (save as server.js) -->
-
-const express = require("express");
-const multer = require("multer");
-const fs = require("fs-extra");
-const path = require("path");
-
-const app = express();
-const upload = multer({ dest: "uploads/" });
-const outputDir = path.join(__dirname, "output");
-
-fs.ensureDirSync(outputDir);
-
-app.use(express.static(outputDir));
-
-function getTodayFolder() {
-  const today = new Date().toISOString().split("T")[0];
-  const folderPath = path.join(outputDir, today);
-  fs.ensureDirSync(folderPath);
-  return folderPath;
-}
-
-app.post("/upload", upload.single("file"), (req, res) => {
-  const todayFolder = getTodayFolder();
-  const fileName = req.file.originalname;
-  const destinationPath = path.join(todayFolder, fileName);
-
-  fs.move(req.file.path, destinationPath, { overwrite: true }, (err) => {
-    if (err) {
-      return res.json({ success: false });
-    }
-    res.json({ success: true });
-  });
-});
-
-app.listen(3000, () => {
-  console.log("伺服器已啟動，監聽 port 3000");
-});
