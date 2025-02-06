@@ -227,78 +227,52 @@
         cameraInput.click();
       });
 
-      finishButton.addEventListener("click", () => {
-        saveCurrentImage();
-        generateZip();
-      });
+     finishButton.addEventListener("click", () => {
+  // 確保已經儲存當前圖片
+  saveCurrentImage();
+  
+  // 生成 ZIP 檔案
+  if (images.length > 0) {
+    generateZip();
+  } else {
+    alert("沒有照片可以生成 ZIP 檔案");
+  }
+});
 
-      selectLocationButton.addEventListener("click", () => {
-        // 檢查是否已經存在下拉選單，若存在則不再新增
-        let existingSelect = document.getElementById("locationSelect");
-        if (existingSelect) return;
+// 儲存當前圖片
+function saveCurrentImage() {
+  const timestamp = formatDate(new Date());
+  const formattedTimestamp = timestamp.replace("T", "_");
+  let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+  const fileName = `${customFileName}_${formattedTimestamp}`;
+  const fileBlob = previewCanvas.toDataURL("image/jpeg");
 
-        const locationSelect = document.createElement("select");
-        locationSelect.id = "locationSelect"; // 設定 ID，方便檢查是否已存在
-        directions.forEach((direction, index) => {
-          const option = document.createElement("option");
-          option.value = index;
-          option.textContent = direction;
-          locationSelect.appendChild(option);
-        });
+  if (previewCanvas.width > 0 && previewCanvas.height > 0) {
+    images.push({ fileBlob, fileName });
+    // 更新拍攝位置列表
+    const listItem = document.createElement("li");
+    listItem.textContent = `${currentIndex + 1}. ${fileName}`;
+    photoListContent.appendChild(listItem);
+  }
+}
 
-        locationSelect.addEventListener("change", (event) => {
-          currentIndex = parseInt(event.target.value);
-          resetPreview();
-          nextDirection();
-          locationSelect.remove(); // 選擇後自動移除下拉選單
-        });
+// 生成 ZIP 檔案
+function generateZip() {
+  const zip = new JSZip();
+  const folderName = `${containerId}_${batchId}_${formatDate(new Date()).slice(0, 10)}`;
+  const imgFolder = zip.folder(folderName);
 
-        document.body.appendChild(locationSelect);
-      });
+  images.forEach((image) => {
+    imgFolder.file(`${image.fileName}.jpg`, image.fileBlob.split(',')[1], { base64: true });
+  });
 
-      function resetPreview() {
-        previewCanvas.width = 0;
-        previewCanvas.height = 0;
-        document.getElementById("controls").style.display = "none";
-      }
-
-      function saveCurrentImage() {
-        const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace("T", "_");
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        const fileName = `${customFileName}_${formattedTimestamp}`;
-        const fileBlob = previewCanvas.toDataURL("image/jpeg");
-
-        if (previewCanvas.width > 0 && previewCanvas.height > 0) {
-          images.push({ fileBlob, fileName });
-          // 更新拍攝位置列表
-          const listItem = document.createElement("li");
-          listItem.textContent = `${currentIndex + 1}. ${fileName}`;
-          photoListContent.appendChild(listItem);
-        }
-      }
-
-      function generateZip() {
-        if (images.length === 0) {
-          alert("沒有照片可以生成 ZIP 檔案");
-          return;
-        }
-
-        const zip = new JSZip();
-        const folderName = `${containerId}_${batchId}_${formatDate(new Date()).slice(0, 10)}`;
-        const imgFolder = zip.folder(folderName);
-
-        images.forEach((image, index) => {
-          imgFolder.file(`${image.fileName}.jpg`, image.fileBlob.split(',')[1], { base64: true });
-        });
-
-        zip.generateAsync({ type: "blob" }).then((content) => {
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(content);
-          link.download = `${folderName}.zip`; // 設定 ZIP 檔案名稱
-          link.click();
-        }); 
-      }
+  zip.generateAsync({ type: "blob" }).then((content) => {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = `${folderName}.zip`; // 設定 ZIP 檔案名稱
+    link.click();
+  });
+}
     </script>
   </body>
 
