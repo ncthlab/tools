@@ -198,13 +198,21 @@
       });
 
       nextButton.addEventListener("click", () => {
-        saveCurrentImage();
-        if (!customFileNameModified) {
-          currentIndex++;
-        }
-        resetPreview();
-        nextDirection();
-      });
+  saveCurrentImage();
+  if (!customFileNameModified) {
+    currentIndex++;
+  }
+
+  if (currentIndex < directions.length) {
+    alert(`下一張拍攝位置：${directions[currentIndex]}`);
+  } else {
+    alert("所有照片已完成拍攝!");
+  }
+
+  resetPreview();
+  nextDirection();
+});
+
 
       retakeButton.addEventListener("click", () => {
         resetPreview();
