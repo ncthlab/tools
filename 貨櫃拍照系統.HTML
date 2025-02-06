@@ -59,6 +59,7 @@
       <div id="infoText">
         <div class="infoLine" id="containerInfo">貨櫃櫃號：</div>
         <div class="infoLine" id="batchInfo">產品批號：</div>
+        <div class="infoLine" id="previousDirectionInfo" style="color: lightgray;"></div>
         <div class="infoLine" id="directionInfo">當前拍攝位置：</div>
       </div>
       <canvas id="previewCanvas"></canvas>
@@ -88,6 +89,7 @@
       const photoSection = document.getElementById("photoSection");
       const containerInfo = document.getElementById("containerInfo");
       const batchInfo = document.getElementById("batchInfo");
+      const previousDirectionInfo = document.getElementById("previousDirectionInfo");
       const directionInfo = document.getElementById("directionInfo");
       const previewCanvas = document.getElementById("previewCanvas");
       const customFileNameInput = document.getElementById("customFileName");
@@ -137,9 +139,6 @@
       // 顯示下一個拍攝位置
       function nextDirection() {
         if (currentIndex >= directions.length) {
-          nextButton.style.display = "none"; // 隱藏拍攝下一張按鈕
-          retakeButton.style.display = "inline-block"; // 顯示重新拍攝按鈕
-          finishButton.style.display = "inline-block"; // 顯示結束拍攝按鈕
           alert("所有照片已完成拍攝!");
           return;
         }
@@ -150,11 +149,19 @@
         cameraInput.click();
       }
 
-      // 更新貨櫃櫃號、產品批號、當前拍攝位置顯示
+      // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
       function updateInfo() {
         containerInfo.textContent = `貨櫃櫃號：${containerId}`;
         batchInfo.textContent = `產品批號：${batchId}`;
         directionInfo.textContent = `當前拍攝位置：${directions[currentIndex]}`;
+        
+        // 顯示上一個拍攝位置（若不是第一個拍攝位置）
+        if (currentIndex > 0) {
+          previousDirectionInfo.textContent = `上一個拍攝位置：${directions[currentIndex - 1]}`;
+          previousDirectionInfo.style.display = "block";
+        } else {
+          previousDirectionInfo.style.display = "none";
+        }
       }
 
       const cameraInput = document.createElement("input");
