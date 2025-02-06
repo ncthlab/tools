@@ -89,7 +89,9 @@
 
       confirmButton.addEventListener("click", () => {
         previewCanvas.toBlob((blob) => {
-          let fileName = customFileNameInput.value.trim() || `貨櫃_${directions[currentIndex]}_${new Date().toISOString().replace(/:/g, "-").split(".")[0]}.jpg`;
+          const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19); // 格式化時間為 YYYY-MM-DD_HH-MM-SS
+          let customFileName = customFileNameInput.value.trim();
+          let fileName = customFileName ? `${customFileName}_${timestamp}.jpg` : `貨櫃_${directions[currentIndex]}_${timestamp}.jpg`;
           downloadImage(blob, fileName);
           customFileNameInput.value = "";
           currentIndex++;
