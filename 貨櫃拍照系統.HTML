@@ -252,8 +252,11 @@
     nextDirection();
     locationSelect.remove(); // 選擇後自動移除下拉選單
   });
-
+  
   document.body.appendChild(locationSelect);
+// 將下拉選單插入到 fileListSection 之前
+  const fileListSection = document.getElementById("fileListSection");
+  fileListSection.parentNode.insertBefore(locationSelect, fileListSection);
 });
 
 
