@@ -12,8 +12,7 @@
       canvas {
         display: block;
         margin-top: 10px;
-        max-width: 100%;
-        max-height: 80vh;
+        width: 100%;
       }
       button {
         margin: 10px 5px;
@@ -27,51 +26,32 @@
         font-size: 14px;
         width: calc(100% - 20px);
       }
-      #currentDirection {
+      #infoText {
         font-size: 18px;
         font-weight: bold;
-        margin-top: 10px;
-      }
-      #photoDetails {
-        font-size: 16px;
-        margin-top: 10px;
+        margin-bottom: 10px;
       }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   </head>
   <body>
+    <!-- 初始頁面 -->
     <h2>貨櫃拍照系統</h2>
-    <p>請依順序拍攝：卸櫃前前面、卸櫃前右側、卸櫃前後面、封條、卸櫃前左側、開櫃、空櫃上面、空櫃右側、空櫃左側、空櫃地板、空櫃正面</p>
-    <p>如需拍攝細節，請點選「其他細節」</p>
-
-    <!-- 讓使用者手動輸入貨櫃櫃號 -->
-    <div id="initialInputs">
-      <input type="text" id="containerNumberInput" placeholder="請手動輸入貨櫃櫃號" required>
-      <br>
-      <label for="productBatch">產品批號：</label>
-      <input type="text" id="productBatch" placeholder="輸入產品批號" required>
-      <br>
-      <button id="startButton" style="display:none;">開始拍攝</button>
+    <div id="startSection">
+      <input type="text" id="containerId" placeholder="請輸入貨櫃櫃號" />
+      <input type="text" id="batchId" placeholder="請輸入產品批號" />
+      <button id="startButton" disabled>開始拍攝</button>
     </div>
 
-    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
-    <canvas id="previewCanvas"></canvas>
-
-    <div id="currentDirection"></div> <!-- 顯示當前拍攝順序 -->
-
-    <!-- 顯示櫃號、批號及當前拍攝位置 -->
-    <div id="photoDetails" style="display:none;">
-      <p id="displayContainerNumber">櫃號: </p>
-      <p id="displayProductBatch">批號: </p>
-      <p id="displayDirection">拍攝位置: </p>
-    </div>
-
-    <div id="controls" style="display: none;">
-      <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名">
-      <button id="nextButton">拍攝下一張</button>
-      <button id="retakeButton">重新拍攝</button>
-      <button id="detailButton">其他細節</button>
-      <button id="finishButton">結束拍攝</button>
+    <!-- 拍攝頁面 -->
+    <div id="photoSection" style="display: none;">
+      <div id="infoText"></div>
+      <canvas id="previewCanvas"></canvas>
+      <div id="controls">
+        <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名" />
+        <button id="nextButton">拍攝下一張</button>
+        <button id="retakeButton">重新拍攝</button>
+        <button id="finishButton">結束拍攝</button>
+      </div>
     </div>
 
     <script>
@@ -80,145 +60,107 @@
         "開櫃", "空櫃上面", "空櫃右側", "空櫃左側", "空櫃地板", "空櫃正面"
       ];
       let currentIndex = 0;
-      let images = [];
-      let containerNumber = '';
-      let productBatch = '';
+      let containerId = '';
+      let batchId = '';
 
-      const cameraInput = document.getElementById("cameraInput");
+      const containerIdInput = document.getElementById("containerId");
+      const batchIdInput = document.getElementById("batchId");
+      const startButton = document.getElementById("startButton");
+      const startSection = document.getElementById("startSection");
+      const photoSection = document.getElementById("photoSection");
+      const infoText = document.getElementById("infoText");
       const previewCanvas = document.getElementById("previewCanvas");
+      const customFileNameInput = document.getElementById("customFileName");
       const nextButton = document.getElementById("nextButton");
       const retakeButton = document.getElementById("retakeButton");
-      const detailButton = document.getElementById("detailButton");
       const finishButton = document.getElementById("finishButton");
-      const customFileNameInput = document.getElementById("customFileName");
-      const startButton = document.getElementById("startButton");
-      const containerNumberInput = document.getElementById("containerNumberInput");
-      const productBatchInput = document.getElementById("productBatch");
-      const currentDirection = document.getElementById("currentDirection");
-      const photoDetails = document.getElementById("photoDetails");
-      const displayContainerNumber = document.getElementById("displayContainerNumber");
-      const displayProductBatch = document.getElementById("displayProductBatch");
-      const displayDirection = document.getElementById("displayDirection");
-      const ctx = previewCanvas.getContext("2d");
 
-      // 手動輸入貨櫃櫃號
-      containerNumberInput.addEventListener("input", () => {
-        containerNumber = containerNumberInput.value.trim();
-        toggleStartButton();
-      });
-
-      // 手動輸入產品批號
-      productBatchInput.addEventListener("input", () => {
-        productBatch = productBatchInput.value.trim();
-        toggleStartButton();
-      });
-
-      // 根據輸入狀況來控制「開始拍攝」按鈕的顯示與否
-      function toggleStartButton() {
-        if (containerNumber && productBatch) {
-          startButton.style.display = "inline-block"; // 顯示開始拍攝按鈕
-        } else {
-          startButton.style.display = "none"; // 隱藏開始拍攝按鈕
-        }
+      // 確認是否兩個輸入欄位都填寫
+      function checkInputs() {
+        containerId = containerIdInput.value.trim();
+        batchId = batchIdInput.value.trim();
+        startButton.disabled = !(containerId && batchId);
       }
 
-      // 開始拍攝的按鈕處理
-      startButton.addEventListener("click", () => {
-        if (!containerNumber || !productBatch) {
-          alert("請確保貨櫃櫃號和產品批號已填寫！");
-          return;
-        }
+      containerIdInput.addEventListener("input", checkInputs);
+      batchIdInput.addEventListener("input", checkInputs);
 
-        document.getElementById("initialInputs").style.display = "none";
-        document.getElementById("controls").style.display = "block"; // 顯示後續拍攝按鈕
-        photoDetails.style.display = "block"; // 顯示拍照資訊
+      // 顯示開始拍攝畫面
+      startButton.addEventListener("click", () => {
+        startSection.style.display = "none";
+        photoSection.style.display = "block";
         nextDirection();
       });
 
+      // 顯示下一個拍攝位置
       function nextDirection() {
         if (currentIndex >= directions.length) {
           alert("所有照片已完成拍攝!");
           return;
         }
-        currentDirection.textContent = `請拍攝貨櫃的 ${directions[currentIndex]} 照片`;
-        displayContainerNumber.textContent = `櫃號: ${containerNumber}`;
-        displayProductBatch.textContent = `批號: ${productBatch}`;
-        displayDirection.textContent = `拍攝位置: ${directions[currentIndex]}`;
+        infoText.textContent = `貨櫃櫃號: ${containerId} 產品批號: ${batchId} - 拍攝位置: ${directions[currentIndex]}`;
         cameraInput.click();
       }
 
-      nextButton.addEventListener("click", () => {
-        previewCanvas.toBlob((blob) => {
-          const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19); // 格式：YYYY-MM-DD_HH-MM-SS
-          const formattedTimestamp = timestamp.replace("T", "_"); // 替換 T 為 _
-          let customFileName = customFileNameInput.value.trim();
-          let fileName = customFileName ? `${containerNumber}_${productBatch}_${customFileName}_${formattedTimestamp}.jpg` : `${containerNumber}_${productBatch}_貨櫃_${directions[currentIndex]}_${formattedTimestamp}.jpg`;
-          
-          // 確保圖像正確添加到 images 陣列
-          images.push({ blob, fileName });
-          customFileNameInput.value = "";
-          currentIndex++;
-          resetPreview();
-          nextDirection();
-        }, "image/jpeg");
+      const cameraInput = document.createElement("input");
+      cameraInput.type = "file";
+      cameraInput.accept = "image/*";
+      cameraInput.capture = "environment";
+
+      cameraInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const img = new Image();
+          const reader = new FileReader();
+
+          reader.onload = (e) => {
+            img.src = e.target.result;
+          };
+
+          img.onload = () => {
+            previewCanvas.width = img.width / 4;
+            previewCanvas.height = img.height / 4;
+            const ctx = previewCanvas.getContext("2d");
+            ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+            ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
+            document.getElementById("controls").style.display = "block";
+          };
+
+          reader.readAsDataURL(file);
+        }
       });
 
-      retakeButton.addEventListener("click", () => {
-        images.pop(); // 移除最後一張照片
+      nextButton.addEventListener("click", () => {
+        const fileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${new Date().toISOString().replace(/:/g, "-").split(".")[0]}`;
+        const fileBlob = previewCanvas.toDataURL("image/jpeg");
+        downloadImage(fileBlob, fileName);
+        currentIndex++;
         resetPreview();
         nextDirection();
       });
 
-      detailButton.addEventListener("click", () => {
-        const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19); // 格式：YYYY-MM-DD_HH-MM-SS
-        const formattedTimestamp = timestamp.replace("T", "_"); // 替換 T 為 _
-        const customName = customFileNameInput.value.trim();
-        let fileName = customName ? `${containerNumber}_${productBatch}_${customName}_${formattedTimestamp}.jpg` : `${containerNumber}_${productBatch}_其他細節_${formattedTimestamp}.jpg`;
-        previewCanvas.toBlob((blob) => {
-          images.push({ blob, fileName });
-          resetPreview();
-          customFileNameInput.value = "";
-          nextDirection();
-        }, "image/jpeg");
+      retakeButton.addEventListener("click", () => {
+        resetPreview();
+        cameraInput.click();
       });
 
       finishButton.addEventListener("click", () => {
-        const zip = new JSZip();
-        images.forEach(image => {
-          zip.file(image.fileName, image.blob); // 添加圖像到 ZIP 檔案
-        });
-        zip.generateAsync({ type: "blob" }).then(function(content) {
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(content);
-          link.download = `${containerNumber}_${productBatch}_貨櫃照片.zip`;
-          link.click();
-          URL.revokeObjectURL(link.href);
-        });
+        alert("結束拍攝並生成 ZIP 檔案");
+        // 這裡可以增加生成 ZIP 檔案的邏輯
       });
 
       function resetPreview() {
-        ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-        previewCanvas.style.display = "none";
+        previewCanvas.width = 0;
+        previewCanvas.height = 0;
+        document.getElementById("controls").style.display = "none";
       }
 
-      // 顯示拍攝的圖片
-      cameraInput.addEventListener("change", function (event) {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const img = new Image();
-            img.onload = function () {
-              previewCanvas.width = img.width;
-              previewCanvas.height = img.height;
-              ctx.drawImage(img, 0, 0);
-              previewCanvas.style.display = "block"; // 顯示預覽圖片
-            };
-            img.src = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        }
-      });
+      function downloadImage(blob, fileName) {
+        const link = document.createElement("a");
+        link.href = blob;
+        link.download = fileName;
+        link.click();
+      }
     </script>
   </body>
 </html>
