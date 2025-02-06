@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貨櫃拍照上傳</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 20px; }
+      canvas { display: none; margin-top: 10px; }
+      button { margin: 10px 5px; padding: 10px; font-size: 16px; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h2>貨櫃拍照系統</h2>
+    <p>請依順序拍攝：正面、封條、後側、左側、右側</p>
+    
+    <input type="file" id="cameraInput" accept="image/*" capture="environment">
+    <canvas id="previewCanvas"></canvas>
+    
+    <div id="controls" style="display: none;">
+      <button id="confirmButton">確認上傳</button>
+      <button id="retakeButton">重新拍攝</button>
+    </div>
+
+    <script>
+      const directions = ["正面", "封條", "後側", "左側", "右側"];
+      let currentIndex = 0;
+      const cameraInput = document.getElementById("cameraInput");
+      const previewCanvas = document.getElementById("previewCanvas");
+      const confirmButton = document.getElementById("confirmButton");
+      const retakeButton = document.getElementById("retakeButton");
+      const ctx = previewCanvas.getContext("2d");
+
+      function nextDirection() {
+        if (currentIndex >= directions.length) {
+          alert("所有照片已完成拍攝!");
+          return;
+        }
+        alert(`請拍攝貨櫃的${directions[currentIndex]}照片`);
+        cameraInput.click();
+      }
+
+      cameraInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const img = new Image();
+          const reader = new FileReader();
+
+          reader.onload = (e) => {
+            img.src = e.target.result;
+          };
+
+          img.onload = () => {
+            previewCanvas.style.display = "block";
+            previewCanvas.width = img.width / 4;
+            previewCanvas.height = img.height / 4;
+            ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
+            document.getElementById("controls").style.display = "block";
+          };
+
+          reader.readAsDataURL(file);
+        }
+      });
+
+      confirmButton.addEventListener("click", () => {
+        previewCanvas.toBlob((blob) => {
+          const fileName = `貨櫃_${directions[currentIndex]}_${new Date().toISOString().replace(/:/g, "-").split(".")[0]}.jpg`;
+          uploadImage(blob, fileName);
+          currentIndex++;
+          resetPreview();
+          nextDirection();
+        }, "image/jpeg");
+      });
+
+      retakeButton.addEventListener("click", () => {
+        resetPreview();
+        cameraInput.click();
+      });
+
+      function resetPreview() {
+        ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+        previewCanvas.style.display = "none";
+        document.getElementById("controls").style.display = "none";
+      }
+
+      function uploadImage(blob, fileName) {
+        const formData = new FormData();
+        formData.append("file", blob, fileName);
+        // 模擬上傳處理，實際可替換為後端API
+        console.log(`上傳檔案: ${fileName}`);
+        // fetch("你的上傳伺服器路徑", {
+        //   method: "POST",
+        //   body: formData,
+        // }).then(response => alert("上傳成功!")).catch(error => alert("上傳失敗"));
+      }
+
+      // 啟動拍攝流程
+      nextDirection();
+    </script>
+  </body>
+</html>
