@@ -202,7 +202,6 @@
                 nextButton.style.display = "inline-block"; // 顯示「拍攝下一張」按鈕
             }
           };
-cameraInput.click();
           reader.readAsDataURL(file);
         }
       });
@@ -252,9 +251,6 @@ cameraInput.click();
     currentIndex = parseInt(event.target.value);
     resetPreview();
     nextDirection();
-
-// 顯示選擇的指定位置
-    alert(`您選擇的拍攝位置：${directions[currentIndex]}`);
     locationSelect.remove(); // 選擇後自動移除下拉選單
   });
   
