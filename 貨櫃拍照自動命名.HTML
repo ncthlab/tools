@@ -31,6 +31,13 @@
         font-weight: bold;
         margin-bottom: 10px;
       }
+      #version {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        font-size: 14px;
+        color: gray;
+      }
     </style>
   </head>
   <body>
@@ -54,6 +61,8 @@
       </div>
     </div>
 
+    <div id="version">版本號: V1.0</div>
+
     <script>
       const directions = [
         "卸櫃前前面", "卸櫃前右側", "卸櫃前後面", "封條", "卸櫃前左側", 
@@ -74,6 +83,13 @@
       const nextButton = document.getElementById("nextButton");
       const retakeButton = document.getElementById("retakeButton");
       const finishButton = document.getElementById("finishButton");
+
+      // 版本號控制
+      let versionNumber = 1.0; // 初始版本號
+
+      // 顯示更新的版本號
+      const versionElement = document.getElementById("version");
+      versionElement.textContent = `版本號: V${versionNumber.toFixed(1)}`;
 
       // 確認是否兩個輸入欄位都填寫
       function checkInputs() {
