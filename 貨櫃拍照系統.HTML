@@ -40,6 +40,11 @@
         text-align: right;
         margin-bottom: 20px;
       }
+      select {
+        padding: 8px;
+        font-size: 14px;
+        margin-top: 10px;
+      }
     </style>
   </head>
   <body>
@@ -60,7 +65,8 @@
         <div class="infoLine" id="containerInfo">貨櫃櫃號：</div>
         <div class="infoLine" id="batchInfo">產品批號：</div>
         <div class="infoLine" id="previousDirectionInfo" style="color: lightgray;"></div>
-        <div class="infoLine" id="directionInfo">當前拍攝位置：</div>
+        <div class="infoLine">當前拍攝位置：</div>
+        <select id="directionSelect"></select>
       </div>
       <canvas id="previewCanvas"></canvas>
       <div id="controls">
@@ -90,7 +96,7 @@
       const containerInfo = document.getElementById("containerInfo");
       const batchInfo = document.getElementById("batchInfo");
       const previousDirectionInfo = document.getElementById("previousDirectionInfo");
-      const directionInfo = document.getElementById("directionInfo");
+      const directionSelect = document.getElementById("directionSelect");
       const previewCanvas = document.getElementById("previewCanvas");
       const customFileNameInput = document.getElementById("customFileName");
       const nextButton = document.getElementById("nextButton");
@@ -133,8 +139,40 @@
         startSection.style.display = "none";
         photoSection.style.display = "block";
         updateInfo();
+        populateDirectionSelect();
         nextDirection();
       });
+
+      // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
+      function updateInfo() {
+        containerInfo.textContent = `貨櫃櫃號：${containerId}`;
+        batchInfo.textContent = `產品批號：${batchId}`;
+        directionSelect.value = directions[currentIndex];
+
+        // 顯示上一個拍攝位置（若不是第一個拍攝位置）
+        if (currentIndex > 0) {
+          previousDirectionInfo.textContent = `上一個拍攝位置：${directions[currentIndex - 1]}`;
+          previousDirectionInfo.style.display = "block";
+        } else {
+          previousDirectionInfo.style.display = "none";
+        }
+      }
+
+      // 填充下拉選單
+      function populateDirectionSelect() {
+        directionSelect.innerHTML = '';
+        directions.forEach((direction, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = direction;
+          directionSelect.appendChild(option);
+        });
+
+        directionSelect.addEventListener("change", () => {
+          currentIndex = parseInt(directionSelect.value);
+          updateInfo();
+        });
+      }
 
       // 顯示下一個拍攝位置
       function nextDirection() {
@@ -147,21 +185,6 @@
         customFileNameInput.value = directions[currentIndex];
         customFileNameModified = false; // 重置檔名修改狀態
         cameraInput.click();
-      }
-
-      // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
-      function updateInfo() {
-        containerInfo.textContent = `貨櫃櫃號：${containerId}`;
-        batchInfo.textContent = `產品批號：${batchId}`;
-        directionInfo.textContent = `當前拍攝位置：${directions[currentIndex]}`;
-        
-        // 顯示上一個拍攝位置（若不是第一個拍攝位置）
-        if (currentIndex > 0) {
-          previousDirectionInfo.textContent = `上一個拍攝位置：${directions[currentIndex - 1]}`;
-          previousDirectionInfo.style.display = "block";
-        } else {
-          previousDirectionInfo.style.display = "none";
-        }
       }
 
       const cameraInput = document.createElement("input");
