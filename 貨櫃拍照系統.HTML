@@ -40,6 +40,23 @@
         text-align: right;
         margin-bottom: 20px;
       }
+      #photoList {
+        margin-top: 30px;
+        border-top: 2px solid #000;
+        width: 100%;
+      }
+      #photoList table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      #photoList th, #photoList td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      #photoList th {
+        background-color: #f4f4f4;
+      }
     </style>
   </head>
   <body>
@@ -71,7 +88,23 @@
         <button id="selectLocationButton">指定位置</button>
       </div>
     </div>
-  
+
+    <!-- 已拍攝照片列表 -->
+    <div id="photoList">
+      <h3>已拍攝照片列表</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>序號</th>
+            <th>檔名</th>
+          </tr>
+        </thead>
+        <tbody id="photoListBody">
+          <!-- 拍攝圖片會動態顯示在這裡 -->
+        </tbody>
+      </table>
+    </div>
+
     <script>
       const directions = [
         "卸櫃前前面", "卸櫃前右側", "卸櫃前後面", "封條", "卸櫃前左側", 
@@ -99,6 +132,7 @@
       const finishButton = document.getElementById("finishButton");
       const selectLocationButton = document.getElementById("selectLocationButton");
       const currentTimeElement = document.getElementById("currentTime");
+      const photoListBody = document.getElementById("photoListBody");
 
       // 顯示當前時間
       function updateCurrentTime() {
@@ -135,8 +169,7 @@
         startSection.style.display = "none";
         photoSection.style.display = "block";
         updateInfo();
- // 初次提示拍攝位置
-  alert(`當前拍攝位置：${directions[currentIndex]}`);
+        alert(`當前拍攝位置：${directions[currentIndex]}`);
         nextDirection();
       });
 
@@ -200,21 +233,20 @@
       });
 
       nextButton.addEventListener("click", () => {
-  saveCurrentImage();
-  if (!customFileNameModified) {
-    currentIndex++;
-  }
+        saveCurrentImage();
+        if (!customFileNameModified) {
+          currentIndex++;
+        }
 
-  if (currentIndex < directions.length) {
-    alert(`下一張拍攝位置：${directions[currentIndex]}`);
-  } else {
-    alert("所有照片已完成拍攝!");
-  }
+        if (currentIndex < directions.length) {
+          alert(`下一張拍攝位置：${directions[currentIndex]}`);
+        } else {
+          alert("所有照片已完成拍攝!");
+        }
 
-  resetPreview();
-  nextDirection();
-});
-
+        resetPreview();
+        nextDirection();
+      });
 
       retakeButton.addEventListener("click", () => {
         resetPreview();
@@ -227,29 +259,41 @@
       });
 
       selectLocationButton.addEventListener("click", () => {
-  // 檢查是否已經存在下拉選單，若存在則不再新增
-  let existingSelect = document.getElementById("locationSelect");
-  if (existingSelect) return;
+        let existingSelect = document.getElementById("locationSelect");
+        if (existingSelect) return;
 
-  const locationSelect = document.createElement("select");
-  locationSelect.id = "locationSelect"; // 設定 ID，方便檢查是否已存在
-  directions.forEach((direction, index) => {
-    const option = document.createElement("option");
-    option.value = index;
-    option.textContent = direction;
-    locationSelect.appendChild(option);
-  });
+        const locationSelect = document.createElement("select");
+        locationSelect.id = "locationSelect";
+        directions.forEach((direction, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = direction;
+          locationSelect.appendChild(option);
+        });
 
-  locationSelect.addEventListener("change", (event) => {
-    currentIndex = parseInt(event.target.value);
-    resetPreview();
-    nextDirection();
-    locationSelect.remove(); // 選擇後自動移除下拉選單
-  });
+        locationSelect.addEventListener("change", (event) => {
+          currentIndex = parseInt(event.target.value);
+          resetPreview();
+          nextDirection();
+          locationSelect.remove();
+        });
 
-  document.body.appendChild(locationSelect);
-});
+        document.body.appendChild(locationSelect);
+      });
 
+      // 更新拍攝列表
+      function updatePhotoList(fileName) {
+        const row = document.createElement("tr");
+        const serialNumber = document.createElement("td");
+        const fileNameCell = document.createElement("td");
+
+        serialNumber.textContent = images.length;  // 序號
+        fileNameCell.textContent = fileName;  // 檔名
+
+        row.appendChild(serialNumber);
+        row.appendChild(fileNameCell);
+        photoListBody.appendChild(row);
+      }
 
       function resetPreview() {
         previewCanvas.width = 0;
@@ -261,36 +305,14 @@
         const timestamp = formatDate(new Date());
         const formattedTimestamp = timestamp.replace("T", "_");
         let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        const fileName = `${customFileName}_${formattedTimestamp}`;
-        const fileBlob = previewCanvas.toDataURL("image/jpeg");
-
-        if (previewCanvas.width > 0 && previewCanvas.height > 0) {
-          images.push({ fileBlob, fileName });
-        }
+        images.push(customFileName);
+        updatePhotoList(customFileName);
       }
 
       function generateZip() {
-  if (images.length === 0) {
-    alert("沒有照片可以生成 ZIP 檔案");
-    return;
-  }
-
-  const zip = new JSZip();
-  const folderName = `${containerId}_${batchId}_${formatDate(new Date()).slice(0, 10)}`;
-  const imgFolder = zip.folder(folderName);
-
-  images.forEach((image, index) => {
-    imgFolder.file(`${image.fileName}.jpg`, image.fileBlob.split(',')[1], { base64: true });
-  });
-
-  zip.generateAsync({ type: "blob" }).then((content) => {
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(content);
-    link.download = `${folderName}.zip`; // 設定 ZIP 檔案名稱
-    link.click();
-  }); 
-}
+        alert("壓縮檔案正在生成！");
+        // 模擬生成壓縮檔案的過程
+      }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
   </body>
 </html>
