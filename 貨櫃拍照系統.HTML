@@ -100,7 +100,7 @@
       function updateCurrentTime() {
         const now = new Date();
         const formattedTime = formatDate(now);
-        currentTimeElement.textContent = `目前時間：${formattedTime}`;
+        currentTimeElement.textContent = 目前時間：${formattedTime};
       }
 
       setInterval(updateCurrentTime, 1000); // 每秒更新一次時間
@@ -113,7 +113,7 @@
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
         const seconds = String(date.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        return ${year}-${month}-${day} ${hours}:${minutes}:${seconds};
       }
 
       // 確認是否兩個輸入欄位都填寫
@@ -149,9 +149,9 @@
 
       // 更新貨櫃櫃號、產品批號、當前拍攝位置顯示
       function updateInfo() {
-        containerInfo.textContent = `貨櫃櫃號：${containerId}`;
-        batchInfo.textContent = `產品批號：${batchId}`;
-        directionInfo.textContent = `當前拍攝位置：${directions[currentIndex]}`;
+        containerInfo.textContent = 貨櫃櫃號：${containerId};
+        batchInfo.textContent = 產品批號：${batchId};
+        directionInfo.textContent = 當前拍攝位置：${directions[currentIndex]};
       }
 
       const cameraInput = document.createElement("input");
@@ -186,8 +186,8 @@
         // 檢查檔名是否修改過，若有修改則繼續保持當前拍攝位置，若未修改則跳往下一個拍攝位置
         const timestamp = formatDate(new Date());
         const formattedTimestamp = timestamp.replace("T", "_"); // 使用 "_" 代替 "T"
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        const fileName = `${customFileName}_${formattedTimestamp}`; // 產生新的檔名
+        let customFileName = customFileNameInput.value.trim() || ${directions[currentIndex]}_${formattedTimestamp};
+        const fileName = ${customFileName}_${formattedTimestamp}; // 產生新的檔名
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
         images.push({ fileBlob, fileName }); // 儲存圖片和檔名
 
@@ -209,12 +209,11 @@
         // 確保最後的圖片也被加入
         const timestamp = formatDate(new Date());
         const formattedTimestamp = timestamp.replace("T", "_");
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        const fileName = `${customFileName}_${formattedTimestamp}`;
+        let customFileName = customFileNameInput.value.trim() || ${directions[currentIndex]}_${formattedTimestamp};
+        const fileName = ${customFileName}_${formattedTimestamp};
         const fileBlob = previewCanvas.toDataURL("image/jpeg");
         images.push({ fileBlob, fileName });
 
-        // 生成ZIP並下載
         generateZip();
       });
 
@@ -226,20 +225,24 @@
       }
 
       // 生成 ZIP 檔案並下載
-      function generateZip() {
-        const zip = new JSZip();
-        images.forEach((image, index) => {
-          zip.file(image.fileName + ".jpg", image.fileBlob.split(',')[1], { base64: true });
-        });
+function generateZip() {
+  const zip = new JSZip();
+  images.forEach((image, index) => {
+    zip.file(image.fileName + ".jpg", image.fileBlob.split(',')[1], { base64: true });
+  });
 
-        zip.generateAsync({ type: "blob" }).then(function (content) {
-          const zipFileName = `${containerId}_${batchId}_${formatDate(new Date()).split(' ')[0]}.zip`;
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(content);
-          link.download = zipFileName;
-          link.click();
-        });
-      }
+  zip.generateAsync({ type: "blob" }).then(function (content) {
+    const zipFileName = `${containerId}_${batchId}_${formatDate(new Date()).split(' ')[0]}.zip`;
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = zipFileName;
+    link.click();
+    
+    // 顯示拍攝完畢訊息
+    alert("所有照片已完成拍攝並已下載！");
+  });
+}
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.2.2/dist/jszip.min.js"></script>
   </body>
