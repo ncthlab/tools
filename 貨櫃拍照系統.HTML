@@ -44,7 +44,7 @@
         margin-top: 30px;
         border-top: 2px solid #000;
         width: 100%;
-        display: none; /* 初始不顯示 */
+        display: none;
       }
       #photoList table {
         width: 100%;
@@ -61,10 +61,7 @@
     </style>
   </head>
   <body>
-    <!-- 當前時間顯示區域 -->
     <div id="currentTime"></div>
-
-    <!-- 初始頁面 -->
     <h2>貨櫃拍照系統</h2>
     <div id="startSection">
       <input type="text" id="containerId" placeholder="請輸入貨櫃櫃號" />
@@ -72,7 +69,6 @@
       <button id="startButton" disabled>開始拍攝</button>
     </div>
 
-    <!-- 拍攝頁面 -->
     <div id="photoSection" style="display: none;">
       <div id="infoText">
         <div class="infoLine" id="containerInfo">貨櫃櫃號：</div>
@@ -90,7 +86,6 @@
       </div>
     </div>
 
-    <!-- 已拍攝照片列表 -->
     <div id="photoList">
       <h3>已拍攝照片列表</h3>
       <table>
@@ -101,7 +96,6 @@
           </tr>
         </thead>
         <tbody id="photoListBody">
-          <!-- 拍攝圖片會動態顯示在這裡 -->
         </tbody>
       </table>
     </div>
@@ -114,8 +108,8 @@
       let currentIndex = 0;
       let containerId = '';
       let batchId = '';
-      let images = []; // 用來儲存每一張拍攝的圖片
-      let customFileNameModified = false; // 檢查檔名是否有被修改
+      let images = [];
+      let customFileNameModified = false;
 
       const containerIdInput = document.getElementById("containerId");
       const batchIdInput = document.getElementById("batchId");
@@ -136,16 +130,14 @@
       const photoListBody = document.getElementById("photoListBody");
       const photoList = document.getElementById("photoList");
 
-      // 顯示當前時間
       function updateCurrentTime() {
         const now = new Date();
         const formattedTime = formatDate(now);
         currentTimeElement.textContent = `目前時間：${formattedTime}`;
       }
 
-      setInterval(updateCurrentTime, 1000); // 每秒更新一次時間
+      setInterval(updateCurrentTime, 1000);
 
-      // 格式化時間為 YYYY-MM-DD HH:MM:SS
       function formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -156,7 +148,6 @@
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       }
 
-      // 確認是否兩個輸入欄位都填寫
       function checkInputs() {
         containerId = containerIdInput.value.trim();
         batchId = batchIdInput.value.trim();
@@ -166,17 +157,15 @@
       containerIdInput.addEventListener("input", checkInputs);
       batchIdInput.addEventListener("input", checkInputs);
 
-      // 顯示開始拍攝畫面
       startButton.addEventListener("click", () => {
         startSection.style.display = "none";
         photoSection.style.display = "block";
-        photoList.style.display = "block";  // 開始拍攝後顯示拍攝列表
+        photoList.style.display = "block";
         updateInfo();
         alert(`當前拍攝位置：${directions[currentIndex]}`);
         nextDirection();
       });
 
-      // 顯示下一個拍攝位置
       function nextDirection() {
         if (currentIndex >= directions.length) {
           alert("所有照片已完成拍攝!");
@@ -184,17 +173,15 @@
         }
         updateInfo();
         customFileNameInput.value = directions[currentIndex];
-        customFileNameModified = false; // 重置檔名修改狀態
+        customFileNameModified = false;
         cameraInput.click();
       }
 
-      // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
       function updateInfo() {
         containerInfo.textContent = `貨櫃櫃號：${containerId}`;
         batchInfo.textContent = `產品批號：${batchId}`;
         directionInfo.textContent = `當前拍攝位置：${directions[currentIndex]}`;
         
-        // 顯示上一個拍攝位置（若不是第一個拍攝位置）
         if (currentIndex > 0) {
           previousDirectionInfo.textContent = `上一個拍攝位置：${directions[currentIndex - 1]}`;
           previousDirectionInfo.style.display = "block";
@@ -284,14 +271,13 @@
         document.body.appendChild(locationSelect);
       });
 
-      // 更新拍攝列表
       function updatePhotoList(fileName) {
         const row = document.createElement("tr");
         const serialNumber = document.createElement("td");
         const fileNameCell = document.createElement("td");
 
-        serialNumber.textContent = images.length;  // 序號
-        fileNameCell.textContent = fileName;  // 檔名
+        serialNumber.textContent = images.length;  
+        fileNameCell.textContent = fileName;  
 
         row.appendChild(serialNumber);
         row.appendChild(fileNameCell);
@@ -306,15 +292,18 @@
 
       function saveCurrentImage() {
         const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace("T", "_");
+        const formattedTimestamp = timestamp.replace(" ", "_").replace(":", "-");
         let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
         images.push(customFileName);
         updatePhotoList(customFileName);
+
+        if (directions[currentIndex] === "卸櫃前前面") {
+          updatePhotoList(customFileName);  // 在這個位置更新列表
+        }
       }
 
       function generateZip() {
         alert("壓縮檔案正在生成！");
-        // 模擬生成壓縮檔案的過程
       }
     </script>
   </body>
