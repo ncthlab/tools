@@ -58,6 +58,10 @@
       #photoList th {
         background-color: #f4f4f4;
       }
+      #locationSelectContainer {
+        margin-bottom: 20px;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -85,6 +89,8 @@
         <button id="selectLocationButton">指定位置</button>
       </div>
     </div>
+
+    <div id="locationSelectContainer"></div>
 
     <div id="photoList">
       <h3>已拍攝照片列表</h3>
@@ -129,6 +135,7 @@
       const currentTimeElement = document.getElementById("currentTime");
       const photoListBody = document.getElementById("photoListBody");
       const photoList = document.getElementById("photoList");
+      const locationSelectContainer = document.getElementById("locationSelectContainer");
 
       function updateCurrentTime() {
         const now = new Date();
@@ -265,10 +272,11 @@
           currentIndex = parseInt(event.target.value);
           resetPreview();
           nextDirection();
-          locationSelect.remove();
+          locationSelectContainer.innerHTML = '';  // 移除下拉選單
         });
 
-        document.body.appendChild(locationSelect);
+        locationSelectContainer.appendChild(locationSelect);
+        locationSelectContainer.style.display = "block"; // 顯示下拉選單
       });
 
       function updatePhotoList(fileName) {
