@@ -40,6 +40,12 @@
         text-align: right;
         margin-bottom: 20px;
       }
+#defaultMessage {
+        color: #d3d3d3;  /* 淡灰色 */
+        font-size: 12px; /* 可以根據需要調整字體大小 */
+        margin-top: 5px;
+        font-style: italic; /* 若需要使用斜體字，可以啟用這一行 */
+      }
     </style>
   </head>
   <body>
@@ -65,6 +71,8 @@
       <canvas id="previewCanvas"></canvas>
       <div id="controls">
         <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名" />
+        <!-- 顯示提示文字 -->
+<p id="defaultMessage">預設照片檔名如上，若有需要修改請手動調整，若無請依系統設定為主，謝謝。</p>
         <button id="nextButton">拍攝下一張</button>
         <button id="retakeButton">重新拍攝</button>
         <button id="finishButton">結束拍攝</button>
