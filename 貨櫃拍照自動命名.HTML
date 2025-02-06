@@ -43,9 +43,9 @@
 
     <!-- 讓使用者拍攝貨櫃櫃號 -->
     <div id="initialInputs">
-      <button id="captureContainerNumberButton">拍攝貨櫃櫃號</button>
+      <button id="captureContainerNumberButton">拍攝貨櫃櫃號（選擇性）</button>
       <p id="containerNumberDisplay">貨櫃櫃號：未識別</p>
-      <input type="text" id="containerNumberInput" placeholder="若識別錯誤請手動修改貨櫃櫃號" style="display:none;">
+      <input type="text" id="containerNumberInput" placeholder="若識別錯誤請手動修改貨櫃櫃號">
       <br>
       <label for="productBatch">產品批號：</label>
       <input type="text" id="productBatch" placeholder="輸入產品批號" required>
@@ -91,9 +91,9 @@
       const currentDirection = document.getElementById("currentDirection");
       const ctx = previewCanvas.getContext("2d");
 
-      // 拍攝貨櫃櫃號的按鈕
+      // 設定容許手動輸入貨櫃櫃號
       captureContainerNumberButton.addEventListener("click", () => {
-        cameraInput.click();
+        cameraInput.click(); // 如果需要也可以用OCR來識別
       });
 
       cameraInput.addEventListener("change", (event) => {
@@ -135,7 +135,7 @@
           startButton.style.display = "block"; // 顯示開始拍攝按鈕
         }).catch((error) => {
           console.error(error);
-          alert("OCR識別失敗，請重新拍攝照片！");
+          alert("OCR識別失敗，請手動輸入貨櫃櫃號！");
         });
       }
 
