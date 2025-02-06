@@ -198,17 +198,10 @@
       });
 
       nextButton.addEventListener("click", () => {
-        const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace("T", "_");
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        const fileName = `${customFileName}_${formattedTimestamp}`;
-        const fileBlob = previewCanvas.toDataURL("image/jpeg");
-        images.push({ fileBlob, fileName });
-
+        saveCurrentImage();
         if (!customFileNameModified) {
           currentIndex++;
         }
-
         resetPreview();
         nextDirection();
       });
@@ -219,16 +212,7 @@
       });
 
       finishButton.addEventListener("click", () => {
-        const timestamp = formatDate(new Date());
-        const formattedTimestamp = timestamp.replace("T", "_");
-        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
-        const fileName = `${customFileName}_${formattedTimestamp}`;
-        const fileBlob = previewCanvas.toDataURL("image/jpeg");
-
-        if (previewCanvas.width > 0 && previewCanvas.height > 0) {
-          images.push({ fileBlob, fileName });
-        }
-
+        saveCurrentImage();
         generateZip();
       });
 
@@ -256,6 +240,18 @@
         document.getElementById("controls").style.display = "none";
       }
 
+      function saveCurrentImage() {
+        const timestamp = formatDate(new Date());
+        const formattedTimestamp = timestamp.replace("T", "_");
+        let customFileName = customFileNameInput.value.trim() || `${directions[currentIndex]}_${formattedTimestamp}`;
+        const fileName = `${customFileName}_${formattedTimestamp}`;
+        const fileBlob = previewCanvas.toDataURL("image/jpeg");
+
+        if (previewCanvas.width > 0 && previewCanvas.height > 0) {
+          images.push({ fileBlob, fileName });
+        }
+      }
+
       function generateZip() {
         if (images.length === 0) {
           alert("沒有照片可以生成 ZIP 檔案");
@@ -263,7 +259,8 @@
         }
 
         const zip = new JSZip();
-        const imgFolder = zip.folder("images");
+        const folderName = `${containerId}_${batchId}_${formatDate(new Date()).slice(0, 10)}`;
+        const imgFolder = zip.folder(folderName);
 
         images.forEach((image, index) => {
           imgFolder.file(`${image.fileName}.jpg`, image.fileBlob.split(',')[1], { base64: true });
