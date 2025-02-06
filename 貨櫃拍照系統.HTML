@@ -137,11 +137,16 @@
 
       // 顯示開始拍攝畫面
       startButton.addEventListener("click", () => {
-        startSection.style.display = "none";
-        photoSection.style.display = "block";
-        updateInfo();
-        nextDirection();
-      });
+  startSection.style.display = "none";
+  photoSection.style.display = "block";
+  updateInfo();
+
+  // 初次提示拍攝位置
+  alert(`請拍攝當前位置：${directions[currentIndex]}`);
+  
+  nextDirection();
+});
+
 
       // 顯示下一個拍攝位置
       function nextDirection() {
