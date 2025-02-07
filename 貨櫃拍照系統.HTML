@@ -150,10 +150,11 @@ function showMessage(message, callback) {
   messageBox.style.border = "2px solid #000000";
   messageBox.style.zIndex = 9999;
   messageBox.style.textAlign = "center";
-  messageBox.style.fontSize = "14px";
+  messageBox.style.fontSize = "20px";
   messageBox.style.borderRadius = "10px";
   messageBox.style.fontWeight = "bold"; // 設定文字為粗體
- messageBox.style.width = "auto"; // 使寬度自動調整
+  messageBox.style.whiteSpace = "pre-wrap"; // 允許文字換行
+   messageBox.style.width = "auto"; // 使寬度自動調整
    
 
   const button = document.createElement("button");
