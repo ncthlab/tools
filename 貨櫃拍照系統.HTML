@@ -10,6 +10,43 @@
          style="max-width: 100px; height: auto;">
     <title>貨櫃拍照系統</title>
     <style>
+
+      // 自定義訊息框
+function showMessage(message, callback) {
+  const messageBox = document.createElement("div");
+  messageBox.textContent = message;
+  messageBox.style.position = "fixed";
+  messageBox.style.top = "50%";
+  messageBox.style.left = "50%";
+  messageBox.style.transform = "translate(-50%, -50%)";
+  messageBox.style.backgroundColor = "#fff";
+  messageBox.style.padding = "20px";
+  messageBox.style.border = "2px solid #003366";
+  messageBox.style.zIndex = 9999;
+  messageBox.style.textAlign = "center";
+  messageBox.style.fontSize = "16px";
+  messageBox.style.borderRadius = "10px";
+
+  const button = document.createElement("button");
+  button.textContent = "確定";
+  button.style.marginTop = "10px";
+  button.style.padding = "10px";
+  button.style.fontSize = "14px";
+  button.style.cursor = "pointer";
+  button.style.backgroundColor = "#003366";
+  button.style.color = "#fff";
+  button.style.border = "none";
+  button.style.borderRadius = "5px";
+  
+  button.addEventListener("click", () => {
+    document.body.removeChild(messageBox);
+    callback(); // 執行後續操作
+  });
+
+  messageBox.appendChild(button);
+  document.body.appendChild(messageBox);
+}
+      
       body {
         font-family: Arial, sans-serif;
         padding: 20px;
@@ -228,8 +265,7 @@ function updateCurrentTime() {
         fileListSection.style.display = "block"; // 顯示檔名列表區域
         updateInfo();
  // 初次提示拍攝位置
-  alert(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
-        nextDirection();
+  showMessage(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,nextDirection());
       });
 
       // 顯示下一個拍攝位置
