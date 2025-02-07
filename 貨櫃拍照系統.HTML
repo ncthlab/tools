@@ -304,21 +304,26 @@ setTimeout(function() {
   }
 
   if (currentIndex < directions.length) {
-    alert(`下一張拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
+      setTimeout(function() {
+          alert(`下一張拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
+            
   } else {
+    setTimeout(function() {
     alert("所有照片已完成拍攝!");
+    }, 0);
   }
-  // 設置一個timeout確保流程不會被阻斷
-    setTimeout(() => {
+  
         resetPreview();
         nextDirection();
-    }, 0); // 立刻執行
+  
 });
 
 
       retakeButton.addEventListener("click", () => {
+  setTimeout(function() {
         // 提示指定拍攝位置
   alert(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
+   }, 0);
         resetPreview();
         cameraInput.click();
       });
@@ -344,8 +349,10 @@ setTimeout(function() {
 
   locationSelect.addEventListener("change", (event) => {
     currentIndex = parseInt(event.target.value);
+    setTimeout(function() {
       // 顯示選擇的指定位置
     alert(`您選擇的拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
+ }, 0);
     resetPreview();
     nextDirection();
     locationSelect.remove(); // 選擇後自動移除下拉選單
