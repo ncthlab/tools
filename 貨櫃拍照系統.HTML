@@ -274,6 +274,8 @@ function updateCurrentTime() {
 
 
       retakeButton.addEventListener("click", () => {
+        // 提示指定拍攝位置
+  alert(`當前拍攝位置：${directions[currentIndex]}\n\n若需要重新拍攝請拍完後按【V】\n 並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
         resetPreview();
         cameraInput.click();
       });
@@ -300,7 +302,7 @@ function updateCurrentTime() {
   locationSelect.addEventListener("change", (event) => {
     currentIndex = parseInt(event.target.value);
       // 顯示選擇的指定位置
-    alert(`您選擇的拍攝位置：${directions[currentIndex]}`);
+    alert(`您選擇的拍攝位置：${directions[currentIndex]}\n\n若需要重新拍攝請拍完後按【V】\n 並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
     resetPreview();
     nextDirection();
     locationSelect.remove(); // 選擇後自動移除下拉選單
