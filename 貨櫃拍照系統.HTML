@@ -12,7 +12,7 @@
     <style>
 
       // 自定義訊息框
-function showMessage(message, callback) {
+function showMessage(message, callback = () => {}) {  // 預設 callback 為空函數
   const messageBox = document.createElement("div");
   messageBox.textContent = message;
   messageBox.style.position = "fixed";
@@ -38,9 +38,11 @@ function showMessage(message, callback) {
   button.style.border = "none";
   button.style.borderRadius = "5px";
   
-  button.addEventListener("click", () => {
+   button.addEventListener("click", () => {
     document.body.removeChild(messageBox);
-    callback(); // 執行後續操作
+    if (typeof callback === "function") {
+      callback(); // 如果有回呼函數則執行
+    }
   });
 
   messageBox.appendChild(button);
