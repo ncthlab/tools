@@ -11,43 +11,41 @@
     <title>貨櫃拍照系統</title>
     <style>
 
-      // 自定義訊息框
-function showMessage(message, callback = () => {}) {  // 預設 callback 為空函數
-  const messageBox = document.createElement("div");
-  messageBox.textContent = message;
-  messageBox.style.position = "fixed";
-  messageBox.style.top = "50%";
-  messageBox.style.left = "50%";
-  messageBox.style.transform = "translate(-50%, -50%)";
-  messageBox.style.backgroundColor = "#fff";
-  messageBox.style.padding = "20px";
-  messageBox.style.border = "2px solid #003366";
-  messageBox.style.zIndex = 9999;
-  messageBox.style.textAlign = "center";
-  messageBox.style.fontSize = "16px";
-  messageBox.style.borderRadius = "10px";
+      document.addEventListener("DOMContentLoaded", function () {
+      function showMessage(message, callback = () => {}) {
+        const messageBox = document.createElement("div");
+        messageBox.textContent = message;
+        messageBox.style.position = "fixed";
+        messageBox.style.top = "50%";
+        messageBox.style.left = "50%";
+        messageBox.style.transform = "translate(-50%, -50%)";
+        messageBox.style.backgroundColor = "#fff";
+        messageBox.style.padding = "20px";
+        messageBox.style.border = "2px solid #003366";
+        messageBox.style.zIndex = 9999;
+        messageBox.style.textAlign = "center";
+        messageBox.style.fontSize = "16px";
+        messageBox.style.borderRadius = "10px";
 
-  const button = document.createElement("button");
-  button.textContent = "確定";
-  button.style.marginTop = "10px";
-  button.style.padding = "10px";
-  button.style.fontSize = "14px";
-  button.style.cursor = "pointer";
-  button.style.backgroundColor = "#003366";
-  button.style.color = "#fff";
-  button.style.border = "none";
-  button.style.borderRadius = "5px";
-  
-   button.addEventListener("click", () => {
-    document.body.removeChild(messageBox);
-    if (typeof callback === "function") {
-      callback(); // 如果有回呼函數則執行
-    }
-  });
+        const button = document.createElement("button");
+        button.textContent = "確定";
+        button.style.marginTop = "10px";
+        button.style.padding = "10px";
+        button.style.fontSize = "14px";
+        button.style.cursor = "pointer";
+        button.style.backgroundColor = "#003366";
+        button.style.color = "#fff";
+        button.style.border = "none";
+        button.style.borderRadius = "5px";
 
-  messageBox.appendChild(button);
-  document.body.appendChild(messageBox);
-}
+        button.addEventListener("click", () => {
+          document.body.removeChild(messageBox);
+          callback();
+        });
+
+        messageBox.appendChild(button);
+        document.body.appendChild(messageBox);
+      }
       
       body {
         font-family: Arial, sans-serif;
