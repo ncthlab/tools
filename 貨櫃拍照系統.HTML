@@ -262,7 +262,7 @@ function updateCurrentTime() {
         fileListSection.style.display = "block"; // 顯示檔名列表區域
         updateInfo();
        // 初次提示拍攝位置
-        showMessage(`當前拍攝位置：【${directions[currentIndex]}】<br><br>若需要重新拍攝請按【↺】<br>或拍完按【V】後並於頁面下方點選【重新拍攝】即可<br>請勿直接跳出相機頁面。`);
+        showMessage(`當前拍攝位置：【${directions[currentIndex]}】<br><br>若需要重新拍攝請按【↺】<br>或拍完按【V】後並於頁面下方點選【重新拍攝】即可<br>請勿直接跳出相機頁面。`), () => {
         nextDirection();
       });
 
@@ -334,7 +334,7 @@ function updateCurrentTime() {
   }
 
   if (currentIndex < directions.length) {
-    showMessage(`下一張拍攝位置：【${directions[currentIndex]}】<br><br>若需要重新拍攝請按【↺】<br>或拍完按【V】後並於頁面下方點選【重新拍攝】即可<br>請勿直接跳出相機頁面。`);
+    showMessage(`下一張拍攝位置：【${directions[currentIndex]}】<br><br>若需要重新拍攝請按【↺】<br>或拍完按【V】後並於頁面下方點選【重新拍攝】即可<br>請勿直接跳出相機頁面。`), () => {
   } else {
     showMessage("所有照片已完成拍攝!");
   }
@@ -346,7 +346,7 @@ function updateCurrentTime() {
 
       retakeButton.addEventListener("click", () => {
         // 提示指定拍攝位置
-  showMessage(`當前拍攝位置：【${directions[currentIndex]}】<br><br>若需要重新拍攝請按【↺】<br>或拍完按【V】後並於頁面下方點選【重新拍攝】即可<br>請勿直接跳出相機頁面。`);
+  showMessage(`當前拍攝位置：【${directions[currentIndex]}】<br><br>若需要重新拍攝請按【↺】<br>或拍完按【V】後並於頁面下方點選【重新拍攝】即可<br>請勿直接跳出相機頁面。`), () => {
         resetPreview();
         cameraInput.click();
       });
@@ -373,7 +373,7 @@ function updateCurrentTime() {
   locationSelect.addEventListener("change", (event) => {
     currentIndex = parseInt(event.target.value);
       // 顯示選擇的指定位置
-    showMessage(`您選擇的拍攝位置：【${directions[currentIndex]}】<br><br>若需要重新拍攝請按【↺】<br>或拍完按【V】後並於頁面下方點選【重新拍攝】即可<br>請勿直接跳出相機頁面。`);
+    showMessage(`您選擇的拍攝位置：【${directions[currentIndex]}】<br><br>若需要重新拍攝請按【↺】<br>或拍完按【V】後並於頁面下方點選【重新拍攝】即可<br>請勿直接跳出相機頁面。`), () => {
     resetPreview();
     nextDirection();
     locationSelect.remove(); // 選擇後自動移除下拉選單
