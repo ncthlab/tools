@@ -155,6 +155,7 @@ function showMessage(message, callback) {
   messageBox.style.fontWeight = "bold"; // 設定文字為粗體
   messageBox.style.whiteSpace = "pre-wrap"; // 允許文字換行
  messageBox.style.width = "auto"; // 使寬度自動調整
+   
 
   const button = document.createElement("button");
   button.textContent = "確定";
@@ -166,6 +167,7 @@ function showMessage(message, callback) {
   button.style.color = "#fff";
   button.style.border = "none";
   button.style.borderRadius = "5px";
+  button.style.display = "block"; // 使按鈕顯示在下一行
   
   button.addEventListener("click", () => {
     document.body.removeChild(messageBox);
