@@ -177,6 +177,7 @@ function updateCurrentTime() {
     currentTimeElement.textContent = `現在時間：${formattedDate} (${weekday}) ${timeString}`;
       }
 
+      updateCurrentTime(); // 頁面加載時立即執行
       setInterval(updateCurrentTime, 60000); // 每分鐘更新一次時間
 
       // 格式化時間為 YYYY-MM-DD HH:MM:SS
