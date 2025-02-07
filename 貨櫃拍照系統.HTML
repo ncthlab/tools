@@ -72,7 +72,15 @@ input[type="text"] {
     margin-right: 0;       /* 確保右側無間距 */
     width: 200px;          /* 可以設定寬度，視需要調整 */
 }
-      
+      #footer {
+    position: fixed;         /* 固定在頁面底部 */
+    bottom: 0;               /* 距離底部 0 距離 */
+    right: 0;                /* 靠右對齊 */
+    padding: 10px;           /* 可調整內邊距 */
+    
+    font-size: 12px;         /* 調整字體大小 */
+    color: #A9A9A9;          /* 淡灰色字體 */
+}
     </style>
   </head>
   <body>
@@ -113,7 +121,7 @@ input[type="text"] {
   <h3>已拍攝位置列表：</h3>
   <ul id="fileList"></ul>
 </div>
-  
+  <div id="footer">by 技術服務部</div>
     <script>
       const directions = [
         "卸櫃前後面", "封條", "卸櫃前左側", "卸櫃前前面",  "卸櫃前右側", 
