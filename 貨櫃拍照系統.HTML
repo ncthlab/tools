@@ -167,11 +167,11 @@ function updateCurrentTime() {
     // 取得時間
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
 
     // 格式化日期和時間
     const formattedDate = `${year}／${month}／${day}`;
-    const timeString = `${hours}：${minutes}：${seconds}`;
+    const timeString = `${hours}：${minutes}`;
 
     // 顯示在頁面
     currentTimeElement.textContent = `現在時間：${formattedDate} (${weekday}) ${timeString}`;
