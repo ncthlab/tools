@@ -170,11 +170,11 @@ function updateCurrentTime() {
     const seconds = String(now.getSeconds()).padStart(2, '0');
 
     // 格式化日期和時間
-    const formattedDate = `${year}/${month}/${day}`;
+    const formattedDate = `${year}／${month}／${day}`;
     const timeString = `${hours}:${minutes}:${seconds}`;
 
     // 顯示在頁面
-    currentTimeElement.textContent = `目前時間：${formattedDate} (${weekday}) ${timeString}`;
+    currentTimeElement.textContent = `現在時間：${formattedDate} (${weekday}) ${timeString}`;
       }
 
       setInterval(updateCurrentTime, 1000); // 每秒更新一次時間
