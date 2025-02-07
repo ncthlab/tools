@@ -137,42 +137,7 @@ position: relative;     /* 使其相對於父元素定位 */
   <div id="footer">By 技術服務部</div>
     <script>
 
-      // 自定義訊息框
-function showMessage(message, callback) {
-  const messageBox = document.createElement("div");
-  messageBox.textContent = message;
-  messageBox.style.position = "fixed";
-  messageBox.style.top = "50%";
-  messageBox.style.left = "50%";
-  messageBox.style.transform = "translate(-50%, -50%)";
-  messageBox.style.backgroundColor = "#fff";
-  messageBox.style.padding = "20px";
-  messageBox.style.border = "2px solid #000;
-  messageBox.style.zIndex = 9999;
-  messageBox.style.textAlign = "center";
-  messageBox.style.fontSize = "16px";
-  messageBox.style.font-weight: bold; /* 字體粗體 */
-  messageBox.style.borderRadius = "10px";
-
-  const button = document.createElement("button");
-  button.textContent = "確定";
-  button.style.marginTop = "10px";
-  button.style.padding = "10px";
-  button.style.fontSize = "14px";
-  button.style.cursor = "pointer";
-  button.style.backgroundColor = "#003366";
-  button.style.color = "#fff";
-  button.style.border = "none";
-  button.style.borderRadius = "5px";
-  
-  button.addEventListener("click", () => {
-    document.body.removeChild(messageBox);
-    callback(); // 執行後續操作
-  });
-
-  messageBox.appendChild(button);
-  document.body.appendChild(messageBox);
-}
+      
 
       // 點擊圖片顯示訊息視窗
         document.getElementById('floatingImage').addEventListener('click', function() {
@@ -255,7 +220,42 @@ function updateCurrentTime() {
 
       containerIdInput.addEventListener("input", checkInputs);
       batchIdInput.addEventListener("input", checkInputs);
+// 自定義訊息框
+function showMessage(message, callback) {
+  const messageBox = document.createElement("div");
+  messageBox.textContent = message;
+  messageBox.style.position = "fixed";
+  messageBox.style.top = "50%";
+  messageBox.style.left = "50%";
+  messageBox.style.transform = "translate(-50%, -50%)";
+  messageBox.style.backgroundColor = "#fff";
+  messageBox.style.padding = "20px";
+  messageBox.style.border = "2px solid #000;
+  messageBox.style.zIndex = 9999;
+  messageBox.style.textAlign = "center";
+  messageBox.style.fontSize = "16px";
+  messageBox.style.font-weight: bold; /* 字體粗體 */
+  messageBox.style.borderRadius = "10px";
 
+  const button = document.createElement("button");
+  button.textContent = "確定";
+  button.style.marginTop = "10px";
+  button.style.padding = "10px";
+  button.style.fontSize = "14px";
+  button.style.cursor = "pointer";
+  button.style.backgroundColor = "#003366";
+  button.style.color = "#fff";
+  button.style.border = "none";
+  button.style.borderRadius = "5px";
+  
+  button.addEventListener("click", () => {
+    document.body.removeChild(messageBox);
+    callback(); // 執行後續操作
+  });
+
+  messageBox.appendChild(button);
+  document.body.appendChild(messageBox);
+}
       // 顯示開始拍攝畫面
       startButton.addEventListener("click", () => {
         startSection.style.display = "none";
