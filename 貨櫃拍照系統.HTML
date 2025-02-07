@@ -219,14 +219,49 @@ function updateCurrentTime() {
       containerIdInput.addEventListener("input", checkInputs);
       batchIdInput.addEventListener("input", checkInputs);
 
-      // 顯示開始拍攝畫面
+
+      // 自訂非阻塞提示框函式
+function showMessage(message, callback) {
+  const modal = document.createElement("div");
+  modal.style.position = "fixed";
+  modal.style.top = "0";
+  modal.style.left = "0";
+  modal.style.width = "100%";
+  modal.style.height = "100%";
+  modal.style.background = "rgba(0, 0, 0, 0.5)";
+  modal.style.display = "flex";
+  modal.style.alignItems = "center";
+  modal.style.justifyContent = "center";
+  modal.style.zIndex = "9999";
+
+  const dialog = document.createElement("div");
+  dialog.style.background = "#fff";
+  dialog.style.padding = "20px";
+  dialog.style.borderRadius = "10px";
+  dialog.style.textAlign = "center";
+  dialog.innerText = message;
+
+  const button = document.createElement("button");
+  button.textContent = "確認";
+  button.style.marginTop = "10px";
+  button.onclick = () => {
+    document.body.removeChild(modal);
+    if (typeof callback === "function") callback();
+  };
+
+  dialog.appendChild(button);
+  modal.appendChild(dialog);
+  document.body.appendChild(modal);
+}
+
+// 顯示開始拍攝畫面
       startButton.addEventListener("click", () => {
         startSection.style.display = "none";
         photoSection.style.display = "block";
         fileListSection.style.display = "block"; // 顯示檔名列表區域
         updateInfo();
  // 初次提示拍攝位置
-  alert(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
+  showMessage(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
         nextDirection();
       });
 
