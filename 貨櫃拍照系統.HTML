@@ -3,13 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<img src="https://raw.githubusercontent.com/ncthlab/tools/main/bee.png" 
-     alt="蜜蜂" 
-     style="
-        position: fixed; 
-        top: 5px; 
-        right: 5px; 
-        z-index: 999;">
+    <!-- 懸浮圖片 -->
+    <img id="floatingImage" 
+         src="https://raw.githubusercontent.com/ncthlab/tools/main/bee.png" 
+         alt="蜜蜂" 
+         style="max-width: 100px; height: auto;">
     <title>貨櫃拍照系統</title>
     <style>
       body {
@@ -131,6 +129,12 @@ position: relative;     /* 使其相對於父元素定位 */
 </div>
   <div id="footer">By 技術服務部</div>
     <script>
+
+      // 點擊圖片顯示訊息視窗
+        document.getElementById('floatingImage').addEventListener('click', function() {
+            alert('嗡嗡嗡~ 翔蜜蜂向您問好！');
+        });
+      
       const directions = [
         "卸櫃前後面", "封條", "卸櫃前左側", "卸櫃前前面",  "卸櫃前右側", 
         "開櫃", "空櫃上面", "空櫃右側", "空櫃左側", "空櫃地板", "空櫃正面"
