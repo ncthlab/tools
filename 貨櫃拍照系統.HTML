@@ -153,6 +153,7 @@ function showMessage(message, callback) {
   messageBox.style.fontSize = "14px";
   messageBox.style.borderRadius = "10px";
   messageBox.style.fontWeight = "bold"; // 設定文字為粗體
+  messageBox.style.whiteSpace = "pre-wrap"; // 允許文字換行
 
   const button = document.createElement("button");
   button.textContent = "確定";
