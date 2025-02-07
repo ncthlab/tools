@@ -168,6 +168,8 @@ function showMessage(message, callback) {
   button.style.border = "none";
   button.style.borderRadius = "5px";
   button.style.display = "block"; // 使按鈕顯示在下一行
+  button.style.marginLeft = "auto"; // 左邊距離自動，保持中間
+  button.style.marginRight = "auto"; // 右邊距離自動，保持中間
   
   button.addEventListener("click", () => {
     document.body.removeChild(messageBox);
