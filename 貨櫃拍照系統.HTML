@@ -227,7 +227,10 @@ function updateCurrentTime() {
         updateInfo();
  // 初次提示拍攝位置
   alert(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
+        // 設置一個timeout確保流程不會被阻斷
+    setTimeout(() => {
         nextDirection();
+    }, 0); // 立刻執行
       });
 
       // 顯示下一個拍攝位置
@@ -302,9 +305,11 @@ function updateCurrentTime() {
   } else {
     alert("所有照片已完成拍攝!");
   }
-
-  resetPreview();
-  nextDirection();
+  // 設置一個timeout確保流程不會被阻斷
+    setTimeout(() => {
+        resetPreview();
+        nextDirection();
+    }, 0); // 立刻執行
 });
 
 
