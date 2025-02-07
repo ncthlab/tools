@@ -122,7 +122,7 @@ position: relative;     /* 使其相對於父元素定位 */
       <div id="controls">
         <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名" />
         <!-- 顯示提示文字 -->
-<p id="defaultMessage">預設照片檔名如上，若有需要修改，請手動修改<br>例如：卸櫃前右側→卸櫃前右側細節<br>若無請依系統設定為主。</p>
+        <p id="defaultMessage">預設照片檔名如上，若有需要修改，請手動修改<br>例如：卸櫃前右側→卸櫃前右側細節<br>若無請依系統設定為主。</p>
         <button id="nextButton">拍攝下一張</button>
         <button id="retakeButton">重新拍攝</button>
         <button id="finishButton">結束拍攝</button>
@@ -154,7 +154,7 @@ function showMessage(message, callback) {
   messageBox.style.borderRadius = "10px";
   messageBox.style.fontWeight = "bold"; // 設定文字為粗體
   messageBox.style.whiteSpace = "pre-wrap"; // 允許文字換行
-  messageBox.style.width = "400px"; // 設定寬度
+ messageBox.style.width = "auto"; // 使寬度自動調整
 
   const button = document.createElement("button");
   button.textContent = "確定";
