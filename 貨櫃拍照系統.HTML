@@ -122,7 +122,7 @@ position: relative;     /* 使其相對於父元素定位 */
       <div id="controls">
         <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名" />
         <!-- 顯示提示文字 -->
-<p id="defaultMessage">預設照片檔名如上，若有需要修改，請手動修改<br>例如：卸櫃前右側→卸櫃前右側細節<br>若無請依系統設定為主。</p>
+          <p id="defaultMessage">預設照片檔名如上，若有需要修改，請手動修改<br>例如：卸櫃前右側→卸櫃前右側細節<br>若無請依系統設定為主。</p>
         <button id="nextButton">拍攝下一張</button>
         <button id="retakeButton">重新拍攝</button>
         <button id="finishButton">結束拍攝</button>
@@ -139,7 +139,9 @@ position: relative;     /* 使其相對於父元素定位 */
 
       // 點擊圖片顯示訊息視窗
         document.getElementById('floatingImage').addEventListener('click', function() {
-            alert('嗡嗡嗡~ 翔蜜蜂向您問好！');
+          setTimeout(function() {
+          alert('嗡嗡嗡~ 翔蜜蜂向您問好！');
+            }, 0);   
         });
       
       const directions = [
@@ -225,12 +227,13 @@ function updateCurrentTime() {
         photoSection.style.display = "block";
         fileListSection.style.display = "block"; // 顯示檔名列表區域
         updateInfo();
+    
+
+setTimeout(function() {           
  // 初次提示拍攝位置
   alert(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
-        // 設置一個timeout確保流程不會被阻斷
-    setTimeout(() => {
+  }, 0);
         nextDirection();
-    }, 0); // 立刻執行
       });
 
       // 顯示下一個拍攝位置
