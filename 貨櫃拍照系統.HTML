@@ -353,12 +353,9 @@ function updateCurrentTime() {
 
       retakeButton.addEventListener("click", () => {
         // 提示指定拍攝位置
-  showMessage(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`);
-         // 顯示訊息視窗並等待確認
-    if (confirm(message)) {
-        resetPreview();  // 重置預覽
-        cameraInput.click();  // 開啟相機
-   }
+  showMessage(當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。);
+        resetPreview();
+        cameraInput.click();
       });
 
       finishButton.addEventListener("click", () => {
