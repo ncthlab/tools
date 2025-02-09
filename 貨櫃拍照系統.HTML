@@ -262,8 +262,11 @@ function showMessage(message, callback) {
         updateInfo();
  // 初次提示拍攝位置
   showMessage(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,
-        nextDirection);
+() => {
+        nextDirection();
+
       });
+});
 
       // 顯示下一個拍攝位置
       function nextDirection() {
@@ -333,10 +336,13 @@ function showMessage(message, callback) {
   }
 
   if (currentIndex < directions.length) {
-   showMessage(`下一張拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,() => {
+   showMessage(`下一張拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,
+() => {
       nextDirection();
       resetPreview(); // 執行 resetPreview
     }
+
+);
   } else {
     showMessage("所有照片已完成拍攝!");
   }
@@ -348,7 +354,8 @@ function showMessage(message, callback) {
 
       retakeButton.addEventListener("click", () => {
         // 提示指定拍攝位置
-  showMessage(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,() => {
+  showMessage(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,
+() => {
       nextDirection();
       resetPreview(); // 執行 resetPreview
     }
@@ -377,7 +384,8 @@ function showMessage(message, callback) {
   locationSelect.addEventListener("change", (event) => {
     currentIndex = parseInt(event.target.value);
       // 顯示選擇的指定位置
-    showMessage(`您選擇的拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,() => {
+    showMessage(`您選擇的拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,
+() => {
       nextDirection();
       resetPreview(); // 執行 resetPreview
     locationSelect.remove(); // 選擇後自動移除下拉選單
