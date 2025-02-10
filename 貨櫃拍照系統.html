@@ -274,17 +274,20 @@ function showMessage(message, callback) {
     if (typeof callback === "function") callback();
   };
 
-  dialog.appendChild(button);
-  modal.appendChild(dialog);
-  document.body.appendChild(modal);
-
-    // 添加範例圖片
+   // 添加範例圖片
   const exampleImage = document.createElement("img");
   exampleImage.src = exampleImages[directions[currentIndex]];
   exampleImage.alt = "拍攝位置範例";
   exampleImage.style.maxWidth = "50%";
   exampleImage.style.height = "auto";
   exampleImage.style.marginTop = "10px";  // 適當的間距
+  
+  dialog.appendChild(button); // 將圖片添加到對話框
+  dialog.appendChild(exampleImage);
+  modal.appendChild(dialog);
+  document.body.appendChild(modal);
+
+   
 }
 
 // 顯示開始拍攝畫面
