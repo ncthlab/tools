@@ -304,25 +304,18 @@ function showMessage(message, callback) {
       });
 });
 
-      // 當檔名輸入框內容變更時，將 customFileNameModified 設為 true
-  customFileNameInput.addEventListener('input', function() {
-    customFileNameModified = true;
-  });
-
-  // 顯示下一個拍攝位置
-  function nextDirection() {
-    if (currentIndex >= directions.length) {
-      showMessage(`所有照片已完成拍攝!`, () => {
-        return;
-      });
-    }
-    updateInfo();
-    customFileNameInput.value = directions[currentIndex];
-
-    // 如果檔名沒有修改，才跳轉到下一個位置
-    if (!customFileNameModified) {
-      currentIndex++;
-    }
+      // 顯示下一個拍攝位置
+      function nextDirection() {
+        if (currentIndex >= directions.length) {
+          showMessage(`所有照片已完成拍攝!"`,() => {
+          return;
+        })
+      }
+        updateInfo();
+        customFileNameInput.value = directions[currentIndex];
+        customFileNameModified = false; // 重置檔名修改狀態
+        cameraInput.click();
+      }
 
       // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
       function updateInfo() {
