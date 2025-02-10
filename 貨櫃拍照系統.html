@@ -274,6 +274,7 @@ function showMessage(message, callback) {
     if (typeof callback === "function") callback();
   };
 
+  if (message !== '嗡嗡嗡~ 翔蜜蜂向您問好！' && message !== '所有照片已完成拍攝!') {
    // 添加範例圖片
   const exampleImage = document.createElement("img");
   exampleImage.src = exampleImages[directions[currentIndex]];
@@ -281,12 +282,13 @@ function showMessage(message, callback) {
   exampleImage.style.maxWidth = "50%";
   exampleImage.style.height = "auto";
   exampleImage.style.marginTop = "10px";  // 適當的間距
+
+  dialog.appendChild(exampleImage);
+  }
   
   dialog.appendChild(button); // 將圖片添加到對話框
-  dialog.appendChild(exampleImage);
   modal.appendChild(dialog);
   document.body.appendChild(modal);
-
    
 }
 
