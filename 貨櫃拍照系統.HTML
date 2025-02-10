@@ -280,9 +280,10 @@ function showMessage(message, callback) {
       // 顯示下一個拍攝位置
       function nextDirection() {
         if (currentIndex >= directions.length) {
-          alert("所有照片已完成拍攝!");
+          showMessage(`所有照片已完成拍攝!"`,() => {
           return;
-        }
+        })
+      }
         updateInfo();
         customFileNameInput.value = directions[currentIndex];
         customFileNameModified = false; // 重置檔名修改狀態
@@ -329,7 +330,7 @@ function showMessage(message, callback) {
 
             if (directions[currentIndex] === "空櫃正面") {
               nextButton.style.display = "none";
-              alert("所有照片已完成拍攝!");
+              showMessage(`所有照片已完成拍攝!`);
             } else {
                 nextButton.style.display = "inline-block"; // 顯示「拍攝下一張」按鈕
             }
@@ -438,7 +439,7 @@ function updateFileList(fileName) {
 
       function generateZip() {
   if (images.length === 0) {
-    alert("沒有照片可以生成 ZIP 檔案");
+    showMessage(`沒有照片可以生成 ZIP 檔案`);
     return;
   }
 
