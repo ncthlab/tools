@@ -366,6 +366,11 @@ function showMessage(message, callback) {
         }
       });
 
+    // 當檔名輸入框內容變更時，將 customFileNameModified 設為 true
+  customFileNameInput.addEventListener('input', function() {
+    customFileNameModified = true;
+  });
+      
       nextButton.addEventListener("click", () => {
   saveCurrentImage();
   if (!customFileNameModified) {
