@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <!-- 懸浮圖片 -->
     <img id="floatingImage" 
          src="https://raw.githubusercontent.com/ncthlab/tools/main/bee.png" 
          alt="蜜蜂" 
          style="max-width: 100px; height: auto;">
+
     <title>貨櫃拍照系統</title>
     <style>
       body {
@@ -20,6 +22,7 @@
         margin-top: 10px;
         width: 100%;
       }
+      
       button {
         margin: 10px 5px;
         padding: 10px;
@@ -32,75 +35,78 @@
       }
 
       /* 禁用狀態：淡藍色背景，深灰色文字，邊框灰色 */
-#startButton:disabled {
-  background-color: #cce7ff;
-  color: #666666;
-  border: 2px solid #999999;
-  cursor: not-allowed;
-}
+      #startButton:disabled {
+        background-color: #cce7ff;
+        color: #666666;
+        border: 2px solid #999999;
+        cursor: not-allowed;
+      }
+      
       button:hover {
         background-color: #00509e; /* 按鈕懸停時的顏色變化 */
       }
       
-input[type="text"] {
-  margin: 10px 0;
-  padding: 8px;
-  font-size: 14px;
-  width: calc(100% - 20px);
-  background-color: #ffffff;  /* 白色填色 */
-  border: 1px solid #000000;    /* 輕微的邊框顏色，避免與背景色相同 */
-  border-radius: 5px;        /* 圓角邊框 */
-}
+      input[type="text"] {
+        margin: 10px 0;
+        padding: 8px;
+        font-size: 14px;
+        width: calc(100% - 20px);
+        background-color: #ffffff;  /* 白色填色 */
+        border: 1px solid #000000;    /* 輕微的邊框顏色，避免與背景色相同 */
+        border-radius: 5px;        /* 圓角邊框 */
+      }
+      
       #infoText {
         font-size: 18px;
         font-weight: bold;
         margin-bottom: 10px;
       }
+      
       .infoLine {
         font-size: 16px;
         margin-bottom: 5px;
       }
+      
       #currentTime {
         font-size: 14px;
         text-align: right;
         margin-bottom: 10px;
         font-weight: bold; /* 文字粗體 */
       }
-#defaultMessage {
-        
+      
+      #defaultMessage {
         font-size: 12px; /* 可以根據需要調整字體大小 */
         margin-top: 5px;
         font-weight: bold; /* 文字粗體 */
       }
       #locationSelect {
-    margin-right: 0;       /* 確保右側無間距 */
-    width: 100px;          /* 可以設定寬度，視需要調整 */
-position: relative;     /* 使其相對於父元素定位 */
-    top: 5px;              /* 根據需要調整位置，使其位於 "指定位置" 按鈕下方 */
-}
+        margin-right: 0;       /* 確保右側無間距 */
+        width: 100px;          /* 可以設定寬度，視需要調整 */
+        position: relative;     /* 使其相對於父元素定位 */
+        top: 5px;              /* 根據需要調整位置，使其位於 "指定位置" 按鈕下方 */
+      }
+      
       #footer {
-    position: fixed;         /* 固定在頁面底部 */
-    bottom: 0;               /* 距離底部 0 距離 */
-    right: 0;                /* 靠右對齊 */
-    padding: 10px;           /* 可調整內邊距 */
-    
-    font-size: 12px;         /* 調整字體大小 */
-    color: #A9A9A9;          /* 淡灰色字體 */
-}
+        position: fixed;         /* 固定在頁面底部 */
+        bottom: 0;               /* 距離底部 0 距離 */
+        right: 0;                /* 靠右對齊 */
+        padding: 10px;           /* 可調整內邊距 */
+        font-size: 12px;         /* 調整字體大小 */
+        color: #A9A9A9;          /* 淡灰色字體 */
+      }
 
- #floatingImage {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 999;
-        }
+     #floatingImage {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 999;
+      }
+
     </style>
   </head>
   <body>
-
-   
-
     <!-- 初始頁面 -->
+    
     <h2>貨櫃拍照系統</h2>
     <div id="currentTime"></div>
     <div id="startSection">
@@ -108,21 +114,23 @@ position: relative;     /* 使其相對於父元素定位 */
       <input type="text" id="batchId" placeholder="請輸入產品批號" />
       <button id="startButton" disabled>開始拍攝</button>
     </div>
-    
-    
+
     <!-- 拍攝頁面 -->
+    
     <div id="photoSection" style="display: none;">
-      <div id="infoText">
-        <div class="infoLine" id="containerInfo">貨櫃櫃號：</div>
-        <div class="infoLine" id="batchInfo">產品批號：</div>
-        <div class="infoLine" id="previousDirectionInfo" style="color: lightgray;"></div>
-        <div class="infoLine" id="directionInfo">當前拍攝位置：</div>
-      </div>
-      <canvas id="previewCanvas"></canvas>
+    <div id="infoText">
+      <div class="infoLine" id="containerInfo">貨櫃櫃號：</div>
+      <div class="infoLine" id="batchInfo">產品批號：</div>
+      <div class="infoLine" id="previousDirectionInfo" style="color: lightgray;"></div>
+      <div class="infoLine" id="directionInfo">當前拍攝位置：</div>
+    </div>
+      
+    <canvas id="previewCanvas"></canvas>
       <div id="controls">
         <input type="text" id="customFileName" placeholder="若需修改檔名，請輸入新檔名" />
-        <!-- 顯示提示文字 -->
-<p id="defaultMessage">預設照片檔名如上，若有需要修改，請手動修改<br>例如：卸櫃前右側→卸櫃前右側細節<br>若無請依系統設定為主。</p>
+        
+    <!-- 顯示提示文字 -->
+    <p id="defaultMessage">預設照片檔名如上，若有需要修改，請手動修改<br>例如：卸櫃前右側→卸櫃前右側細節<br>若無請依系統設定為主。</p>
         <button id="nextButton">拍攝下一張</button>
         <button id="retakeButton">重新拍攝</button>
         <button id="finishButton">結束拍攝</button>
