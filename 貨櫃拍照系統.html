@@ -164,11 +164,9 @@
       // 點擊圖片顯示訊息視窗
     document.getElementById('floatingImage').addEventListener('click', function() {
          // 在顯示訊息框前隱藏圖片
-  document.getElementById("exampleImage").style.display = "none";
+   document.getElementById("exampleImage").style.display = "none";
       // 顯示訊息視窗
-      showMessage('嗡嗡嗡~ 翔蜜蜂向您問好！', () => {
-        // 在訊息視窗關閉後恢復顯示圖片
-    document.getElementById("exampleImage").style.display = "block";
+      showMessage('嗡嗡嗡~ 翔蜜蜂向您問好！', () => {        
       });
     });
       const directions = [
