@@ -102,44 +102,6 @@
         z-index: 999;
       }
 
-      .progress-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .progress-bar {
-            display: flex;
-            width: 100%;
-            max-width: 500px;
-            border: 2px solid #333;
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-bar .step {
-            flex: 1;
-            height: 20px;
-            background-color: #ddd;
-            transition: background-color 0.3s ease;
-        }
-
-        .progress-bar .completed {
-            background-color: #4caf50;
-        }
-
-        .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 14px;
-            color: #333;
-            font-family: Cambria, serif; /* 確保進度文字也使用 Cambria 字體 */
-        }
-
     </style>
   </head>
   <body>
@@ -162,22 +124,6 @@
       <div class="infoLine" id="previousDirectionInfo" style="color: lightgray;"></div>
       <div class="infoLine" id="directionInfo">當前拍攝位置：</div>
     </div>
-      <!-- 拍攝進度條部分 -->
-    <div class="progress-container">
-        <div class="progress-bar">
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="step"></div>
-            <div class="progress-text">0/11</div> <!-- 顯示已拍攝張數/總共需求張數 -->
-        </div>
       
     <canvas id="previewCanvas"></canvas>
       <div id="controls">
@@ -200,22 +146,7 @@
   <div id="footer">By 技術服務部</div>
     <script>
 
-      let currentStep = 0;
-    const totalSteps = 11;
-
-    function updateProgress() {
-        if (currentStep < totalSteps) {
-            currentStep++;
-            const steps = document.querySelectorAll('.progress-bar .step');
-            for (let i = 0; i < currentStep; i++) {
-                steps[i].classList.add('completed');
-            }
-
-            // 更新顯示的拍攝張數
-            document.querySelector('.progress-text').textContent = `${currentStep}/${totalSteps}`;
-        }
-    }
-
+     
       // 點擊圖片顯示訊息視窗
         document.getElementById('floatingImage').addEventListener('click', function() {
              showMessage('嗡嗡嗡~ 翔蜜蜂向您問好！',
