@@ -162,13 +162,14 @@
 
      
       // 點擊圖片顯示訊息視窗
-        document.getElementById('floatingImage').addEventListener('click', function() {
+    document.getElementById('floatingImage').addEventListener('click', function() {
+      // 隱藏圖片
+      document.getElementById('exampleImage').style.display = 'none';
 
-          // 隱藏圖片
-    document.getElementById('exampleImage').style.display = 'none';
-             showMessage('嗡嗡嗡~ 翔蜜蜂向您問好！', () => {
-  });
+      // 顯示訊息視窗
+      showMessage('嗡嗡嗡~ 翔蜜蜂向您問好！', () => {
       });
+    });
       const directions = [
         "卸櫃前後面", "封條", "卸櫃前左側", "卸櫃前前面",  "卸櫃前右側", 
         "開櫃", "空櫃上面", "空櫃右側", "空櫃左側", "空櫃地板", "空櫃正面"
