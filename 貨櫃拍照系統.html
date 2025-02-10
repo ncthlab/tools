@@ -146,6 +146,20 @@
   <div id="footer">By 技術服務部</div>
     <script>
 
+      const exampleImages = {
+  "卸櫃前後面": "https://github.com/ncthlab/tools/blob/main/images/%E5%8D%B8%E6%AB%83%E5%89%8D%E5%BE%8C%E9%9D%A2.jpg",
+  "封條": "https://github.com/ncthlab/tools/blob/main/images/%E5%B0%81%E6%A2%9D.jpg",
+  "卸櫃前左側": "https://github.com/ncthlab/tools/blob/main/images/%E5%8D%B8%E6%AB%83%E5%89%8D%E5%B7%A6%E5%81%B4.jpg",
+  "卸櫃前前面": "https://github.com/ncthlab/tools/blob/main/images/%E5%8D%B8%E6%AB%83%E5%89%8D%E5%89%8D%E9%9D%A2.jpg",
+  "卸櫃前右側": "https://github.com/ncthlab/tools/blob/main/images/%E5%8D%B8%E6%AB%83%E5%89%8D%E5%8F%B3%E5%81%B4.jpg",
+  "開櫃": "https://github.com/ncthlab/tools/blob/main/images/%E9%96%8B%E6%AB%83.jpg",
+  "空櫃上面": "https://github.com/ncthlab/tools/blob/main/images/%E7%A9%BA%E6%AB%83%E4%B8%8A%E9%9D%A2.jpg",
+  "空櫃右側": "https://github.com/ncthlab/tools/blob/main/images/%E7%A9%BA%E6%AB%83%E5%8F%B3%E5%81%B4.jpg",
+  "空櫃左側": "https://github.com/ncthlab/tools/blob/main/images/%E7%A9%BA%E6%AB%83%E5%B7%A6%E5%81%B4.jpg",
+  "空櫃地板": "https://github.com/ncthlab/tools/blob/main/images/%E7%A9%BA%E6%AB%83%E5%9C%B0%E6%9D%BF.jpg",
+  "空櫃正面": "https://github.com/ncthlab/tools/blob/main/images/%E7%A9%BA%E6%AB%83%E6%AD%A3%E9%9D%A2.jpg"
+};
+
      
       // 點擊圖片顯示訊息視窗
         document.getElementById('floatingImage').addEventListener('click', function() {
@@ -263,6 +277,14 @@ function showMessage(message, callback) {
   dialog.appendChild(button);
   modal.appendChild(dialog);
   document.body.appendChild(modal);
+
+    // 添加範例圖片
+  const exampleImage = document.createElement("img");
+  exampleImage.src = exampleImages[directions[currentIndex]];
+  exampleImage.alt = "拍攝位置範例";
+  exampleImage.style.maxWidth = "50%";
+  exampleImage.style.height = "auto";
+  exampleImage.style.marginTop = "10px";  // 適當的間距
 }
 
 // 顯示開始拍攝畫面
