@@ -430,7 +430,7 @@ function showMessage(message, callback) {
     option.textContent = direction;
     locationSelect.appendChild(option);
   });
-
+locationSelect.selectedIndex = currentIndex;
   locationSelect.addEventListener("change", (event) => {
     currentIndex = parseInt(event.target.value);
       // 顯示選擇的指定位置
