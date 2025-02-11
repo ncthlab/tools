@@ -238,13 +238,13 @@ function updateCurrentTime() {
 
       // 確認是否兩個輸入欄位都填寫
       function checkInputs() {
-        containerId = containerIdInput.value.trim();
         batchId = batchIdInput.value.trim();
+        containerId = containerIdInput.value.trim();
         //startButton.disabled = !(containerId && batchId);
         startButton.disabled = !batchId;
       }
 
-      //containerIdInput.addEventListener("input", checkInputs);
+      containerIdInput.addEventListener("input", checkInputs);
       batchIdInput.addEventListener("input", checkInputs);
 
 
