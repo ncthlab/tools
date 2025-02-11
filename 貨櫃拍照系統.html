@@ -438,6 +438,7 @@ function showMessage(message, callback) {
   });
 locationSelect.selectedIndex = currentIndex;
   locationSelect.addEventListener("change", (event) => {
+    saveCurrentImage();
     currentIndex = parseInt(event.target.value);
       // 顯示選擇的指定位置
     showMessage(`您選擇的拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,
