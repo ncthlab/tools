@@ -112,8 +112,8 @@
     <h2>貨櫃拍照系統</h2>
     <div id="currentTime"></div>
     <div id="startSection">
-      <input type="text" id="containerId" placeholder="請輸入貨櫃櫃號" />
       <input type="text" id="batchId" placeholder="請輸入產品批號" />
+      <input type="text" id="containerId" placeholder="請輸入貨櫃櫃號" />
       <button id="startButton" disabled>開始拍攝</button>
     </div>
 
@@ -240,10 +240,11 @@ function updateCurrentTime() {
       function checkInputs() {
         containerId = containerIdInput.value.trim();
         batchId = batchIdInput.value.trim();
-        startButton.disabled = !(containerId && batchId);
+        //startButton.disabled = !(containerId && batchId);
+        startButton.disabled = !batchId;
       }
 
-      containerIdInput.addEventListener("input", checkInputs);
+      //containerIdInput.addEventListener("input", checkInputs);
       batchIdInput.addEventListener("input", checkInputs);
 
 
@@ -327,8 +328,8 @@ function showMessage(message, callback) {
 
       // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
       function updateInfo() {
-        containerInfo.textContent = `貨櫃櫃號：${containerId}`;
         batchInfo.textContent = `產品批號：${batchId}`;
+        containerInfo.textContent = `貨櫃櫃號：${containerId}`;
         directionInfo.textContent = `當前拍攝位置：【${directions[currentIndex]}】`;
         
         // 顯示上一個拍攝位置（若不是第一個拍攝位置）
@@ -491,7 +492,10 @@ function updateFileList(fileName) {
   }
 
   const zip = new JSZip();
-  const folderName = `${containerId}_${batchId}_${formatDate(new Date()).slice(0, 10)}`;
+  const folderName = containerId 
+  ? `${batchId}_${containerId}_${formatDate(new Date()).slice(0, 10)}`
+  : `${batchId}_${formatDate(new Date()).slice(0, 10)}`;
+  //const folderName = `${batchId}_${containerId}_${formatDate(new Date()).slice(0, 10)}`;
   const imgFolder = zip.folder(folderName);
 
   images.forEach((image, index) => {
