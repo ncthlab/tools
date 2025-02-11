@@ -381,6 +381,7 @@ function showMessage(message, callback) {
   });
       
       nextButton.addEventListener("click", () => {
+        locationSelect.remove(); // 選擇後自動移除下拉選單
   saveCurrentImage();
   if (!customFileNameModified) {
     currentIndex++;
@@ -403,6 +404,7 @@ function showMessage(message, callback) {
 
 
       retakeButton.addEventListener("click", () => {
+        locationSelect.remove(); // 選擇後自動移除下拉選單
         // 提示指定拍攝位置
   showMessage(`當前拍攝位置：【${directions[currentIndex]}】\n\n若需要重新拍攝請按【↺】\n 或拍完按【V】後並於頁面下方點選【重新拍攝】即可\n請勿直接跳出相機頁面。`,
 () => {
