@@ -381,6 +381,11 @@ function showMessage(message, callback) {
       
       nextButton.addEventListener("click", () => {
 
+        const locationSelect = document.getElementById("locationSelect");
+  if (locationSelect) {
+    locationSelect.remove(); // 從 DOM 中移除下拉選單
+  }
+
   saveCurrentImage();
   if (!customFileNameModified) {
     currentIndex++;
