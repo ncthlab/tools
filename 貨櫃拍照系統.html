@@ -328,8 +328,8 @@ function showMessage(message, callback) {
 
       // 更新貨櫃櫃號、產品批號、當前拍攝位置及上一個拍攝位置顯示
       function updateInfo() {
-        batchInfo.textContent = `產品批號：${batchId}`;
         containerInfo.textContent = `貨櫃櫃號：${containerId}`;
+        batchInfo.textContent = `產品批號：${batchId}`;
         directionInfo.textContent = `當前拍攝位置：【${directions[currentIndex]}】`;
         
         // 顯示上一個拍攝位置（若不是第一個拍攝位置）
