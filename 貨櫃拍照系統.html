@@ -253,8 +253,8 @@ function showMessage(message, callback) {
   modal.style.position = "fixed";
   modal.style.top = "0";
   modal.style.left = "0";
-  modal.style.width = "100%";
-  modal.style.height = "100%";
+  modal.style.MAXwidth = "50%";
+  modal.style.height = AUTO;
   modal.style.background = "rgba(0, 0, 0, 0.5)";
   modal.style.display = "flex";
   modal.style.alignItems = "center";
@@ -283,7 +283,7 @@ function showMessage(message, callback) {
   const exampleImage = document.createElement("img");
   exampleImage.src = exampleImages[directions[currentIndex]];
   exampleImage.alt = "拍攝位置範例";
-  exampleImage.style.maxWidth = "10%";
+  exampleImage.style.maxWidth = "20%";
   exampleImage.style.height = "auto";
   exampleImage.style.marginTop = "10px";  // 適當的間距
   exampleImage.style.display = "block"; 
