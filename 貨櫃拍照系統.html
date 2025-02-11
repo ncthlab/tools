@@ -421,7 +421,7 @@ function showMessage(message, callback) {
   // 檢查是否已經存在下拉選單，若存在則不再新增
   let existingSelect = document.getElementById("locationSelect");
     if (existingSelect) return;
-locationSelect.selectedIndex = currentIndex;
+
   const locationSelect = document.createElement("select");
   locationSelect.id = "locationSelect"; // 設定 ID，方便檢查是否已存在
   directions.forEach((direction, index) => {
