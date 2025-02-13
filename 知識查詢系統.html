@@ -51,6 +51,19 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
+        /* 資料夾樣式 */
+        #file-list li.folder {
+            background-color: #fff3cd;  /* 淡黃色 */
+            font-weight: bold;  /* 字體加粗 */
+            text-decoration: underline;  /* 底線 */
+        }
+
+        /* 檔案樣式 */
+        #file-list li.file {
+            font-weight: normal;
+            text-decoration: none;
+        }
+
         #file-content {
             padding: 20px;
             background-color: #ffffff;
@@ -126,6 +139,7 @@
             if (currentPath !== '') {
                 const backButton = document.createElement('li');
                 backButton.textContent = '返回上一層';
+                backButton.classList.add('folder');  // 使用資料夾樣式
                 backButton.onclick = () => goBack();
                 fileListElement.appendChild(backButton);
             }
@@ -133,10 +147,13 @@
             // 顯示檔案及資料夾
             files.forEach(file => {
                 const listItem = document.createElement('li');
-                listItem.textContent = file.name;
                 if (file.type === 'dir') {
+                    listItem.classList.add('folder');  // 資料夾使用淡黃色並加粗字體
+                    listItem.textContent = file.name;
                     listItem.onclick = () => openFolder(file.name);
                 } else {
+                    listItem.classList.add('file');  // 檔案樣式
+                    listItem.textContent = file.name;
                     listItem.onclick = () => showFileContent(file.name);
                 }
                 fileListElement.appendChild(listItem);
@@ -163,13 +180,14 @@
             const contentElement = document.getElementById('file-content');
             contentElement.innerHTML = ''; // 清空現有的檔案內容
 
+            // 判斷檔案副檔名並顯示對應內容
             if (fileExtension === 'pdf' || fileExtension === 'ppt' || fileExtension === 'pptx' || fileExtension === 'doc' || fileExtension === 'docx') {
-                // 使用 Google Docs Viewer 來顯示 PDF、PPT、Word 檔案
+                // 使用 Google Docs Viewer 顯示 PDF、PPT、Word 檔案
                 const iframe = document.createElement('iframe');
                 iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl + currentPath + '/' + fileName)}&embedded=true`;
                 contentElement.appendChild(iframe);
-            } else {
-                // 顯示其他文件類型（例如純文本）
+            } else if (fileExtension === 'txt' || fileExtension === 'md') {
+                // 顯示純文本檔案
                 try {
                     const response = await fetch(`${fileUrl}${currentPath}/${fileName}`);
                     const content = await response.text();
@@ -177,6 +195,9 @@
                 } catch (error) {
                     console.error("無法顯示檔案內容：", error);
                 }
+            } else {
+                // 顯示其他無法預覽的格式提示
+                contentElement.innerHTML = '無法顯示此格式的檔案。';
             }
         }
 
