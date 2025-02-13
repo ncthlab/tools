@@ -8,6 +8,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
         th { background-color: #4CAF50; color: white; }
+        input, textarea { width: 100%; padding: 5px; }
     </style>
     <script src="https://apis.google.com/js/api.js"></script>
 </head>
@@ -68,12 +69,19 @@
             
             let data = [
                 inputs[0].value, inputs[1].value, weekDay, inputs[2].value, inputs[3].value, inputs[4].value,
-                inputs[5].value, inputs[6].value, inputs[7].value, inputs[8].value, "", "", "", "", "", "", ""
+                inputs[5].value, inputs[6].value, inputs[7].value, inputs[8].value, 
+                `<input type="number" placeholder="驗收數量">`, 
+                `<input type="text" placeholder="入庫人">`, 
+                `<input type="text" placeholder="入庫單號">`, 
+                `<input type="date" placeholder="入庫日期">`, 
+                `<input type="text" placeholder="驗收狀態">`, 
+                `<input type="text" placeholder="歸檔">`, 
+                `<textarea placeholder="備註"></textarea>`
             ];
             
             data.forEach(value => {
                 let cell = document.createElement("td");
-                cell.textContent = value;
+                cell.innerHTML = value;
                 newRow.appendChild(cell);
             });
             document.querySelector("#scheduleTable tbody").appendChild(newRow);
