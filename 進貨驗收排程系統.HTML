@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>進貨排程表</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #4CAF50; color: white; }
+    </style>
+    <script src="https://apis.google.com/js/api.js"></script>
+</head>
+<body>
+    <h2>進貨資料輸入</h2>
+    <form id="purchaseForm">
+        <label>欲交日期: <input type="date" id="dueDate" required></label>
+        <label>進貨日期: <input type="date" id="arrivalDate" required></label>
+        <label>批號: <input type="text" id="batchNo" required></label>
+        <label>品號: <input type="text" id="itemNo" required></label>
+        <label>品名: <input type="text" id="itemName" required></label>
+        <label>採購數量: <input type="number" id="quantity" required></label>
+        <label>單位: <input type="text" id="unit" required></label>
+        <label>進貨倉位: <input type="text" id="storage" required></label>
+        <label>採購人: <input type="text" id="purchaser" required></label>
+        <button type="button" onclick="addData()">新增</button>
+    </form>
+
+    <h2>進貨排程表</h2>
+    <table id="scheduleTable">
+        <thead>
+            <tr>
+                <th>欲交日期</th>
+                <th>進貨日期</th>
+                <th>進貨日(星期)</th>
+                <th>批號</th>
+                <th>品號</th>
+                <th>品名</th>
+                <th>採購數量</th>
+                <th>單位</th>
+                <th>進貨倉位</th>
+                <th>採購人</th>
+                <th>驗收數量</th>
+                <th>入庫人</th>
+                <th>入庫單號</th>
+                <th>入庫日期</th>
+                <th>驗收狀態</th>
+                <th>歸檔</th>
+                <th>備註</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <button onclick="saveToGoogleSheet()">存檔</button>
+    <button onclick="loadFromGoogleSheet()">載入</button>
+
+    <script>
+        const SHEET_ID = "1ELkhl0PPwsqNBvFZnJJmWKwvMAGH6-7CbJEabKk3uSE";
+        const API_KEY = "AIzaSyD0Fevx-feBWfMZ0C7rxE85IxVDTAhaL08";
+        const DISCOVERY_DOC = "https://sheets.googleapis.com/$discovery/rest?version=v4";
+        const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+
+        function addData() {
+            let form = document.getElementById("purchaseForm");
+            let newRow = document.createElement("tr");
+            let inputs = form.querySelectorAll("input");
+            let weekDay = new Date(inputs[1].value).toLocaleDateString("zh-TW", { weekday: "long" });
+            
+            let data = [
+                inputs[0].value, inputs[1].value, weekDay, inputs[2].value, inputs[3].value, inputs[4].value,
+                inputs[5].value, inputs[6].value, inputs[7].value, inputs[8].value, "", "", "", "", "", "", ""
+            ];
+            
+            data.forEach(value => {
+                let cell = document.createElement("td");
+                cell.textContent = value;
+                newRow.appendChild(cell);
+            });
+            document.querySelector("#scheduleTable tbody").appendChild(newRow);
+        }
+
+        function saveToGoogleSheet() {
+            if (!gapi.client.sheets) {
+                alert("Google API 未初始化");
+                return;
+            }
+            let table = document.getElementById('scheduleTable');
+            let rows = table.getElementsByTagName('tr');
+            let data = [];
+
+            for (let i = 1; i < rows.length; i++) {
+                let cells = rows[i].getElementsByTagName('td');
+                let rowData = [];
+                for (let j = 0; j < cells.length; j++) {
+                    rowData.push(cells[j].innerText);
+                }
+                data.push(rowData);
+            }
+
+            gapi.client.sheets.spreadsheets.values.append({
+                spreadsheetId: SHEET_ID,
+                range: "A1",
+                valueInputOption: "RAW",
+                insertDataOption: "INSERT_ROWS",
+                resource: { values: data }
+            }).then(() => alert("資料已新增到 Google Sheet"));
+        }
+
+        function loadFromGoogleSheet() {
+            if (!gapi.client.sheets) {
+                alert("Google API 未初始化");
+                return;
+            }
+            gapi.client.sheets.spreadsheets.values.get({
+                spreadsheetId: SHEET_ID,
+                range: "A1:Q"
+            }).then(response => {
+                let values = response.result.values;
+                let tbody = document.getElementById('scheduleTable').getElementsByTagName('tbody')[0];
+                tbody.innerHTML = "";
+                values.forEach(row => {
+                    let tr = document.createElement('tr');
+                    row.forEach(cell => {
+                        let td = document.createElement('td');
+                        td.textContent = cell;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+            }).catch(error => {
+                console.error("載入資料錯誤", error);
+                alert("載入資料錯誤，請檢查 Google API 設定！");
+            });
+        }
+
+        // Google API 初始化
+        function initClient() {
+            console.log("初始化開始...");
+            gapi.load('client', () => {
+                gapi.client.init({
+                    apiKey: API_KEY,
+                    discoveryDocs: [DISCOVERY_DOC],
+                    scope: SCOPES
+                }).then(() => {
+                    console.log("Google API 初始化成功");
+                }).catch(error => {
+                    console.error("Google API 初始化失敗", error);
+                    alert("Google API 初始化失敗，請檢查您的 API 金鑰或設定！");
+                });
+            });
+        }
+
+        // 開始加載 Google API 客戶端
+        window.onload = initClient;
+    </script>
+</body>
+</html>
