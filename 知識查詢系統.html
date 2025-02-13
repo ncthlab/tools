@@ -1,33 +1,214 @@
-// 顯示檔案內容
-async function showFileContent(fileName) {
-    const fileExtension = fileName.split('.').pop().toLowerCase();
-    const contentElement = document.getElementById('file-content');
-    contentElement.innerHTML = ''; // 清空現有的檔案內容
-
-    const filePath = `${fileUrl}${currentPath ? currentPath + '/' : ''}${fileName}`;
-
-    // 判斷檔案副檔名並顯示對應內容
-    if (fileExtension === 'pdf' || fileExtension === 'ppt' || fileExtension === 'pptx' || fileExtension === 'doc' || fileExtension === 'docx') {
-        // 使用 Google Docs Viewer 顯示 PDF、PPT、Word 檔案
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(filePath)}&embedded=true`;
-        contentElement.appendChild(iframe);
-    } else if (fileExtension === 'txt' || fileExtension === 'md') {
-        // 顯示純文本檔案
-        try {
-            const response = await fetch(filePath);
-            if (response.ok) {
-                const content = await response.text();
-                contentElement.textContent = content;  // 顯示檔案內容
-            } else {
-                contentElement.innerHTML = '無法顯示此檔案內容。';
-            }
-        } catch (error) {
-            console.error("無法顯示檔案內容：", error);
-            contentElement.innerHTML = '無法顯示檔案內容。';
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知識查詢系統</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
-    } else {
-        // 顯示其他無法預覽的格式提示
-        contentElement.innerHTML = '此格式無法預覽。';
-    }
-}
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            margin: 0;
+        }
+
+        #search {
+            padding: 15px;
+            margin: 10px 0;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        #file-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            height: calc(100% - 120px);
+            box-sizing: border-box;
+        }
+
+        #file-list li {
+            padding: 12px;
+            margin: 6px 0;
+            background-color: #ffffff;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 資料夾樣式 */
+        #file-list li.folder {
+            background-color: #fff3cd;  /* 淡黃色 */
+            font-weight: bold;  /* 字體加粗 */
+            text-decoration: underline;  /* 底線 */
+        }
+
+        /* 檔案樣式 */
+        #file-list li.file {
+            font-weight: normal;
+            text-decoration: none;
+        }
+
+        #file-content {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        iframe {
+            width: 100%;
+            height: 80vh;
+            border: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                margin: 0;
+            }
+
+            #file-list li {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            iframe {
+                height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>知識查詢系統</h1>
+    <input type="text" id="search" placeholder="搜尋檔案..." oninput="searchFiles()">
+    <ul id="file-list">
+        <!-- 文件列表將在此顯示 -->
+    </ul>
+
+    <div id="file-content">
+        <!-- 檔案內容將在此顯示 -->
+    </div>
+
+    <script>
+        const fileUrl = 'https://raw.githubusercontent.com/ncthlab/tools/main/%E7%9F%A5%E8%AD%98%E5%BA%AB/';
+        let files = [];
+        let currentPath = '';  // 記錄當前資料夾路徑
+
+        // 從 GitHub 取得檔案或資料夾列表
+        async function getFileList(path = '') {
+            try {
+                const response = await fetch(`https://api.github.com/repos/ncthlab/tools/contents/%E7%9F%A5%E8%AD%98%E5%BA%AB/${path}`);
+                const data = await response.json();
+                if (Array.isArray(data)) {
+                    files = data;
+                    loadFiles();
+                } else {
+                    alert('無法載入資料夾內容');
+                }
+            } catch (error) {
+                console.error("無法取得檔案列表：", error);
+            }
+        }
+
+        // 顯示檔案及資料夾
+        function loadFiles() {
+            const fileListElement = document.getElementById('file-list');
+            fileListElement.innerHTML = '';  // 清空現有的列表
+
+            // 顯示返回上一層按鈕
+            if (currentPath !== '') {
+                const backButton = document.createElement('li');
+                backButton.textContent = '返回上一層';
+                backButton.classList.add('folder');  // 使用資料夾樣式
+                backButton.onclick = () => goBack();
+                fileListElement.appendChild(backButton);
+            }
+
+            // 顯示檔案及資料夾
+            files.forEach(file => {
+                const listItem = document.createElement('li');
+                if (file.type === 'dir') {
+                    listItem.classList.add('folder');  // 資料夾使用淡黃色並加粗字體
+                    listItem.textContent = file.name;
+                    listItem.onclick = () => openFolder(file.name);
+                } else {
+                    listItem.classList.add('file');  // 檔案樣式
+                    listItem.textContent = file.name;
+                    listItem.onclick = () => showFileContent(file.name);
+                }
+                fileListElement.appendChild(listItem);
+            });
+        }
+
+        // 開啟資料夾
+        function openFolder(folderName) {
+            currentPath = folderName;
+            getFileList(currentPath);  // 取得該資料夾內容
+        }
+
+        // 返回上一層資料夾
+        function goBack() {
+            const pathParts = currentPath.split('/');
+            pathParts.pop();  // 移除當前資料夾
+            currentPath = pathParts.join('/');
+            getFileList(currentPath);  // 重新載入上一層資料夾內容
+        }
+
+         // 顯示檔案內容
+        async function showFileContent(fileName) {
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            const contentElement = document.getElementById('file-content');
+            contentElement.innerHTML = ''; // 清空現有的檔案內容
+
+            const filePath = `${fileUrl}${fileName}`;
+
+            if (fileExtension === 'ppt' || fileExtension === 'pptx') {
+                // 這裡假設您將 PPT 檔案上傳至 Google Drive 並取得共享的公開鏈接
+                const googleSlidesLink = 'https://docs.google.com/presentation/d/your-google-drive-ppt-file-id/embed'; // 替換為您的 PPT 檔案 ID
+                const iframe = document.createElement('iframe');
+                iframe.src = googleSlidesLink;
+                contentElement.appendChild(iframe);
+            } else {
+                contentElement.innerHTML = '此檔案格式不支援直接預覽。';
+            }
+        }
+
+
+
+
+
+
+        // 搜尋檔案
+        function searchFiles() {
+            const searchQuery = document.getElementById('search').value.toLowerCase();
+            const filteredFiles = files.filter(file => file.name.toLowerCase().includes(searchQuery));
+            files = filteredFiles;  // 更新顯示的檔案
+            loadFiles();  // 重新載入過濾後的檔案
+        }
+
+        // 初始化頁面
+        getFileList();
+    </script>
+
+</body>
+</html>
