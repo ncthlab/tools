@@ -114,10 +114,18 @@
         let files = [];
         let currentPath = '';  // 記錄當前資料夾路徑
 
+        const token = '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'; // 請替換成您的 GitHub Token
+        const headers = {
+            'Authorization': `token ${token}`,
+        };
+
         // 從 GitHub 取得檔案或資料夾列表
         async function getFileList(path = '') {
             try {
-                const response = await fetch(`https://api.github.com/repos/ncthlab/tools/contents/%E7%9F%A5%E8%AD%98%E5%BA%AB/${path}`);
+                const response = await fetch(`https://api.github.com/repos/ncthlab/tools/contents/%E7%9F%A5%E8%AD%98%E5%BA%AB/${path}`, {
+                    method: 'GET',
+                    headers: headers
+                });
                 const data = await response.json();
                 if (Array.isArray(data)) {
                     files = data;
@@ -223,3 +231,4 @@ async function showFileContent(fileName) {
 
 </body>
 </html>
+
