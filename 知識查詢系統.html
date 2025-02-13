@@ -174,28 +174,39 @@
             getFileList(currentPath);  // 重新載入上一層資料夾內容
         }
 
-         // 顯示檔案內容
-        async function showFileContent(fileName) {
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-            const contentElement = document.getElementById('file-content');
-            contentElement.innerHTML = ''; // 清空現有的檔案內容
+        // 顯示檔案內容
+async function showFileContent(fileName) {
+    const fileExtension = fileName.split('.').pop().toLowerCase();
+    const contentElement = document.getElementById('file-content');
+    contentElement.innerHTML = ''; // 清空現有的檔案內容
 
-            const filePath = `${fileUrl}${fileName}`;
+    const filePath = `${fileUrl}${currentPath ? currentPath + '/' : ''}${fileName}`;
 
-            if (fileExtension === 'ppt' || fileExtension === 'pptx') {
-                // 這裡假設您將 PPT 檔案上傳至 Google Drive 並取得共享的公開鏈接
-                const googleSlidesLink = 'https://docs.google.com/presentation/d/your-google-drive-ppt-file-id/embed'; // 替換為您的 PPT 檔案 ID
-                const iframe = document.createElement('iframe');
-                iframe.src = googleSlidesLink;
-                contentElement.appendChild(iframe);
+    // 判斷檔案副檔名並顯示對應內容
+    if (fileExtension === 'pdf' || fileExtension === 'ppt' || fileExtension === 'pptx' || fileExtension === 'doc' || fileExtension === 'docx') {
+        // 使用 Google Docs Viewer 顯示 PDF、PPT、Word 檔案
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(filePath)}&embedded=true`;
+        contentElement.appendChild(iframe);
+    } else if (fileExtension === 'txt' || fileExtension === 'md') {
+        // 顯示純文本檔案
+        try {
+            const response = await fetch(filePath);
+            if (response.ok) {
+                const content = await response.text();
+                contentElement.textContent = content;  // 顯示檔案內容
             } else {
-                contentElement.innerHTML = '此檔案格式不支援直接預覽。';
+                contentElement.innerHTML = '無法顯示此檔案內容。';
             }
+        } catch (error) {
+            console.error("無法顯示檔案內容：", error);
+            contentElement.innerHTML = '無法顯示檔案內容。';
         }
-
-
-
-
+    } else {
+        // 顯示其他無法預覽的格式提示
+        contentElement.innerHTML = '此格式無法預覽。';
+    }
+}
 
 
         // 搜尋檔案
