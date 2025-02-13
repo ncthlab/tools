@@ -5,26 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>知識查詢系統</title>
     <style>
-        body {
+        html, body {
+            height: 100%;
+            margin: 0;
             font-family: Arial, sans-serif;
-            margin: 10px;
+        }
+
+        body {
             background-color: #f8f9fa;
         }
+
         h1 {
             text-align: center;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            margin: 0;
         }
+
         #search {
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 15px;
+            margin: 10px 0;
             width: 100%;
             font-size: 16px;
             border-radius: 5px;
             border: 1px solid #ddd;
+            box-sizing: border-box;
         }
+
         #file-list {
             list-style-type: none;
             padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            height: calc(100% - 120px);
+            box-sizing: border-box;
         }
+
         #file-list li {
             padding: 12px;
             margin: 6px 0;
@@ -33,34 +50,36 @@
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+
         #file-content {
-            margin-top: 20px;
             padding: 20px;
             background-color: #ffffff;
             border-radius: 5px;
-            white-space: pre-wrap;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
+
         iframe {
             width: 100%;
-            height: 600px;
+            height: 80vh;
             border: none;
         }
-        /* 手機螢幕尺寸適配 */
+
         @media (max-width: 600px) {
             body {
-                margin: 5px;
+                margin: 0;
             }
-            #search {
-                font-size: 14px;
-                padding: 10px;
-            }
+
             #file-list li {
                 padding: 10px;
                 font-size: 14px;
             }
+
             iframe {
-                height: 400px;
+                height: 60vh;
             }
         }
     </style>
@@ -112,15 +131,11 @@
             const contentElement = document.getElementById('file-content');
             contentElement.innerHTML = ''; // 清空現有的檔案內容
 
-            if (fileExtension === 'pdf') {
-                // 顯示 PDF 檔案，使用 Google Docs Viewer
+            if (fileExtension === 'pdf' || fileExtension === 'ppt' || fileExtension === 'pptx' || fileExtension === 'doc' || fileExtension === 'docx') {
+                // 使用 Google Docs Viewer 來顯示 PDF、PPT、Word 檔案
                 const iframe = document.createElement('iframe');
                 iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl + fileName)}&embedded=true`;
                 contentElement.appendChild(iframe);
-            } else if (fileExtension === 'ppt' || fileExtension === 'pptx' || fileExtension === 'doc' || fileExtension === 'docx') {
-                // 顯示 PPT 或 Word 檔案的 Google 文件預覽連結
-                const previewUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl + fileName)}`;
-                contentElement.innerHTML = `<a href="${previewUrl}" target="_blank">點擊此處查看 ${fileName}</a>`;
             } else {
                 // 顯示其他文件類型（例如純文本）
                 try {
