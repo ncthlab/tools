@@ -110,31 +110,36 @@
     </div>
 
     <script>
+fetch('https://tight-dream-15b2.ncthfd1984.workers.dev/%E5%85%A7%E8%A8%93%E8%AA%B2%E7%A8%8B', {
+    method: 'GET',
+    mode: 'no-cors'
+});
     const apiBaseUrl = "https://tight-dream-15b2.ncthfd1984.workers.dev/";  
     let files = [];
     let currentPath = '';  
 
     async function getFileList(path = '') {
-        console.log("請求 API 路徑：", apiBaseUrl + encodeURIComponent(path));
-        try {
-            const response = await fetch(apiBaseUrl + encodeURIComponent(path));
-            const data = await response.json();
-            console.log("API 回傳資料：", data);
-            
-            if (Array.isArray(data)) {
-                files = data;
-                loadFiles();
-            } else {
-                alert('無法載入資料夾內容');
-            }
-        } catch (error) {
-            console.error("無法取得檔案列表：", error);
-        }
-    }
+    console.log("請求 API 路徑：", apiBaseUrl + encodeURIComponent(path));
+    try {
+        const response = await fetch(apiBaseUrl + encodeURIComponent(path));
+        const data = await response.json();
+        console.log("API 回傳資料：", data);  // 查看回傳的資料結構
 
-    function loadFiles() {
+        if (Array.isArray(data)) {
+            files = data;
+            loadFiles();
+        } else {
+            alert('無法載入資料夾內容');
+        }
+    } catch (error) {
+        console.error("無法取得檔案列表：", error);
+    }
+}
+
+
+   function loadFiles() {
     const fileListElement = document.getElementById('file-list');
-    fileListElement.innerHTML = '';  
+    fileListElement.innerHTML = '';  // 清空文件列表
 
     if (currentPath !== '') {
         const backButton = document.createElement('li');
@@ -144,25 +149,19 @@
         fileListElement.appendChild(backButton);
     }
 
-    // 檢查 files 是否為陣列
     if (Array.isArray(files)) {
         files.forEach(file => {
             const listItem = document.createElement('li');
+            const isFolder = !file.path.includes('.');  // 如果路徑中不包含點（即無副檔名），則為資料夾
 
-            // 打印檔案的類型以供檢查
-            console.log(`檔案名稱: ${file.name}, 類型: ${file.type}`);
-
-            if (file.type === 'folder') {  // 修改為檢查 'folder'
+            if (isFolder) {
                 listItem.classList.add('folder');
                 listItem.textContent = file.name;
                 listItem.onclick = () => openFolder(file.name);
-            } else if (file.type === 'file') {
+            } else {
                 listItem.classList.add('file');
                 listItem.textContent = file.name;
                 listItem.onclick = () => showFileContent(file.name);
-            } else {
-                listItem.textContent = `${file.name} (未知類型)`;
-                listItem.style.color = 'red';  // 顯示顏色以提醒
             }
 
             fileListElement.appendChild(listItem);
@@ -171,6 +170,9 @@
         alert('資料格式錯誤');
     }
 }
+
+
+
 
 
     async function openFolder(folderName) {
@@ -182,12 +184,13 @@
 
     try {
         const response = await fetch(apiBaseUrl + encodeURIComponent(currentPath));
+	mode: 'no-cors'  // 禁用 CORS 進行請求
         const data = await response.json();
         console.log("API 回傳資料：", data);
 
-        // 假設資料夾的 'content' 屬性包含資料夾內的內容
-        if (data && Array.isArray(data.content)) {
-            files = data.content;
+        // 確保資料結構正確
+        if (data && Array.isArray(data)) {
+            files = data;
             loadFiles();
         } else {
             alert('資料夾內沒有檔案或格式不正確');
@@ -197,6 +200,7 @@
         alert('無法取得資料夾內容');
     }
 }
+
 
 
     // 返回上一層
