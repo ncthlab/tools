@@ -110,104 +110,198 @@
     </div>
 
     <script>
-    const apiBaseUrl = "https://tight-dream-15b2.ncthfd1984.workers.dev/";  // Cloudflare Workers API URL
-    let files = [];
-    let currentPath = '';  // 記錄當前資料夾路徑
+    const apiBaseUrl = "https://tight-dream-15b2.ncthfd1984.workers.dev/";  
+let files = [];
+let currentPath = '';  
 
-    // 從 Cloudflare Worker 取得檔案或資料夾列表
-    async function getFileList(path = '') {
+async function getFileList(path = '') {
+    console.log("請求 API 路徑：", apiBaseUrl + encodeURIComponent(path));
+    try {
+        //const response = await fetch(apiBaseUrl + encodeURIComponent(path));
+        const response = await fetch(`${apiBaseUrl}${path}`);
+	const data = await response.json();
+        console.log("API 回傳資料：", data);
+        if (Array.isArray(data)) {
+            files = data;
+            loadFiles();
+        } else {
+            alert('無法載入資料夾內容');
+        }
+    } catch (error) {
+        console.error("無法取得檔案列表：", error);
+    }
+}
+
+async function openFolder(folderName) {
+    currentPath = currentPath === '' ? folderName : `${currentPath}/${folderName}`;
+    console.log("進入資料夾，當前路徑：", currentPath);
+    await getFileList(currentPath);  // 只執行一次 API 請求
+}
+
+// 返回上一層
+function goBack() {
+    const pathParts = currentPath.split('/');
+    pathParts.pop();  // 刪除最後一部分，返回上一層
+    currentPath = pathParts.join('/');  // 更新當前路徑
+    console.log("返回上一層，當前路徑：", currentPath);
+    getFileList(currentPath);  // 載入上一層資料夾的內容
+}
+
+// 顯示檔案內容
+async function showFileContent(fileName) {
+    const fileExtension = fileName.split('.').pop().toLowerCase();
+    const contentElement = document.getElementById('file-content');
+    contentElement.innerHTML = '';  
+
+    const filePath = `https://raw.githubusercontent.com/ncthlab/tools/main/%E7%9F%A5%E8%AD%98%E5%BA%AB/${currentPath ? currentPath + '/' : ''}${fileName}`;
+
+    if (['pdf', 'ppt', 'pptx', 'doc', 'docx'].includes(fileExtension)) {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(filePath)}&embedded=true`;
+        contentElement.appendChild(iframe);
+    } else if (['txt', 'md'].includes(fileExtension)) {
         try {
-            const response = await fetch(apiBaseUrl + path);
-            const data = await response.json();
-            if (Array.isArray(data)) {
-                files = data;
-                loadFiles();
+            const response = await fetch(filePath);
+            if (response.ok) {
+                const content = await response.text();
+                contentElement.textContent = content;
             } else {
-                alert('無法載入資料夾內容');
+                contentElement.innerHTML = '無法顯示此檔案內容。';
             }
         } catch (error) {
-            console.error("無法取得檔案列表：", error);
+            console.error("無法顯示檔案內容：", error);
+            contentElement.innerHTML = '無法顯示檔案內容。';
         }
+    } else {
+        contentElement.innerHTML = '此格式無法預覽。';
     }
+}
 
-    // 顯示檔案及資料夾
-    function loadFiles() {
-        const fileListElement = document.getElementById('file-list');
-        fileListElement.innerHTML = '';  // 清空現有的列表
-
-        // 顯示返回上一層按鈕
-        if (currentPath !== '') {
-            const backButton = document.createElement('li');
-            backButton.textContent = '返回上一層';
-            backButton.classList.add('folder');
-            backButton.onclick = () => goBack();
-            fileListElement.appendChild(backButton);
-        }
-
-        // 顯示檔案及資料夾
-        files.forEach(file => {
-            const listItem = document.createElement('li');
-            if (file.type === 'dir') {
-                listItem.classList.add('folder');
-                listItem.textContent = file.name;
-                listItem.onclick = () => openFolder(file.name);
-            } else {
-                listItem.classList.add('file');
-                listItem.textContent = file.name;
-                listItem.onclick = () => showFileContent(file.name);
-            }
-            fileListElement.appendChild(listItem);
-        });
-    }
-
-    // 開啟資料夾
-    function openFolder(folderName) {
-        currentPath = folderName;
-        getFileList(currentPath);
-    }
-
-    // 返回上一層資料夾
-    function goBack() {
-        const pathParts = currentPath.split('/');
-        pathParts.pop();
-        currentPath = pathParts.join('/');
-        getFileList(currentPath);
-    }
-
-    // 顯示檔案內容
-    async function showFileContent(fileName) {
-        const fileExtension = fileName.split('.').pop().toLowerCase();
-        const contentElement = document.getElementById('file-content');
-        contentElement.innerHTML = '';  // 清空現有的檔案內容
-
-        const filePath = `https://raw.githubusercontent.com/ncthlab/tools/main/%E7%9F%A5%E8%AD%98%E5%BA%AB/${currentPath ? currentPath + '/' : ''}${fileName}`;
-
-        // 判斷檔案副檔名並顯示對應內容
-        if (fileExtension === 'pdf' || fileExtension === 'ppt' || fileExtension === 'pptx' || fileExtension === 'doc' || fileExtension === 'docx') {
-            const iframe = document.createElement('iframe');
-            iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(filePath)}&embedded=true`;
-            contentElement.appendChild(iframe);
-        } else if (fileExtension === 'txt' || fileExtension === 'md') {
-            try {
-                const response = await fetch(filePath);
-                if (response.ok) {
-                    const content = await response.text();
-                    contentElement.textContent = content;
-                } else {
-                    contentElement.innerHTML = '無法顯示此檔案內容。';
-                }
-            } catch (error) {
-                console.error("無法顯示檔案內容：", error);
-                contentElement.innerHTML = '無法顯示檔案內容。';
-            }
+async function getFileList(path = '') {
+    console.log("請求 API 路徑：", apiBaseUrl + encodeURIComponent(path));
+    try {
+        const response = await fetch(`${apiBaseUrl}${path}`);
+        const data = await response.json();
+        console.log("API 回傳資料：", data);
+        if (Array.isArray(data)) {
+            files = data;
+            loadFiles();
         } else {
-            contentElement.innerHTML = '此格式無法預覽。';
+            console.error('API 回應格式錯誤');
         }
+    } catch (error) {
+        console.error("無法取得檔案列表：", error);
+    }
+}
+
+
+function loadFiles() {
+    const fileListElement = document.getElementById('file-list');
+    fileListElement.innerHTML = '';  // 清空現有的列表
+
+    // 若有當前路徑，顯示返回上一層的選項
+    if (currentPath !== '') {
+        const backButton = document.createElement('li');
+        backButton.textContent = '返回上一層';
+        backButton.classList.add('folder');
+        backButton.onclick = () => goBack();  // 返回上一層
+        fileListElement.appendChild(backButton);
     }
 
-    // 初始化頁面
-    getFileList();
-</script
+    // 顯示檔案和資料夾列表
+    files.forEach(file => {
+        console.log("處理的文件資料：", file);  // 增加這行來檢查每個文件的資料
+
+        // 如果沒有type，通過名稱推測資料夾
+        if (!file.type) {
+            if (file.name.includes('/')) {
+                file.type = 'folder'; // 基於名稱假設是資料夾
+            } else {
+                file.type = 'file'; // 假設是檔案
+            }
+        }
+
+        const listItem = document.createElement('li');
+
+        // 確認資料夾或檔案
+        if (file.type === 'folder' || file.type === 'dir') {
+            listItem.classList.add('folder');
+            listItem.textContent = file.name;
+            listItem.onclick = () => openFolder(file.name);  // 點擊進入資料夾
+        } else if (file.type === 'file') {
+            listItem.classList.add('file');
+            listItem.textContent = file.name;
+            listItem.onclick = () => showFileContent(file.name);  // 顯示檔案內容
+        } else {
+            listItem.textContent = `${file.name} (未知類型)`;
+        }
+
+        fileListElement.appendChild(listItem);
+    });
+}
+
+
+
+
+// 點擊資料夾進入資料夾
+async function openFolder(folderName) {
+    //const newPath = currentPath ? `${currentPath}/${folderName}` : folderName;
+    const newPath = currentPath === '' ? folderName : `${currentPath}/${folderName}`;
+console.log("新的 API 請求：", newPath);
+getFileList(newPath);
+
+	console.log("目前路徑：", newPath);
+
+    // 更新當前路徑
+    currentPath = newPath;
+
+    // 請求並顯示資料夾內容
+    await getFileList(currentPath);
+}
+
+// 返回上一層
+function goBack() {
+    const pathParts = currentPath.split('/');
+    pathParts.pop();  // 刪除最後一部分，返回上一層
+    currentPath = pathParts.join('/');  // 更新當前路徑
+    console.log("返回上一層，當前路徑：", currentPath);
+    getFileList(currentPath);  // 載入上一層資料夾的內容
+}
+
+// 顯示檔案內容
+async function showFileContent(fileName) {
+    const fileExtension = fileName.split('.').pop().toLowerCase();
+    const contentElement = document.getElementById('file-content');
+    contentElement.innerHTML = '';  
+
+    const filePath = `https://raw.githubusercontent.com/ncthlab/tools/main/%E7%9F%A5%E8%AD%98%E5%BA%AB/${currentPath ? currentPath + '/' : ''}${fileName}`;
+
+    if (['pdf', 'ppt', 'pptx', 'doc', 'docx'].includes(fileExtension)) {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(filePath)}&embedded=true`;
+        contentElement.appendChild(iframe);
+    } else if (['txt', 'md'].includes(fileExtension)) {
+        try {
+            const response = await fetch(filePath);
+            if (response.ok) {
+                const content = await response.text();
+                contentElement.textContent = content;
+            } else {
+                contentElement.innerHTML = '無法顯示此檔案內容。';
+            }
+        } catch (error) {
+            console.error("無法顯示檔案內容：", error);
+            contentElement.innerHTML = '無法顯示檔案內容。';
+        }
+    } else {
+        contentElement.innerHTML = '此格式無法預覽。';
+    }
+}
+
+getFileList(); // 初次載入檔案列表
+
+
+</script>
 
 
 </body>
