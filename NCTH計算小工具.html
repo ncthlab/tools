@@ -134,9 +134,8 @@
         <label for="mode">選擇計算模式：</label>
         <select id="mode" onchange="switchMode()">
 		<option value="築爐">築爐用料計算</option>
-            <option value="爐底">築爐爐底用料包數</option>
-            <option value="築盆">築盆用料包數</option>
-            <option value="濕砂檢測">濕砂檢測 標準試片預估重量</option>
+                <option value="築盆">築盆用料計算</option>
+            <option value="濕砂檢測">濕模砂 標準試片預估重量</option>
 	    <option value="黏土轉換">濕模砂 黏土轉換預估天數</option>
             <option value="砂鐵比">濕模砂 砂鐵比計算</option>
         
@@ -156,14 +155,14 @@
 					
                    			<label for="H1">爐體高度 H1 (mm)：</label>
             				<input type="number" id="H1" placeholder="輸入 H1">
-
-            				<label for="H2">內桶高度 H2 (mm)：</label>
-            				<input type="number" id="H2" placeholder="輸入 H2">
-
-            				<label for="H3">內桶斜角高度 H3 (mm)：</label>
-            				<input type="number" id="H3" placeholder="輸入 H3">
 					
-					<label for="material">用料：</label>
+					<label for="H4">爐底高度 H4 (mm)：</label>
+            				<input type="number" id="H4" placeholder="輸入 H4">
+
+            				<label for="D1">爐頂直徑 D1 (mm)：</label>
+            				<input type="number" id="D1" placeholder="輸入 D1">
+            				
+					<label for="material">築爐用料：</label>
             					<select id="material">
                 					<option value="2">電熔氧化矽 GQ</option>
                 					<option value="1.9">電熔氧化矽 GQ35</option>
@@ -172,11 +171,11 @@
 				</div>
 				<div class="right-column">
 
-            				<label for="H4">爐底高度 H4 (mm)：</label>
-            				<input type="number" id="H4" placeholder="輸入 H4">
+					<label for="H2">內桶高度 H2 (mm)：</label>
+            				<input type="number" id="H2" placeholder="輸入 H2">
 
-            				<label for="D1">爐頂直徑 D1 (mm)：</label>
-            				<input type="number" id="D1" placeholder="輸入 D1">
+            				<label for="H3">內桶斜角高度 H3 (mm)：</label>
+            				<input type="number" id="H3" placeholder="輸入 H3">
 
             				<label for="D2">內桶頂直徑 D2 (mm)：</label>
             				<input type="number" id="D2" placeholder="輸入 D2">
@@ -186,26 +185,12 @@
 					
                 		</div>
 				
-	
+		 
+
             		</div>
+			<p style="color: gray;">其計算值僅供參考，仍需依實際施作數量為主</p>
         	</div>
 		
-        <div id="爐底" class="mode hidden">
-            <label for="diameter">爐底直徑 (mm)：</label>
-            <input type="number" id="diameter" placeholder="輸入爐底直徑">
-
-            <label for="height">爐底高度 (mm)：</label>
-            <input type="number" id="height" placeholder="輸入爐底高度">
-
-            <label for="material">用料：</label>
-            <select id="material">
-                <option value="2">電熔氧化矽 GQ</option>
-                <option value="1.9">電熔氧化矽 GQ35</option>
-                <option value="2.9">氧化鋁 10V16</option>
-            </select>
-        </div>
-
-
         <div id="築盆" class="mode hidden">
             <div class="flex-container">
                 <!-- 外盆欄 -->
@@ -236,6 +221,7 @@
             <!-- 水分需求量欄位 -->
             <label for="moistureContent">水分需求量 (%)：</label>
 	<input type="number" id="moistureContent" placeholder="輸入水分需求量" value="6.17">
+		<p style="color: gray;">其計算值僅供參考，仍需依實際施作數量為主</p>
         </div>
 
         <div id="濕砂檢測" class="mode hidden">
@@ -287,11 +273,9 @@
 		<p id="TransferDaysResultHint" class="hidden" style="color: #808080; font-size: 14px;">因材料添加回到儲砂桶之分佈可能不均，故預估天數已多一倍。</p>
 		<p id="SandMetalRatioResult" class="hidden" >砂鐵比 =  <span id="SandMetalRatio"> </p>
 		
-
-				<p id="側邊用料量">側邊用料量：<span id="側邊用料量值"></span> kg (<span id="側邊用料包數"></span> 包)</p>
-				<p id="斜角用料量">斜角用料量：<span id="斜角用料量值"></span> kg (<span id="斜角用料包數"></span> 包)</p>
-
 				<p id="爐底用料量">爐底用料量：<span id="爐底用料量值"></span> kg (<span id="爐底用料包數"></span> 包)</p>
+				<p id="斜角用料量">斜角用料量：<span id="斜角用料量值"></span> kg (<span id="斜角用料包數"></span> 包)</p>
+				<p id="側邊用料量">側邊用料量：<span id="側邊用料量值"></span> kg (<span id="側邊用料包數"></span> 包)</p>
 				<p id="整體用料量">整體用料量：<span id="整體用料量值"></span> kg (<span id="整體用料包數"></span> 包)</p>
 
 		</div>
@@ -330,29 +314,8 @@
             var mode = document.getElementById("mode").value;
 
             // 隱藏和顯示對應的計算模式
-            if (mode === "爐底") {
-                document.getElementById("爐底").style.display = "block";
-                document.getElementById("築盆").style.display = "none";
-                document.getElementById("濕砂檢測").style.display = "none";
-		document.getElementById("黏土轉換").style.display = "none";
-		document.getElementById("砂鐵比").style.display = "none";
-		document.getElementById("築爐").style.display = "none";
-
-
-                document.getElementById("waterWeightResult").classList.add("hidden");
-		document.getElementById("materialWeightResult").classList.remove("hidden");
-		document.getElementById("packageCountResult").classList.remove("hidden");
-                document.getElementById("standardSampleWeightResult").classList.add("hidden");
-		document.getElementById("sampleWeightHint").classList.add("hidden");
-		document.getElementById("DailyCyclesResult").classList.add("hidden");
-		document.getElementById("TransferDaysResult").classList.add("hidden");
-		document.getElementById("TransferDaysResultHint").classList.add("hidden");
-		document.getElementById("MoldWeight").classList.add("hidden");
-		document.getElementById("CastingWeight").classList.add("hidden");
-		document.getElementById("SandMetalRatioResult").classList.add("hidden");
-		
-	} else if (mode === "築爐") {
-                document.getElementById("爐底").style.display = "none";
+            if (mode === "築爐") {
+                
                 document.getElementById("築盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "none";
 		document.getElementById("黏土轉換").style.display = "none";
@@ -370,10 +333,13 @@
 		document.getElementById("MoldWeight").classList.add("hidden");
 		document.getElementById("CastingWeight").classList.add("hidden");
 		document.getElementById("SandMetalRatioResult").classList.add("hidden");
+		document.getElementById("側邊用料量").classList.remove("hidden");
+		document.getElementById("斜角用料量").classList.remove("hidden");
+		document.getElementById("爐底用料量").classList.remove("hidden");
+		document.getElementById("整體用料量").classList.remove("hidden");
 		
 
             } else if (mode === "築盆") {
-                document.getElementById("爐底").style.display = "none";
                 document.getElementById("築盆").style.display = "block";
                 document.getElementById("濕砂檢測").style.display = "none";
 		document.getElementById("黏土轉換").style.display = "none";
@@ -390,10 +356,14 @@
 		document.getElementById("TransferDaysResultHint").classList.add("hidden");
 		document.getElementById("MoldWeight").classList.add("hidden");
 		document.getElementById("CastingWeight").classList.add("hidden");
-		document.getElementById("SandMetalRatioResult").classList.add("hidden");		
+		document.getElementById("SandMetalRatioResult").classList.add("hidden");
+		document.getElementById("側邊用料量").classList.add("hidden");
+		document.getElementById("斜角用料量").classList.add("hidden");
+		document.getElementById("爐底用料量").classList.add("hidden");
+		document.getElementById("整體用料量").classList.add("hidden");
+			
 
             } else if (mode === "濕砂檢測") {
-                document.getElementById("爐底").style.display = "none";
                 document.getElementById("築盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "block";
 		document.getElementById("黏土轉換").style.display = "none";
@@ -411,10 +381,14 @@
 		document.getElementById("MoldWeight").classList.add("hidden");
 		document.getElementById("CastingWeight").classList.add("hidden");
 		document.getElementById("SandMetalRatioResult").classList.add("hidden");
+		document.getElementById("側邊用料量").classList.add("hidden");
+		document.getElementById("斜角用料量").classList.add("hidden");
+		document.getElementById("爐底用料量").classList.add("hidden");
+		document.getElementById("整體用料量").classList.add("hidden");
+	
 		
 		} else if (mode === "黏土轉換") {
-		document.getElementById("爐底").style.display = "none";
-                document.getElementById("築盆").style.display = "none";
+		document.getElementById("築盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "none";
 		document.getElementById("黏土轉換").style.display = "block";
 		document.getElementById("砂鐵比").style.display = "none";
@@ -431,10 +405,14 @@
 		document.getElementById("MoldWeight").classList.add("hidden");
 		document.getElementById("CastingWeight").classList.add("hidden");
 		document.getElementById("SandMetalRatioResult").classList.add("hidden");
+		document.getElementById("側邊用料量").classList.add("hidden");
+		document.getElementById("斜角用料量").classList.add("hidden");
+		document.getElementById("爐底用料量").classList.add("hidden");
+		document.getElementById("整體用料量").classList.add("hidden");
+	
 
 		} else if (mode === "砂鐵比") {
-		document.getElementById("爐底").style.display = "none";
-                document.getElementById("築盆").style.display = "none";
+		document.getElementById("築盆").style.display = "none";
                 document.getElementById("濕砂檢測").style.display = "none";
 		document.getElementById("黏土轉換").style.display = "none";
 		document.getElementById("砂鐵比").style.display = "block";
@@ -451,6 +429,11 @@
 		document.getElementById("MoldWeight").classList.remove("hidden");
 		document.getElementById("CastingWeight").classList.remove("hidden");
 		document.getElementById("SandMetalRatioResult").classList.remove("hidden");
+		document.getElementById("側邊用料量").classList.add("hidden");
+		document.getElementById("斜角用料量").classList.add("hidden");
+		document.getElementById("爐底用料量").classList.add("hidden");
+		document.getElementById("整體用料量").classList.add("hidden");
+	
 
             }
 
@@ -462,6 +445,11 @@
 		document.getElementById("DailyCycles").textContent = "";
 		document.getElementById("TransferDays").textContent = "";
 		document.getElementById("SandMetalRatio").textContent = "";
+		document.getElementById("側邊用料量值").textContent = "";
+		document.getElementById("斜角用料量值").textContent = "";
+		document.getElementById("爐底用料量值").textContent = "";
+		document.getElementById("整體用料量值14:36 2025/02/18").textContent = "";
+	
 
         }
 	
@@ -486,17 +474,46 @@
         function calculate() {
             var mode = document.getElementById("mode").value;
 
-            if (mode === "爐底") {
-                var diameter = parseFloat(document.getElementById("diameter").value);
-                var height = parseFloat(document.getElementById("height").value);
-                var material = parseFloat(document.getElementById("material").value);
+            if (mode === "築爐") {
+                		
+		var H1 = parseFloat(document.getElementById("H1").value);
+		var H2 = parseFloat(document.getElementById("H2").value);
+		var H3 = parseFloat(document.getElementById("H3").value);
+		var H4 = parseFloat(document.getElementById("H4").value);
+		var D1 = parseFloat(document.getElementById("D1").value);
+		var D2 = parseFloat(document.getElementById("D2").value);
+		var D3 = parseFloat(document.getElementById("D3").value);
+		var material = parseFloat(document.getElementById("material").value);
 
-                var materialWeight = (Math.PI * Math.pow(diameter / 2, 2) * height * material) / 1000000;
-                var packageCount = (materialWeight / 25).toFixed(2); // 包數至小數點第二位
+		// **計算爐底用料量**
+		var 爐底用料量值 = Math.PI * D1 * D1 / 4 * H4 / (10 ** 9) * material * 1000;
+		var 爐底用料包數 = 爐底用料量值 / 25;
 
-                document.getElementById("materialWeight").textContent = materialWeight.toFixed(2); // 用料重量
-                document.getElementById("packageCount").textContent = packageCount; // 包數
-            
+		// **修正括號錯誤：斜角用料量**
+		var 斜角用料量值 = Math.PI * H3 / 4 * (((D2 ** 2) - (D3 ** 2)) / 1.53 / (10 ** 9) * material * 1000);
+		var 斜角用料包數 = 斜角用料量值 / 25;
+
+		// **修正括號錯誤：側邊用料量**
+		var 側邊用料量值 = Math.PI * (H2 - H3) / 4 * (((D1 ** 2) - (D2 ** 2)) / (10 ** 9) * material * 1000);
+		var 側邊用料包數 = 側邊用料量值 / 25;
+
+		// **整體用料計算**
+		var 整體用料量值 = 爐底用料量值 + 斜角用料量值 + 側邊用料量值;
+		var 整體用料包數 = 整體用料量值 / 25;
+
+		// **更新結果，若數值為 NaN 則顯示空字串**
+    document.getElementById("爐底用料量值").textContent = isNaN(爐底用料量值) ? "" : 爐底用料量值.toFixed(2);
+    document.getElementById("爐底用料包數").textContent = isNaN(爐底用料包數) ? "" : 爐底用料包數.toFixed(1);
+
+    document.getElementById("斜角用料量值").textContent = isNaN(斜角用料量值) ? "" : 斜角用料量值.toFixed(2);
+    document.getElementById("斜角用料包數").textContent = isNaN(斜角用料包數) ? "" : 斜角用料包數.toFixed(2);
+
+    document.getElementById("側邊用料量值").textContent = isNaN(側邊用料量值) ? "" : 側邊用料量值.toFixed(2);
+    document.getElementById("側邊用料包數").textContent = isNaN(側邊用料包數) ? "" : 側邊用料包數.toFixed(1);
+
+    document.getElementById("整體用料量值").textContent = isNaN(整體用料量值) ? "" : 整體用料量值.toFixed(2);
+    document.getElementById("整體用料包數").textContent = isNaN(整體用料包數) ? "" : 整體用料包數.toFixed(2);
+  
 	} else if (mode === "築盆") {
                 var topDiameterOuter = parseFloat(document.getElementById("topDiameterOuter").value); // 保持為mm
                 var bottomDiameterOuter = parseFloat(document.getElementById("bottomDiameterOuter").value); // 保持為mm
