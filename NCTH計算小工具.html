@@ -145,14 +145,22 @@
         <!-- 篩選的計算模式 -->
 
 	        <div id="築爐" class="mode">
+					<div class="flex-container">
+						<div class="left-column">
+							<img src="https://raw.githubusercontent.com/ncthlab/tools/main/images/築爐尺寸示意圖.png" 
+     							alt="築爐尺寸示意圖" 
+     							style="max-width: 50%; height: auto;">
+						</div>
+						<div class="right-column">
+							<img src="https://raw.githubusercontent.com/ncthlab/tools/main/images/感應爐爐體剖視圖.png" 
+     							alt="感應爐爐體剖視圖" 
+     							style="max-width: 50%; height: auto;">
+						</div>
+					</div>
+						
             		<div class="flex-container">
-                		<div class="left-column">
-                    			<img src="https://raw.githubusercontent.com/ncthlab/tools/main/images/築爐尺寸示意圖.png" 
-     					alt="砂鐵比範圍" 
-     					style="max-width: 50%; height: auto;">
-                		</div>
 
-                 		<div class="middle-column">
+                 		<div class="left-column">
 					<label for="material">用料：</label>
             					<select id="material">
                 					<option value="2">電熔氧化矽 GQ</option>
@@ -180,7 +188,7 @@
             				<input type="number" id="D2" placeholder="輸入 D2">
 
             				<label for="D3">內桶底直徑 D3 (mm)：</label>
-            				<input type="number" id="D3" placeholder="輸入 D3">\
+            				<input type="number" id="D3" placeholder="輸入 D3">
 					
                 		</div>
 				
@@ -275,15 +283,20 @@
         <button onclick="calculate()">計算</button>
 
         <div class="result">
-            <p id="materialWeightResult">用料重量： <span id="materialWeight"></span> kg</p>
-            <p id="waterWeightResult" class="hidden">用水重量： <span id="waterWeight"></span> kg</p>
-            <p id="packageCountResult">包數： <span id="packageCount"></span> 包</p>
-            <p id="standardSampleWeightResult" class="hidden">標準試片預估重量： <span id="standardSampleWeight"></span> g</p> <!-- 顯示標準試片預估重量 -->
-	    <p id="sampleWeightHint" class="hidden" style="color: #808080; font-size: 14px;">請依預估重量製作試片，並由試片高度對應至標準試片高度50±1mm，每1mm增減3g砂子</p>
+            	<p id="materialWeightResult">用料重量： <span id="materialWeight"></span> kg</p>
+            	<p id="waterWeightResult" class="hidden">用水重量： <span id="waterWeight"></span> kg</p>
+            	<p id="packageCountResult">包數： <span id="packageCount"></span> 包</p>
+            	<p id="standardSampleWeightResult" class="hidden">標準試片預估重量： <span id="standardSampleWeight"></span> g</p> <!-- 顯示標準試片預估重量 -->
+	    	<p id="sampleWeightHint" class="hidden" style="color: #808080; font-size: 14px;">請依預估重量製作試片，並由試片高度對應至標準試片高度50±1mm，每1mm增減			3g砂子</p>
 		<p id="DailyCyclesResult" class="hidden" >單日砂循環次數： <span id="DailyCycles"></span> 次</p>
 		<p id="TransferDaysResult" class="hidden" >黏土轉換預估工作天： <span id="TransferDays"></span> 天</p>
 		<p id="TransferDaysResultHint" class="hidden" style="color: #808080; font-size: 14px;">因材料添加回到儲砂桶之分佈可能不均，故預估天數已多一倍。</p>
 		<p id="SandMetalRatioResult" class="hidden" >砂鐵比 =  <span id="SandMetalRatio"> </p>
+		<p id="側邊用料量">側邊用料量：<span id="側邊用料量值"></span> kg</p>
+		<p id="斜角用料量">斜角用料量：<span id="斜角用料量值"></span> kg</p>
+		<p id="爐底用料量">爐底用料量：<span id="爐底用料量值"></span> kg</p>
+		<p id="整體用料量">整體用料量：<span id="整體用料量值"></span> kg</p>
+
 
 
 		<button id="screenshotButton">截圖儲存</button>
