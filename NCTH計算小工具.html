@@ -311,7 +311,7 @@
             var formattedTime = '現在時間：' + year + '／' + month + '／' + day  + '　(星期' + weekday　+ ')　' + hours + '：' + minutes;
             document.getElementById('current-time').textContent = formattedTime;
 		SavedTime = year + month + day + hours + minutes ;
-		var SelectedMode = document.getElementById('mySelect').value;
+		var SelectedMode = document.getElementById('mode').value;
         }
 
         // 每秒更新時間
@@ -462,9 +462,10 @@
 
         }
 	
-	var SelectedMode = document.getElementById('mode').options[document.getElementById('mode').selectedIndex].text;
+	
 	
 	document.getElementById('screenshotButton').addEventListener('click', () => {
+		var SelectedMode = document.getElementById('mode').options[document.getElementById('mode').selectedIndex].text;
             html2canvas(document.body, {
                 scrollX: 0, // 確保從頂部開始
                 scrollY: 0,
