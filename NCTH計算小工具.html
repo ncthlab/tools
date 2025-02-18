@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NCTH計算小工具</title>
 	<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -87,11 +86,17 @@
         /* 設置築盆部分為左右兩欄並減少間距 */
         .flex-container {
             display: flex;
-            justify-content: space-between; /* 調整為靠近左右邊緣，縮小間隔 */
+            justify-content: center; /* 調整為靠近左右邊緣，縮小間隔 */
             gap: 2%; /* 增加兩欄之間的間隔，縮小內桶和外盆之間的空隙 */
             flex-wrap: wrap; /* 使內容能夠換行 */
         }
-
+	
+	.left-column, .middle-column, .right-column {
+    		flex: 1; /* 讓三欄等比例分配空間 */
+    		min-width: 200px; /* 確保欄位不會太窄 */
+    		max-width: 30%; /* 控制最大寬度，防止超出 */
+	}
+	
         .flex-container > div {
             width: 48%; /* 左右兩欄各佔48% */
         }
@@ -106,23 +111,20 @@
             display: none;
         }
 
-		#screenshotButton {
-            margin-left: auto; /* 自動將左側間距填滿 */
-            display: block; /* 確保是區塊級元素 */
+	#screenshotButton {
+        	margin-left: auto; /* 自動將左側間距填滿 */
+            	display: block; /* 確保是區塊級元素 */
 		background-color: #808080; /* 灰色背景 */
-            color: black; /* 黑色文字 */
-            padding: 5px 10px; /* 縮小內邊距 */
-            font-size: 14px; /* 字體大小 */
-            font-weight: normal; /* 文字粗體 */
-   	idth: auto; /* 自動適應內容寬度，讓按鈕不會過大 */
-            min-width: 100px; /* 設定最小寬度 */
-	font-weight: bold;
-            cursor: pointer; /* 滑鼠指標變手形 */
-		
-		}	
-
+            	color: black; /* 黑色文字 */
+            	padding: 5px 10px; /* 縮小內邊距 */
+            	font-size: 14px; /* 字體大小 */
+            	font-weight: normal; /* 文字粗體 */
+   		width: auto; /* 自動適應內容寬度，讓按鈕不會過大 */
+            	min-width: 100px; /* 設定最小寬度 */
+		font-weight: bold;
+            	cursor: pointer; /* 滑鼠指標變手形 */
+	}	
     </style>
-	
 </head>
 <body>
 
@@ -143,37 +145,48 @@
         <!-- 篩選的計算模式 -->
 
 	        <div id="築爐" class="mode">
-            <div class="flex-container">
-                <!-- 示意圖 -->
-                <div>
-                    <img src="https://raw.githubusercontent.com/ncthlab/tools/main/images/築爐尺寸示意圖.png" alt="砂鐵比範圍" style="width: auto; max-height: 30%;">
-                </div>
+            		<div class="flex-container">
+                		<div class="left-column">
+                    			<img src="https://raw.githubusercontent.com/ncthlab/tools/main/images/築爐尺寸示意圖.png" 
+     					alt="砂鐵比範圍" 
+     					style="max-width: 50%; height: auto;">
+                		</div>
 
-                <!-- 尺寸輸入欄 -->
-                <div>
-                   <label for="H1">爐體高度 H1 (mm)：</label>
-            <input type="number" id="H1" placeholder="輸入 H1">
+                 		<div class="middle-column">
+					<label for="material">用料：</label>
+            					<select id="material">
+                					<option value="2">電熔氧化矽 GQ</option>
+                					<option value="1.9">電熔氧化矽 GQ35</option>
+                					<option value="2.9">氧化鋁 10V16</option>
+            					</select>
+                   			<label for="H1">爐體高度 H1 (mm)：</label>
+            				<input type="number" id="H1" placeholder="輸入 H1">
 
-            <label for="H2">內桶高度 H2 (mm)：</label>
-            <input type="number" id="H2" placeholder="輸入 H2">
+            				<label for="H2">內桶高度 H2 (mm)：</label>
+            				<input type="number" id="H2" placeholder="輸入 H2">
 
-            <label for="H3">內桶斜角高度 H3 (mm)：</label>
-            <input type="number" id="H3" placeholder="輸入 H3">
+            				<label for="H3">內桶斜角高度 H3 (mm)：</label>
+            				<input type="number" id="H3" placeholder="輸入 H3">
+				</div>
+				<div class="right-column">
 
-            <label for="H4">爐底高度 H4 (mm)：</label>
-            <input type="number" id="H4" placeholder="輸入 H4">
+            				<label for="H4">爐底高度 H4 (mm)：</label>
+            				<input type="number" id="H4" placeholder="輸入 H4">
 
-            <label for="D1">爐頂直徑 D1 (mm)：</label>
-            <input type="number" id="D1" placeholder="輸入 D1">
+            				<label for="D1">爐頂直徑 D1 (mm)：</label>
+            				<input type="number" id="D1" placeholder="輸入 D1">
 
-            <label for="D2">內桶頂直徑 D2 (mm)：</label>
-            <input type="number" id="D2" placeholder="輸入 D2">
+            				<label for="D2">內桶頂直徑 D2 (mm)：</label>
+            				<input type="number" id="D2" placeholder="輸入 D2">
 
-            <label for="D3">內桶底直徑 D3 (mm)：</label>
-            <input type="number" id="D3" placeholder="輸入 D3">
-                </div>
-            </div>
-        </div>
+            				<label for="D3">內桶底直徑 D3 (mm)：</label>
+            				<input type="number" id="D3" placeholder="輸入 D3">\
+					
+                		</div>
+				
+	
+            		</div>
+        	</div>
 		
         <div id="爐底" class="mode hidden">
             <label for="diameter">爐底直徑 (mm)：</label>
