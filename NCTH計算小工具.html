@@ -33,7 +33,7 @@
         input, select, button {
             padding: 12px;
             margin: 10px 0;
-            width: 50%; /* 保持欄位寬度為 70% */
+            width: 70%; 
             text-align: center;
             font-size: 16px;
             box-sizing: border-box;
@@ -87,7 +87,7 @@
         .flex-container {
             display: flex;
             justify-content: center; /* 調整為靠近左右邊緣，縮小間隔 */
-            gap: 2%; /* 增加兩欄之間的間隔，縮小內桶和外盆之間的空隙 */
+            gap: 0%; /* 增加兩欄之間的間隔，縮小內桶和外盆之間的空隙 */
             flex-wrap: wrap; /* 使內容能夠換行 */
         }
 	
@@ -149,24 +149,19 @@
 						<div class="left-column">
 							<img src="https://raw.githubusercontent.com/ncthlab/tools/main/images/築爐尺寸示意圖.png" 
      							alt="築爐尺寸示意圖" 
-     							style="max-width: 70%; height: auto;">
+     							style="max-width: 100%; height: auto;">
 						</div>
 						<div class="right-column">
 							<img src="https://raw.githubusercontent.com/ncthlab/tools/main/images/感應爐爐體剖視圖.png" 
      							alt="感應爐爐體剖視圖" 
-     							style="max-width: 70%; height: auto;">
+     							style="max-width: 100%; height: auto;">
 						</div>
 					</div>
 						
             		<div class="flex-container">
 
                  		<div class="left-column">
-					<label for="material">用料：</label>
-            					<select id="material">
-                					<option value="2">電熔氧化矽 GQ</option>
-                					<option value="1.9">電熔氧化矽 GQ35</option>
-                					<option value="2.9">氧化鋁 10V16</option>
-            					</select>
+					
                    			<label for="H1">爐體高度 H1 (mm)：</label>
             				<input type="number" id="H1" placeholder="輸入 H1">
 
@@ -175,6 +170,13 @@
 
             				<label for="H3">內桶斜角高度 H3 (mm)：</label>
             				<input type="number" id="H3" placeholder="輸入 H3">
+					
+					<label for="material">用料：</label>
+            					<select id="material">
+                					<option value="2">電熔氧化矽 GQ</option>
+                					<option value="1.9">電熔氧化矽 GQ35</option>
+                					<option value="2.9">氧化鋁 10V16</option>
+            					</select>
 				</div>
 				<div class="right-column">
 
@@ -283,20 +285,25 @@
         <button onclick="calculate()">計算</button>
 
         <div class="result">
-            	<p id="materialWeightResult">用料重量： <span id="materialWeight"></span> kg</p>
+            	<p id="materialWeightResult"class="hidden" >用料重量： <span id="materialWeight"></span> kg</p>
             	<p id="waterWeightResult" class="hidden">用水重量： <span id="waterWeight"></span> kg</p>
-            	<p id="packageCountResult">包數： <span id="packageCount"></span> 包</p>
+            	<p id="packageCountResult"class="hidden" >包數： <span id="packageCount"></span> 包</p>
             	<p id="standardSampleWeightResult" class="hidden">標準試片預估重量： <span id="standardSampleWeight"></span> g</p> <!-- 顯示標準試片預估重量 -->
 	    	<p id="sampleWeightHint" class="hidden" style="color: #808080; font-size: 14px;">請依預估重量製作試片，並由試片高度對應至標準試片高度50±1mm，每1mm增減			3g砂子</p>
 		<p id="DailyCyclesResult" class="hidden" >單日砂循環次數： <span id="DailyCycles"></span> 次</p>
 		<p id="TransferDaysResult" class="hidden" >黏土轉換預估工作天： <span id="TransferDays"></span> 天</p>
 		<p id="TransferDaysResultHint" class="hidden" style="color: #808080; font-size: 14px;">因材料添加回到儲砂桶之分佈可能不均，故預估天數已多一倍。</p>
 		<p id="SandMetalRatioResult" class="hidden" >砂鐵比 =  <span id="SandMetalRatio"> </p>
-		<p id="側邊用料量">側邊用料量：<span id="側邊用料量值"></span> kg</p>
-		<p id="斜角用料量">斜角用料量：<span id="斜角用料量值"></span> kg</p>
-		<p id="爐底用料量">爐底用料量：<span id="爐底用料量值"></span> kg</p>
-		<p id="整體用料量">整體用料量：<span id="整體用料量值"></span> kg</p>
-
+		
+		<div class="flex-container">
+			<div>
+				<p id="側邊用料量">側邊用料量：<span id="側邊用料量值"></span> kg (<span id="側邊用料包數"></span> 包)</p>
+				<p id="斜角用料量">斜角用料量：<span id="斜角用料量值"></span> kg (<span id="斜角用料包數"></span> 包)</p>
+			</div>
+			<div>
+				<p id="爐底用料量">爐底用料量：<span id="爐底用料量值"></span> kg (<span id="爐底用料包數"></span> 包)</p>
+				<p id="整體用料量">整體用料量：<span id="整體用料量值"></span> kg (<span id="整體用料包數"></span> 包)</p>
+			</div>
 
 
 		<button id="screenshotButton">截圖儲存</button>
