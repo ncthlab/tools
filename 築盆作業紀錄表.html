@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>築盆作業紀錄表</title>
+	<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -121,18 +122,21 @@
         }
 
         function takeScreenshot() {
-            html2canvas(document.body).then(canvas => {
-                let date = document.querySelector("input[name='date']").value;
-                let customer = document.querySelector("input[name='customer']").value || "未填寫";
-                let type = document.querySelector("input[name='type']:checked")?.value || "未選擇";
-                let fileName = `${date}_${customer}_${type}.png`;
+    html2canvas(document.body, {
+        border: 0 // 禁用邊框渲染
+    }).then(canvas => {
+        let date = document.querySelector("input[name='date']").value;
+        let customer = document.querySelector("input[name='customer']").value || "未填寫";
+        let type = document.querySelector("input[name='type']:checked")?.value || "未選擇";
+        let fileName = `${date}_${customer}_${type}.png`;
 
-                let link = document.createElement("a");
-                link.href = canvas.toDataURL("image/png");
-                link.download = fileName;
-                link.click();
-            });
-        }
+        let link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = fileName;
+        link.click();
+    });
+}
+
 
         window.onload = function() {
             document.querySelector("input[name='side_insulation']").value = "軟(6mm)+硬(3mm)";
@@ -212,14 +216,15 @@
                 <img src="https://raw.githubusercontent.com/ncthlab/tools/refs/heads/main/images/%E6%BE%86%E7%9B%86%E5%B0%BA%E5%AF%B8%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="澆盆尺寸示意圖" width="100%">
             </div>
             <div class="form-group">
-                <label>其他配件 (括號內通常隨附 依實際送貨勾選)：</label><br>
-                <input type="checkbox" name="accessory" value="盆蓋"> 盆蓋
-                <input type="checkbox" name="accessory" value="盆嘴製具"> 盆嘴製具 ( <input type="checkbox" name="accessory" value="擋渣板製具"> 擋渣板製具 )
-                <input type="checkbox" name="accessory" value="其他"> 其他
-                <br>
-                <input type="checkbox" name="accessory" value="斜管"> 斜管 ( <input type="checkbox" name="accessory" value="鐵鉤"> 鐵鉤 )
-                <input type="checkbox" name="accessory" value="ㄇ形吊桿"> ㄇ形吊桿 ( <input type="checkbox" name="accessory" value="插銷"> 插銷 x 2 )
-            </div>
+    <label>其他配件 (括號內通常隨附 依實際送貨勾選)：</label><br>
+    <input type="checkbox" name="accessory" value="盆蓋"> 盆蓋
+    <input type="checkbox" name="accessory" value="盆嘴製具"> 盆嘴製具 ( <input type="checkbox" name="accessory" value="擋渣板製具"> 擋渣板製具 )
+    <input type="checkbox" name="accessory" value="斜管"> 斜管 ( <input type="checkbox" name="accessory" value="鐵鉤"> 鐵鉤 )
+    <input type="checkbox" name="accessory" value="ㄇ形吊桿"> ㄇ形吊桿 ( <input type="checkbox" name="accessory" value="插銷"> 插銷 x 2 )
+    <br>
+    <input type="checkbox" name="accessory" value="其他"> 其他
+    <input type="text" name="other_accessory" placeholder="請輸入其他配件" style="width: 50%;">
+</div>
             <!-- 保溫層選項 -->
             <div class="form-group">
                 <label>保溫層：</label>
@@ -240,19 +245,33 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>客戶預交期：<input type="date" name="customer_due"></label>
-                <label>實際出貨日：<input type="date" name="actual_delivery"></label>
-            </div>
-            <div class="form-group">
-                <label>作業起始日期：<input type="date" name="start_date"></label>
-                <label>完工日期：<input type="date" name="completion_date"></label>
-            </div>
-            <div class="form-group">
-                <label>作業人員：</label>
-                <input type="text" name="worker1" size="10">
-                <input type="text" name="worker2" size="10">
-                <input type="text" name="worker3" size="10">
-            </div>
+    <div>
+        <label>客戶預交期：<input type="date" name="customer_due"></label>
+    </div>
+    <div>
+        <label>實際出貨日：<input type="date" name="actual_delivery"></label>
+    </div>
+</div>
+<div class="form-group">
+    <div>
+        <label>作業起始日期：<input type="date" name="start_date"></label>
+    </div>
+    <div>
+        <label>完工日期：<input type="date" name="completion_date"></label>
+    </div>
+</div>
+           <div class="form-group">
+    <label>作業人員：</label>
+    <div>
+        <input type="text" name="worker1" size="10">
+    </div>
+    <div>
+        <input type="text" name="worker2" size="10">
+    </div>
+    <div>
+        <input type="text" name="worker3" size="10">
+    </div>
+</div>
             <button type="button" onclick="takeScreenshot()">提交</button>
         </form>
     </div>
