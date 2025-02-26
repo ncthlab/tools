@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>築盆作業紀錄表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 350px; /* 修改寬度 */
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .inline-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            color: gray;
+        }
+        input[type="text"]:focus {
+            color: black;
+        }
+	/* 隱藏元素的CSS */
+        .hidden {
+            display: none;
+        }
+
+    </style>
+    <script>
+		function updateInsulationFields() {
+            const insulation = document.querySelector("input[name='insulation']:checked")?.value;
+            const sideInput = document.querySelector("input[name='side_insulation']");
+            const sideTotalInput = document.querySelector("input[name='side_total']");
+            const bottomInput = document.querySelector("input[name='bottom_insulation']");
+            const bottomTotalInput = document.querySelector("input[name='bottom_total']");
+            const sideContainer = document.getElementById("side_fields");
+            const bottomContainer = document.getElementById("bottom_fields");
+
+            if (insulation === "none") {
+                // 隱藏側邊與底部欄位
+                sideContainer.classList.add("hidden");
+                bottomContainer.classList.add("hidden");
+            } else {
+                // 顯示側邊與底部欄位，並設置預設值
+                sideContainer.classList.remove("hidden");
+                bottomContainer.classList.remove("hidden");
+                sideInput.value = "軟(6mm)+硬(3mm)";
+                sideTotalInput.value = "9 mm";
+                bottomInput.value = "軟(6mm)x2+硬(3mm)x2";
+                bottomTotalInput.value = "18 mm";
+            }
+        }
+
+        // 在頁面載入後預設保溫層的狀態
+        window.onload = function() {
+            document.querySelector("input[name='insulation'][value='yes']").checked = true;
+            updateInsulationFields();
+        };
+		
+        function updateTankFields() {
+            const quantity = document.querySelector("select[name='tank_quantity']").value;
+            const container = document.getElementById("tank_number_fields");
+            container.innerHTML = ""; // 清空原有欄位
+
+            if (quantity > 0) {
+                for (let i = 1; i <= quantity; i++) {
+                    const inputGroup = document.createElement("div");
+                    inputGroup.classList.add("form-group");
+
+                    const label = document.createElement("label");
+                    label.textContent = `澆盆編號 ${i}：`;
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.name = `number_${i}`;
+                    input.required = true;
+
+                    inputGroup.appendChild(label);
+                    inputGroup.appendChild(input);
+                    container.appendChild(inputGroup);
+                }
+            }
+        }
+
+        function updateTankOwnershipFields() {
+            const quantity = document.querySelector("select[name='inner_tank_quantity']").value;
+            const container = document.getElementById("inner_tank_number_fields");
+            container.innerHTML = ""; // 清空原有欄位
+
+            if (quantity > 0) {
+                for (let i = 1; i <= quantity; i++) {
+                    const inputGroup = document.createElement("div");
+                    inputGroup.classList.add("form-group");
+
+                    const label = document.createElement("label");
+                    label.textContent = `內桶編號 ${i}：`;
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.name = `inner_tank_number_${i}`;
+                    input.required = true;
+
+                    inputGroup.appendChild(label);
+                    inputGroup.appendChild(input);
+                    container.appendChild(inputGroup);
+                }
+            }
+        }
+
+        function takeScreenshot() {
+            html2canvas(document.body).then(canvas => {
+                let date = document.querySelector("input[name='date']").value;
+                let customer = document.querySelector("input[name='customer']").value || "未填寫";
+                let type = document.querySelector("input[name='type']:checked")?.value || "未選擇";
+                let fileName = `${date}_${customer}_${type}.png`;
+
+                let link = document.createElement("a");
+                link.href = canvas.toDataURL("image/png");
+                link.download = fileName;
+                link.click();
+            });
+        }
+
+        window.onload = function() {
+            document.querySelector("input[name='side_insulation']").value = "軟(6mm)+硬(3mm)";
+            document.querySelector("input[name='side_total']").value = "9";
+            document.querySelector("input[name='bottom_insulation']").value = "軟(6mm)x2+硬(3mm)x2";
+            document.querySelector("input[name='bottom_total']").value = "18";
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>築盆作業紀錄表</h2>
+        <form>
+            <div class="form-group inline-group">
+                <label>客戶名稱：<input type="text" name="customer" required></label>
+                <label>填表人：<input type="text" name="filled_by" required></label>
+            </div>
+            <!-- 將填表日期移到下一行 -->
+            <div class="form-group">
+                <label>填表日期：<input type="date" name="date" required></label>
+            </div>
+            <div class="form-group">
+    <label for="type">澆盆種類：</label>
+    <select name="type" id="type">
+        <option value="" disabled selected>請選擇澆盆種類</option>
+        <option value="APL">自動盆(APL)</option>
+        <option value="TL">交換盆(TL)</option>
+        <option value="RML">回爐盆(RML)</option>
+        <option value="SL">球化盆(SL)</option>
+    </select>
+</div>
+
+            <div class="form-group">
+                <label for="tank_quantity">澆盆數量：</label>
+                <select name="tank_quantity" id="tank_quantity" onchange="updateTankFields()">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div id="tank_number_fields"></div>
+
+            <div class="form-group">
+                <label>內桶歸屬：</label>
+                <input type="radio" name="ownership" value="customer"> 客戶
+                <input type="radio" name="ownership" value="company"> 見得行
+            </div>
+
+            <div class="form-group">
+                <label for="inner_tank_quantity">內桶數量：</label>
+                <select name="inner_tank_quantity" id="inner_tank_quantity" onchange="updateTankOwnershipFields()">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+
+            <div id="inner_tank_number_fields"></div>
+
+            <div class="form-group">
+                <label>燒結：</label>
+                <input type="radio" name="sintering" value="yes"> 是
+                <input type="radio" name="sintering" value="no"> 否
+            </div>
+            <div class="form-group">
+                <label>澆盆尺寸示意圖：</label><br>
+                <img src="https://raw.githubusercontent.com/ncthlab/tools/refs/heads/main/images/%E6%BE%86%E7%9B%86%E5%B0%BA%E5%AF%B8%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="澆盆尺寸示意圖" width="100%">
+            </div>
+            <div class="form-group">
+                <label>其他配件 (括號內通常隨附 依實際送貨勾選)：</label><br>
+                <input type="checkbox" name="accessory" value="盆蓋"> 盆蓋
+                <input type="checkbox" name="accessory" value="盆嘴製具"> 盆嘴製具 ( <input type="checkbox" name="accessory" value="擋渣板製具"> 擋渣板製具 )
+                <input type="checkbox" name="accessory" value="其他"> 其他
+                <br>
+                <input type="checkbox" name="accessory" value="斜管"> 斜管 ( <input type="checkbox" name="accessory" value="鐵鉤"> 鐵鉤 )
+                <input type="checkbox" name="accessory" value="ㄇ形吊桿"> ㄇ形吊桿 ( <input type="checkbox" name="accessory" value="插銷"> 插銷 x 2 )
+            </div>
+            <!-- 保溫層選項 -->
+            <div class="form-group">
+                <label>保溫層：</label>
+                <input type="radio" name="insulation" value="none" onclick="updateInsulationFields()"> 無
+                <input type="radio" name="insulation" value="yes" onclick="updateInsulationFields()"> 有
+            </div>
+
+            <!-- 側邊與底部輸入欄位，預設為隱藏 -->
+            <div id="side_fields" class="hidden">
+                <div class="form-group">
+                    側邊：<input type="text" name="side_insulation" value="軟(6mm)+硬(3mm)"> ，共 <input type="text" name="side_total" size="5"> mm
+                </div>
+            </div>
+
+            <div id="bottom_fields" class="hidden">
+                <div class="form-group">
+                    底部：<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"> ，共 <input type="text" name="bottom_total" size="5"> mm
+                </div>
+            </div>
+            <div class="form-group">
+                <label>客戶預交期：<input type="date" name="customer_due"></label>
+                <label>實際出貨日：<input type="date" name="actual_delivery"></label>
+            </div>
+            <div class="form-group">
+                <label>作業起始日期：<input type="date" name="start_date"></label>
+                <label>完工日期：<input type="date" name="completion_date"></label>
+            </div>
+            <div class="form-group">
+                <label>作業人員：</label>
+                <input type="text" name="worker1" size="10">
+                <input type="text" name="worker2" size="10">
+                <input type="text" name="worker3" size="10">
+            </div>
+            <button type="button" onclick="takeScreenshot()">提交</button>
+        </form>
+    </div>
+</body>
+</html>
