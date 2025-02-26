@@ -46,10 +46,8 @@
     </style>
     <script>
 		function exportData() {
-    // 取得下拉選單選中的文字
     const typeText = document.querySelector("select[name='type'] option:checked").textContent;
 
-    // 取得其他表單資料
     const formData = {
         customer: document.querySelector("input[name='customer']").value,
         filled_by: document.querySelector("input[name='filled_by']").value,
@@ -70,19 +68,23 @@
             document.querySelector("input[name='worker2']").value,
             document.querySelector("input[name='worker3']").value
         ],
+        // 新增日期欄位
+        customer_due: document.querySelector("input[name='customer_due']").value,
+        actual_delivery: document.querySelector("input[name='actual_delivery']").value,
+        start_date: document.querySelector("input[name='start_date']").value,
+        completion_date: document.querySelector("input[name='completion_date']").value,
         // Add other form fields as necessary
     };
 
-    // 組合檔案名稱
     const fileName = `${formData.date.replace(/-/g, '')}_${formData.customer}_${typeText}.json`;
 
-    // 創建 Blob 並下載 JSON 檔案
     const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = fileName;
     link.click();
 }
+
 
 
 
@@ -133,10 +135,17 @@
             document.querySelector("input[name='side_total']").value = formData.side_total;
             document.querySelector("input[name='bottom_insulation']").value = formData.bottom_insulation;
             document.querySelector("input[name='bottom_total']").value = formData.bottom_total;
+            
+            // 新增填充日期欄位
+            document.querySelector("input[name='customer_due']").value = formData.customer_due;
+            document.querySelector("input[name='actual_delivery']").value = formData.actual_delivery;
+            document.querySelector("input[name='start_date']").value = formData.start_date;
+            document.querySelector("input[name='completion_date']").value = formData.completion_date;
         };
         reader.readAsText(file);
     }
 }
+
 
 
 
@@ -360,6 +369,7 @@
         <label>完工日期：<input type="date" name="completion_date"></label>
     </div>
 </div>
+
            <div class="form-group">
     <label>作業人員：</label>
     <div>
