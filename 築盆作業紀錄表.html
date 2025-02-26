@@ -353,8 +353,26 @@
                     底部：<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"> ，共 <input type="text" name="bottom_total" size="5"> mm
                 </div>
             </div>
+	<div class="form-group">
+        <label for="material">使用材料：</label>
+        <input type="text" id="material" name="material" required><br>
+        
+        <label for="estimatedAmount">預估用量（KG）：</label>
+        <input type="number" id="estimatedAmount" name="estimatedAmount" step="0.01" required><br>
+
+        <label for="actualAmount">實際用量（KG）：</label>
+        <input type="number" id="actualAmount" name="actualAmount" step="0.01" required><br>
+
+        <label for="emptyBowlWeight">空盆重量（KG）：</label>
+        <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" step="0.01" required><br>
+
+        <label for="finalWeight">成品重量（KG）：</label>
+        <input type="number" id="finalWeight" name="finalWeight" step="0.01" required><br>
+
+   </div>
             <div class="form-group">
     <div>
+
         <label>客戶預交期：<input type="date" name="customer_due"></label>
     </div>
     <div>
