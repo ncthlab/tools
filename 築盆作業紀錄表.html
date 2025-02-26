@@ -40,9 +40,106 @@
         .hidden {
             display: none;
         }
+	
+	
 
     </style>
     <script>
+		function exportData() {
+    // 取得下拉選單選中的文字
+    const typeText = document.querySelector("select[name='type'] option:checked").textContent;
+
+    // 取得其他表單資料
+    const formData = {
+        customer: document.querySelector("input[name='customer']").value,
+        filled_by: document.querySelector("input[name='filled_by']").value,
+        date: document.querySelector("input[name='date']").value,
+        type: document.querySelector("select[name='type']").value,
+        tank_quantity: document.querySelector("select[name='tank_quantity']").value,
+        inner_tank_quantity: document.querySelector("select[name='inner_tank_quantity']").value,
+        ownership: document.querySelector("input[name='ownership']:checked")?.value,
+        sintering: document.querySelector("input[name='sintering']:checked")?.value,
+        accessories: Array.from(document.querySelectorAll("input[name='accessory']:checked")).map(checkbox => checkbox.value),
+        insulation: document.querySelector("input[name='insulation']:checked")?.value,
+        side_insulation: document.querySelector("input[name='side_insulation']").value,
+        side_total: document.querySelector("input[name='side_total']").value,
+        bottom_insulation: document.querySelector("input[name='bottom_insulation']").value,
+        bottom_total: document.querySelector("input[name='bottom_total']").value,
+        workers: [
+            document.querySelector("input[name='worker1']").value,
+            document.querySelector("input[name='worker2']").value,
+            document.querySelector("input[name='worker3']").value
+        ],
+        // Add other form fields as necessary
+    };
+
+    // 組合檔案名稱
+    const fileName = `${formData.date.replace(/-/g, '')}_${formData.customer}_${typeText}.json`;
+
+    // 創建 Blob 並下載 JSON 檔案
+    const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+}
+
+
+
+
+		function importData(event) {
+    const file = event.target.files[0];
+    if (file && file.name.endsWith('.json')) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const formData = JSON.parse(e.target.result);
+            
+            // 填充文字輸入框
+            document.querySelector("input[name='customer']").value = formData.customer;
+            document.querySelector("input[name='filled_by']").value = formData.filled_by;
+            document.querySelector("input[name='date']").value = formData.date;
+            document.querySelector("select[name='type']").value = formData.type;
+            document.querySelector("select[name='tank_quantity']").value = formData.tank_quantity;
+            document.querySelector("select[name='inner_tank_quantity']").value = formData.inner_tank_quantity;
+            
+            // 填充工人欄位
+            formData.workers.forEach((worker, index) => {
+                document.querySelector(`input[name='worker${index + 1}']`).value = worker;
+            });
+
+            // 填充單選框 (Radio Buttons)
+            if (formData.ownership) {
+                document.querySelector(`input[name='ownership'][value='${formData.ownership}']`).checked = true;
+            }
+            if (formData.sintering) {
+                document.querySelector(`input[name='sintering'][value='${formData.sintering}']`).checked = true;
+            }
+            if (formData.insulation) {
+                document.querySelector(`input[name='insulation'][value='${formData.insulation}']`).checked = true;
+            }
+
+            // 填充多選框 (Checkboxes)
+            if (formData.accessories && formData.accessories.length > 0) {
+                formData.accessories.forEach(accessory => {
+                    const checkbox = document.querySelector(`input[name='accessory'][value='${accessory}']`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
+
+            // 填充其他欄位
+            document.querySelector("input[name='side_insulation']").value = formData.side_insulation;
+            document.querySelector("input[name='side_total']").value = formData.side_total;
+            document.querySelector("input[name='bottom_insulation']").value = formData.bottom_insulation;
+            document.querySelector("input[name='bottom_total']").value = formData.bottom_total;
+        };
+        reader.readAsText(file);
+    }
+}
+
+
+
 		function updateInsulationFields() {
             const insulation = document.querySelector("input[name='insulation']:checked")?.value;
             const sideInput = document.querySelector("input[name='side_insulation']");
@@ -67,11 +164,7 @@
             }
         }
 
-        // 在頁面載入後預設保溫層的狀態
-        window.onload = function() {
-            document.querySelector("input[name='insulation'][value='yes']").checked = true;
-            updateInsulationFields();
-        };
+        
 		
         function updateTankFields() {
             const quantity = document.querySelector("select[name='tank_quantity']").value;
@@ -148,9 +241,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+	
     <div class="container">
         <h2>築盆作業紀錄表</h2>
+	
         <form>
+
             <div class="form-group inline-group">
     <label>客戶名稱：<input type="text" name="customer" required></label>
 </div>
@@ -208,23 +304,27 @@
 
             <div class="form-group">
                 <label>燒結：</label>
-                <input type="radio" name="sintering" value="yes"> 是
                 <input type="radio" name="sintering" value="no"> 否
+		<input type="radio" name="sintering" value="yes"> 是
             </div>
             <div class="form-group">
                 <label>澆盆尺寸示意圖：</label><br>
                 <img src="https://raw.githubusercontent.com/ncthlab/tools/refs/heads/main/images/%E6%BE%86%E7%9B%86%E5%B0%BA%E5%AF%B8%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="澆盆尺寸示意圖" width="100%">
             </div>
             <div class="form-group">
-    <label>其他配件 (括號內通常隨附 依實際送貨勾選)：</label><br>
-    <input type="checkbox" name="accessory" value="盆蓋"> 盆蓋
-    <input type="checkbox" name="accessory" value="盆嘴製具"> 盆嘴製具 ( <input type="checkbox" name="accessory" value="擋渣板製具"> 擋渣板製具 )
+    <label>其他配件：</label><br>
+<span style="font-size: smaller; color: #808080;">括號內通常隨附 依實際客戶提供為主</span><br>
     <input type="checkbox" name="accessory" value="斜管"> 斜管 ( <input type="checkbox" name="accessory" value="鐵鉤"> 鐵鉤 )
+	<br>
     <input type="checkbox" name="accessory" value="ㄇ形吊桿"> ㄇ形吊桿 ( <input type="checkbox" name="accessory" value="插銷"> 插銷 x 2 )
+	<br>
+    <input type="checkbox" name="accessory" value="盆嘴製具"> 盆嘴製具 ( <input type="checkbox" name="accessory" value="擋渣板製具"> 擋渣板製具 )
+	<br>
+    <input type="checkbox" name="accessory" value="盆蓋"> 盆蓋
     <br>
     <input type="checkbox" name="accessory" value="其他"> 其他
     <input type="text" name="other_accessory" placeholder="請輸入其他配件" style="width: 50%;">
-</div>
+	</div>
             <!-- 保溫層選項 -->
             <div class="form-group">
                 <label>保溫層：</label>
@@ -254,7 +354,7 @@
 </div>
 <div class="form-group">
     <div>
-        <label>作業起始日期：<input type="date" name="start_date"></label>
+        <label>起始日期：<input type="date" name="start_date"></label>
     </div>
     <div>
         <label>完工日期：<input type="date" name="completion_date"></label>
@@ -272,8 +372,13 @@
         <input type="text" name="worker3" size="10">
     </div>
 </div>
-            <button type="button" onclick="takeScreenshot()">提交</button>
+            <button type="button" onclick="takeScreenshot()">截圖</button>
+		<button type="button" onclick="exportData()">匯出資料</button>
+		<input type="file" accept=".json" onchange="importData(event)">
+
         </form>
+	
     </div>
+	
 </body>
 </html>
