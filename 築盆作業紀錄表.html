@@ -329,7 +329,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 
 		<div class="form-group">
     <label for="customer">客戶名稱：</label>
-    <select name="customer" id="customer" required>
+	<select name="customer" id="customer" required style="width: 90px;">
         <option value="" disabled selected>請選擇客戶名稱</option>
         <option value="4KF">超吉 (4KF)</option>
         <option value="4IH">建鑫 (4IH)</option>
@@ -340,7 +340,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 
 <!-- 將填表人移到下一行 -->
 <div class="form-group">
-    <label>填表人：<input type="text" name="filled_by" required></label>
+    <label>填表人：<input type="text" name="filled_by" required style="width: 50px;"></label>
 </div>
             <!-- 將填表日期移到下一行 -->
             <div class="form-group">
@@ -434,19 +434,19 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
             </div>
 	<div class="form-group">
         <label for="material">使用材料：</label>
-        <input type="text" id="material" name="material" required><br>
+        <input type="text" id="material" name="material" required style="width: 70px;"><br>
         
         <label for="estimatedAmount">預估用量（KG）：</label>
-        <input type="number" id="estimatedAmount" name="estimatedAmount" step="0.01" required><br>
+        <input type="number" id="estimatedAmount" name="estimatedAmount" step="0.01" required style="width: 50px;"><br>
 
         <label for="actualAmount">實際用量（KG）：</label>
-        <input type="number" id="actualAmount" name="actualAmount" step="0.01" required><br>
+        <input type="number" id="actualAmount" name="actualAmount" step="0.01" required style="width: 50px;"><br>
 
         <label for="emptyBowlWeight">空盆重量（KG）：</label>
-        <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" step="0.01" required><br>
+        <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" step="0.01" required style="width: 50px;"><br>
 
         <label for="finalWeight">成品重量（KG）：</label>
-        <input type="number" id="finalWeight" name="finalWeight" step="0.01" required><br>
+        <input type="number" id="finalWeight" name="finalWeight" step="0.01" required style="width: 50px;"><br>
 
    	</div>
             <div class="form-group">
@@ -467,16 +467,16 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
     </div>
 </div>
 
-           <div class="form-group">
+<div class="form-group">
     <label>作業人員：</label>
     <div>
-        <input type="text" name="worker1" size="10">
+        <input type="text" name="worker1" style="width: 50px;">
     </div>
     <div>
-        <input type="text" name="worker2" size="10">
+        <input type="text" name="worker2" style="width: 50px;">
     </div>
     <div>
-        <input type="text" name="worker3" size="10">
+        <input type="text" name="worker3" style="width: 50px;">
     </div>
 </div>
             <button type="button" onclick="takeScreenshot()">截圖</button>
