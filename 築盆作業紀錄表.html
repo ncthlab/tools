@@ -50,6 +50,17 @@
     </style>
 	<div id="footer">By 技術服務部</div>
     <script>
+		
+		 function displayFileName(event) {
+    const fileInput = event.target;
+    const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : '尚未選擇檔案';
+    document.getElementById('file-name').textContent = fileName;
+    
+    // 可選擇執行檔案導入的操作
+    importData(event);
+  }
+	
+	
 		function exportData() {
     const typeText = document.querySelector("select[name='type'] option:checked").textContent;
     const CustomerText = document.querySelector("select[name='customer'] option:checked").textContent;
@@ -348,7 +359,11 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 	
         <form>
 
-            
+            <div style="text-align: right;">
+  <button onclick="document.getElementById('file-input').click()">匯入資料</button>
+  <input type="file" id="file-input" accept=".json" onchange="displayFileName(event)" style="display: none;">
+  <span id="file-name" style="font-size: 8px;"></span>
+</div>
 
 		<div class="form-group">
     <label for="customer">客戶名稱：</label>
@@ -521,7 +536,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 </div>
             <button type="button" onclick="takeScreenshot()">截圖</button>
 		<button type="button" onclick="exportData()">匯出資料</button>
-		<input type="file" accept=".json" onchange="importData(event)">
+		
 
         </form>
 	
