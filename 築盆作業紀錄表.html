@@ -30,12 +30,7 @@
         label {
             font-weight: bold;
         }
-        input[type="text"] {
-            color: gray;
-        }
-        input[type="text"]:focus {
-            color: black;
-        }
+        
 	/* 隱藏元素的CSS */
         .hidden {
             display: none;
@@ -43,11 +38,13 @@
 	
 	
 
+	
+
     </style>
     <script>
 		function exportData() {
     const typeText = document.querySelector("select[name='type'] option:checked").textContent;
-
+	
     const formData = {
         customer: document.querySelector("input[name='customer']").value,
         filled_by: document.querySelector("input[name='filled_by']").value,
@@ -58,11 +55,15 @@
         ownership: document.querySelector("input[name='ownership']:checked")?.value,
         sintering: document.querySelector("input[name='sintering']:checked")?.value,
         accessories: Array.from(document.querySelectorAll("input[name='accessory']:checked")).map(checkbox => checkbox.value),
-        insulation: document.querySelector("input[name='insulation']:checked")?.value,
+        other_accessory: document.querySelector("input[name='other_accessory']").value.trim(), // 其他配件
+	insulation: document.querySelector("input[name='insulation']:checked")?.value,
         side_insulation: document.querySelector("input[name='side_insulation']").value,
         side_total: document.querySelector("input[name='side_total']").value,
         bottom_insulation: document.querySelector("input[name='bottom_insulation']").value,
         bottom_total: document.querySelector("input[name='bottom_total']").value,
+	
+	
+	
         workers: [
             document.querySelector("input[name='worker1']").value,
             document.querySelector("input[name='worker2']").value,
@@ -73,7 +74,18 @@
         actual_delivery: document.querySelector("input[name='actual_delivery']").value,
         start_date: document.querySelector("input[name='start_date']").value,
         completion_date: document.querySelector("input[name='completion_date']").value,
-        // Add other form fields as necessary
+        
+	// 使用材料
+        material: document.querySelector("#material").value,
+        estimatedAmount: document.querySelector("#estimatedAmount").value,
+        actualAmount: document.querySelector("#actualAmount").value,
+        emptyBowlWeight: document.querySelector("#emptyBowlWeight").value,
+        finalWeight: document.querySelector("#finalWeight").value,
+	
+	// **保存澆盆與內桶編號**
+        tank_numbers: Array.from(document.querySelectorAll("input[name^='number_']")).map(input => input.value.trim()),
+        inner_tank_numbers: Array.from(document.querySelectorAll("input[name^='inner_tank_number_']")).map(input => input.value.trim()),
+
     };
 
     const fileName = `${formData.date.replace(/-/g, '')}_${formData.customer}_${typeText}.json`;
@@ -90,7 +102,7 @@
 
 
 		function importData(event) {
-    const file = event.target.files[0];
+    		const file = event.target.files[0];
     if (file && file.name.endsWith('.json')) {
         const reader = new FileReader();
         reader.onload = function (e) {
@@ -103,6 +115,8 @@
             document.querySelector("select[name='type']").value = formData.type;
             document.querySelector("select[name='tank_quantity']").value = formData.tank_quantity;
             document.querySelector("select[name='inner_tank_quantity']").value = formData.inner_tank_quantity;
+		document.querySelector("input[name='other_accessory']").value = formData.other_accessory || "";
+
             
             // 填充工人欄位
             formData.workers.forEach((worker, index) => {
@@ -120,6 +134,8 @@
                 document.querySelector(`input[name='insulation'][value='${formData.insulation}']`).checked = true;
             }
 
+	
+
             // 填充多選框 (Checkboxes)
             if (formData.accessories && formData.accessories.length > 0) {
                 formData.accessories.forEach(accessory => {
@@ -129,18 +145,69 @@
                     }
                 });
             }
+		
+		
+	
 
-            // 填充其他欄位
+            // 填充保溫層欄位
             document.querySelector("input[name='side_insulation']").value = formData.side_insulation;
             document.querySelector("input[name='side_total']").value = formData.side_total;
             document.querySelector("input[name='bottom_insulation']").value = formData.bottom_insulation;
             document.querySelector("input[name='bottom_total']").value = formData.bottom_total;
+		
+	if (formData.side_insulation) {
+                document.querySelector("input[name='side_insulation']").value = formData.side_insulation;
+            }
+            if (formData.side_total) {
+                document.querySelector("input[name='side_total']").value = formData.side_total;
+            }
+            if (formData.bottom_insulation) {
+                document.querySelector("input[name='bottom_insulation']").value = formData.bottom_insulation;
+            }
+            if (formData.bottom_total) {
+                document.querySelector("input[name='bottom_total']").value = formData.bottom_total;
+            }
+
+            // 若保溫層選擇「有」，則顯示側邊與底部欄位
+            updateInsulationFields();
+		
             
             // 新增填充日期欄位
             document.querySelector("input[name='customer_due']").value = formData.customer_due;
             document.querySelector("input[name='actual_delivery']").value = formData.actual_delivery;
             document.querySelector("input[name='start_date']").value = formData.start_date;
             document.querySelector("input[name='completion_date']").value = formData.completion_date;
+		
+		 // **新增填充「使用材料、預估用量、實際用量、空盆重量、成品重量」**
+            document.querySelector("input[name='material']").value = formData.material;
+            document.querySelector("input[name='estimatedAmount']").value = formData.estimatedAmount;
+            document.querySelector("input[name='actualAmount']").value = formData.actualAmount;
+            document.querySelector("input[name='emptyBowlWeight']").value = formData.emptyBowlWeight;
+            document.querySelector("input[name='finalWeight']").value = formData.finalWeight;
+		
+		 // 先生成澆盆與內桶的欄位
+            updateTankFields();
+            updateTankOwnershipFields();
+
+            // 填充澆盆編號
+            if (formData.tank_numbers && Array.isArray(formData.tank_numbers)) {
+                formData.tank_numbers.forEach((number, index) => {
+                    let input = document.querySelector(`input[name='number_${index + 1}']`);
+                    if (input) {
+                        input.value = number;
+                    }
+                });
+            }
+
+            // 填充內桶編號
+            if (formData.inner_tank_numbers && Array.isArray(formData.inner_tank_numbers)) {
+                formData.inner_tank_numbers.forEach((number, index) => {
+                    let input = document.querySelector(`input[name='inner_tank_number_${index + 1}']`);
+                    if (input) {
+                        input.value = number;
+                    }
+                });
+            }
         };
         reader.readAsText(file);
     }
@@ -162,6 +229,11 @@
                 // 隱藏側邊與底部欄位
                 sideContainer.classList.add("hidden");
                 bottomContainer.classList.add("hidden");
+		// 清空欄位數值（避免錯誤提交）
+        sideInput.value = "";
+        sideTotalInput.value = "";
+        bottomInput.value = "";
+        bottomTotalInput.value = "";
             } else {
                 // 顯示側邊與底部欄位，並設置預設值
                 sideContainer.classList.remove("hidden");
@@ -369,7 +441,7 @@
         <label for="finalWeight">成品重量（KG）：</label>
         <input type="number" id="finalWeight" name="finalWeight" step="0.01" required><br>
 
-   </div>
+   	</div>
             <div class="form-group">
     <div>
 
