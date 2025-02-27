@@ -366,7 +366,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 </div>
 
 		<div class="form-group">
-    <label for="customer">客戶名稱：</label>
+    <label for="customer">客戶名稱:</label>
 	<select name="customer" id="customer">
         <option value="" disabled selected>請選擇客戶名稱</option>
         <option value="4KF">超吉 (4KF)</option>
@@ -385,7 +385,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
                 <label>填表日期：<input type="date" name="date" required></label>
             </div>
             <div class="form-group">
-    <label for="type">澆盆種類：</label>
+    <label for="type">澆盆種類:</label>
     <select name="type" id="type">
         <option value="" disabled selected>請選擇澆盆種類</option>
         <option value="APL">自動盆(APL)</option>
@@ -396,7 +396,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 </div>
 
             <div class="form-group">
-                <label for="tank_quantity">澆盆數量：</label>
+                <label for="tank_quantity">澆盆數量:</label>
                 <select name="tank_quantity" id="tank_quantity" onchange="updateTankFields()">
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -411,7 +411,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 		<div id="tank_number_fields"></div>
 		
             <div class="form-group">
-                <label>內桶歸屬：</label>
+                <label>內桶歸屬:</label>
                 <input type="radio" name="ownership" value="customer"> 客戶
                 <input type="radio" name="ownership" value="company"> 見得行
             </div>
@@ -431,7 +431,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
             <div id="inner_tank_number_fields"></div>
 
             <div class="form-group">
-                <label>燒結：</label>
+                <label>燒結:</label>
                 <input type="radio" name="sintering" value="no"> 否
 		<input type="radio" name="sintering" value="yes"> 是
             </div>
@@ -461,7 +461,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
     
             </div>
             <div class="form-group">
-    <label>其他配件：</label><br>
+    <label>其他配件:</label><br>
 <span style="font-size: 8px; color: #808080;">※括號內通常隨附 依實際客戶提供為主</span><br>
     <input type="checkbox" name="accessory" value="斜管"> 斜管 ( <input type="checkbox" name="accessory" value="鐵鉤"> 鐵鉤 )
 	<br>
@@ -476,7 +476,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 	</div>
             <!-- 保溫層選項 -->
             <div class="form-group">
-                <label>保溫層：</label>
+                <label>保溫層:</label>
                 <input type="radio" name="insulation" value="none" onclick="updateInsulationFields()"> 無
                 <input type="radio" name="insulation" value="yes" onclick="updateInsulationFields()"> 有
             </div>
@@ -484,50 +484,50 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
             <!-- 側邊與底部輸入欄位，預設為隱藏 -->
             <div id="side_fields" class="hidden">
                 <div class="form-group">
-                    側邊：<input type="text" name="side_insulation" value="軟(6mm)+硬(3mm)"> ，共 <input type="text" name="side_total" size="5"> mm
+                    側邊:<input type="text" name="side_insulation" value="軟(6mm)+硬(3mm)"> ，共 <input type="text" name="side_total" size="5"> mm
                 </div>
             </div>
 
             <div id="bottom_fields" class="hidden">
                 <div class="form-group">
-                    底部：<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"> ，共 <input type="text" name="bottom_total" size="5"> mm
+                    底部:<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"> ，共 <input type="text" name="bottom_total" size="5"> mm
                 </div>
             </div>
 	<div class="form-group">
-        <label for="material">使用材料：</label>
-        <input type="text" id="material" name="material" required style="width: 70px;"><br>
+        <label for="material">使用材料:</label>
+        <input type="text" id="material" name="material" required style="width: 90px;"><br>
         
-        <label for="estimatedAmount">預估用量(kg)：</label>
+        <label for="estimatedAmount">預估用量(kg):</label>
         <input type="number" id="estimatedAmount" name="estimatedAmount" step="0.01" required style="width: 50px;">
 
-        <label for="actualAmount">實際用量(kg)：</label>
+        <label for="actualAmount">實際用量(kg):</label>
         <input type="number" id="actualAmount" name="actualAmount" step="0.01" required style="width: 50px;"><br>
 
-        <label for="emptyBowlWeight">空盆重量(kg)：</label>
+        <label for="emptyBowlWeight">空盆重量(kg):</label>
         <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" step="0.01" required style="width: 50px;">
 
-        <label for="finalWeight">成品重量(kg)：</label>
+        <label for="finalWeight">成品重量(kg):</label>
         <input type="number" id="finalWeight" name="finalWeight" step="0.01" required style="width: 50px;"><br>
 
    	</div>
             <div class="form-group">
-    <label>客戶預交期：
+    <label>客戶預交期:
   <input type="date" name="customer_due" style="width: 70px;">
 </label>
-<label>實際出貨日：
+<label>實際出貨日:
   <input type="date" name="actual_delivery" style="width: 70px;">
 </label>
 </div>
 <div class="form-group">
     <div>
-        <label>起始日期：<input type="date" name="start_date"style="width: 70px;"></label>    
-        <label>完工日期：<input type="date" name="completion_date"style="width: 70px;"></label><br>
+        <label>起始日期:<input type="date" name="start_date"style="width: 70px;"></label>    
+        <label>完工日期:<input type="date" name="completion_date"style="width: 70px;"></label><br>
 	<span style="font-size: 8px; color: #808080;">※表單、澆盆等配件、人員、材料皆備齊才開始計算10個工作天內運送</span><br>
     </div>
 </div>
 
 <div class="form-group">
-    <label>作業人員：</label>
+    <label>作業人員:</label>
     <div>
         <input type="text" name="worker1" style="width: 50px;">
 	<input type="text" name="worker2" style="width: 50px;">
