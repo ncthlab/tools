@@ -50,6 +50,9 @@
     </style>
 	<div id="footer">By 技術服務部</div>
     <script>
+			
+		
+		
 		
 		 function displayFileName(event) {
     const fileInput = event.target;
@@ -346,13 +349,47 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
         link.click();
     });
 }
+	
+	 function calculate() {
 
+	
+        // 取得使用者輸入的數值
+        let ladleTopDiameter = parseFloat(document.getElementsByName("ladle_top_diameter")[0].value);
+let ladleHeight = parseFloat(document.getElementsByName("ladle_height")[0].value);
+let ladleBottomDiameter = parseFloat(document.getElementsByName("ladle_bottom_diameter")[0].value);
+let formerTopDiameter = parseFloat(document.getElementsByName("former_top_diameter")[0].value);
+let formerHeight = parseFloat(document.getElementsByName("former_height")[0].value);
+let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_diameter")[0].value);
+
+
+		
+
+        // 檢查是否所有欄位都有填寫數值
+        if (isNaN(ladleTopDiameter) || isNaN(ladleHeight) || isNaN(ladleBottomDiameter) || 
+            isNaN(formerTopDiameter) || isNaN(formerHeight) || isNaN(formerBottomDiameter)) {
+            alert("請填寫所有欄位！");
+            return; // 若有空白欄位，則不進行計算
+        }
+
+        // 澆盆體積公式
+        let ladleVolume = (1 / 3) * Math.PI * ladleHeight * Math.pow((ladleTopDiameter + ladleBottomDiameter) / 2, 2);
+
+        // 內桶體積公式
+        let formerVolume = (1 / 3) * Math.PI * formerHeight * Math.pow((formerTopDiameter + formerBottomDiameter) / 2, 2);
+
+        // 計算預估用量
+        let estimatedAmount = ((ladleVolume - formerVolume) / 1000 * 3.1) / 1000;
+
+        // 顯示計算結果，並保留兩位小數
+        document.getElementById("estimatedAmount").value = estimatedAmount.toFixed(2); // 將預估用量顯示在輸入框中
+    }
 
         
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+	
 	
     <div class="container">
         <h2>築盆作業紀錄表</h2>
@@ -435,6 +472,20 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
                 <input type="radio" name="sintering" value="no"> 否
 		<input type="radio" name="sintering" value="yes"> 是
             </div>
+<div class="form-group">
+    <label>其他配件:</label><br>
+<span style="font-size: 8px; color: #808080;">※括號內通常隨附 依實際客戶提供為主</span><br>
+    <input type="checkbox" name="accessory" value="斜管"> 斜管 ( <input type="checkbox" name="accessory" value="鐵鉤"> 鐵鉤 )
+	<br>
+    <input type="checkbox" name="accessory" value="ㄇ形吊桿"> ㄇ形吊桿 ( <input type="checkbox" name="accessory" value="插銷"> 插銷 x 2 )
+	<br>
+    <input type="checkbox" name="accessory" value="盆嘴製具"> 盆嘴製具 ( <input type="checkbox" name="accessory" value="擋渣板製具"> 擋渣板製具 )
+	<br>
+    <input type="checkbox" name="accessory" value="盆蓋"> 盆蓋
+    <br>
+    <input type="checkbox" name="accessory" value="其他"> 其他
+    <input type="text" name="other_accessory" placeholder="請輸入其他配件" style="width: 50%;">
+	</div>
             <div class="form-group" style="position: relative; display: inline-block;">
                 <label>澆盆尺寸示意圖 (單位：mm)：</label><br>
                 <img src="https://raw.githubusercontent.com/ncthlab/tools/refs/heads/main/images/%E6%BE%86%E7%9B%86%E5%B0%BA%E5%AF%B8%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="澆盆尺寸示意圖" width="100%">
@@ -456,24 +507,8 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 
 <!-- 內桶底徑 -->
 <input type="text" name="former_bottom_diameter" placeholder="內桶底徑 mm" style="position: absolute; top: 230px; left: 271px; width: 60px; text-align: center; display: block; padding: 0;">
-
-    
-    
-            </div>
-            <div class="form-group">
-    <label>其他配件:</label><br>
-<span style="font-size: 8px; color: #808080;">※括號內通常隨附 依實際客戶提供為主</span><br>
-    <input type="checkbox" name="accessory" value="斜管"> 斜管 ( <input type="checkbox" name="accessory" value="鐵鉤"> 鐵鉤 )
-	<br>
-    <input type="checkbox" name="accessory" value="ㄇ形吊桿"> ㄇ形吊桿 ( <input type="checkbox" name="accessory" value="插銷"> 插銷 x 2 )
-	<br>
-    <input type="checkbox" name="accessory" value="盆嘴製具"> 盆嘴製具 ( <input type="checkbox" name="accessory" value="擋渣板製具"> 擋渣板製具 )
-	<br>
-    <input type="checkbox" name="accessory" value="盆蓋"> 盆蓋
-    <br>
-    <input type="checkbox" name="accessory" value="其他"> 其他
-    <input type="text" name="other_accessory" placeholder="請輸入其他配件" style="width: 50%;">
-	</div>
+ </div>
+            
             <!-- 保溫層選項 -->
             <div class="form-group">
                 <label>保溫層:</label>
@@ -486,30 +521,31 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 		
                 <div class="form-group">
 			<span style="font-size: 8px; color: #808080;">※若無指定則依以下預設為主</span><br>
-                    側邊:<input type="text" name="side_insulation" value="軟(6mm)+硬(3mm)"><br>共 <input type="text" name="side_total" size="5"> mm
+                    側邊:<input type="text" name="side_insulation" value="軟(6mm)+硬(3mm)"style="text-align: center;"><br>共 <input type="text" name="side_total" size="5"style="text-align: center;"> mm
                 </div>
             </div>
 
             <div id="bottom_fields" class="hidden">
                 <div class="form-group">
-                    底部:<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"><br>共 <input type="text" name="bottom_total" size="5"> mm
+                    底部:<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"style="text-align: center;"><br>共 <input type="text" name="bottom_total" size="5"style="text-align: center;"> mm
                 </div>
             </div>
 	<div class="form-group">
         <label for="material">使用材料:</label>
-        <input type="text" id="material" name="material" required style="width: 90px;"><br>
-        
+        <input type="text" id="material" name="material" required style="width: 90px;">
+	 <button type="button" onclick="calculate()">計算</button><br>
+   
         <label for="estimatedAmount">預估用量(kg):</label>
-        <input type="number" id="estimatedAmount" name="estimatedAmount" step="0.01" required style="width: 50px;">
+        <input type="number" id="estimatedAmount" name="estimatedAmount" required style="width: 50px;">
 
         <label for="actualAmount">實際用量(kg):</label>
-        <input type="number" id="actualAmount" name="actualAmount" step="0.01" required style="width: 50px;"><br>
+        <input type="number" id="actualAmount" name="actualAmount" required style="width: 50px;"><br>
 
         <label for="emptyBowlWeight">空盆重量(kg):</label>
-        <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" step="0.01" required style="width: 50px;">
+        <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" required style="width: 50px;">
 
         <label for="finalWeight">成品重量(kg):</label>
-        <input type="number" id="finalWeight" name="finalWeight" step="0.01" required style="width: 50px;"><br>
+        <input type="number" id="finalWeight" name="finalWeight" required style="width: 50px;"><br>
 
    	</div>
             <div class="form-group">
