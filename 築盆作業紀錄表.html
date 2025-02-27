@@ -405,9 +405,29 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
                 <input type="radio" name="sintering" value="no"> 否
 		<input type="radio" name="sintering" value="yes"> 是
             </div>
-            <div class="form-group">
+            <div class="form-group" style="position: relative; display: inline-block;">
                 <label>澆盆尺寸示意圖：</label><br>
                 <img src="https://raw.githubusercontent.com/ncthlab/tools/refs/heads/main/images/%E6%BE%86%E7%9B%86%E5%B0%BA%E5%AF%B8%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="澆盆尺寸示意圖" width="100%">
+		<!-- 在圖片上放置輸入欄位 -->
+    <!-- 澆盆頂徑 -->
+    <input type="text" name="ladle_top_diameter" placeholder="外盆頂徑" style="position: absolute; top: 35px; left: 95px; width: 40px;">
+    
+    <!-- 澆盆高度 -->
+    <input type="text" name="ladle_height" placeholder="外盆高度" style="position: absolute; top: 140px; left: 20px; width: 40px;">
+    
+    <!-- 澆盆底徑 -->
+    <input type="text" name="ladle_bottom_diameter" placeholder="外盆底徑" style="position: absolute; top: 210px; left: 95px; width: 40px;">
+    
+    <!-- 內桶頂徑 -->
+    <input type="text" name="former_top_diameter" placeholder="內桶頂徑" style="position: absolute; top: 35px; left: 275px; width: 40px;">
+    
+	<!-- 內桶高度 -->
+    <input type="text" name="former_height" placeholder="內桶高度" style="position: absolute; top: 140px; left: 210px; width: 40px;">
+
+    <!-- 內桶底徑 -->
+    <input type="text" name="former_bottom_diameter" placeholder="內桶底徑" style="position: absolute; top: 210px; left: 275px; width: 40px;">
+    
+    
             </div>
             <div class="form-group">
     <label>其他配件：</label><br>
