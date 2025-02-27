@@ -63,7 +63,15 @@
         inner_tank_quantity: document.querySelector("select[name='inner_tank_quantity']").value,
         ownership: document.querySelector("input[name='ownership']:checked")?.value,
         sintering: document.querySelector("input[name='sintering']:checked")?.value,
-        accessories: Array.from(document.querySelectorAll("input[name='accessory']:checked")).map(checkbox => checkbox.value),
+        
+	ladle_top_diameter: document.querySelector("input[name='ladle_top_diameter']").value,
+	ladle_height: document.querySelector("input[name='ladle_height']").value,
+	ladle_bottom_diameter: document.querySelector("input[name='ladle_bottom_diameter']").value,
+	former_top_diameter: document.querySelector("input[name='former_top_diameter']").value,
+	former_height: document.querySelector("input[name='former_height']").value,
+	former_bottom_diameter: document.querySelector("input[name='former_bottom_diameter']").value,
+	
+	accessories: Array.from(document.querySelectorAll("input[name='accessory']:checked")).map(checkbox => checkbox.value),
         other_accessory: document.querySelector("input[name='other_accessory']").value.trim(),
         insulation: document.querySelector("input[name='insulation']:checked")?.value,
         side_insulation: document.querySelector("input[name='side_insulation']").value,
@@ -118,7 +126,14 @@
             document.querySelector("select[name='tank_quantity']").value = formData.tank_quantity;
             document.querySelector("select[name='inner_tank_quantity']").value = formData.inner_tank_quantity;
 		document.querySelector("input[name='other_accessory']").value = formData.other_accessory || "";
+	
+		document.querySelector("input[name='ladle_top_diameter']").value = formData.ladle_top_diameter;
+		document.querySelector("input[name='ladle_height']").value = formData.ladle_height;
+		document.querySelector("input[name='ladle_bottom_diameter']").value = formData.ladle_bottom_diameter;
 
+		document.querySelector("input[name='former_top_diameter']").value = formData.former_top_diameter;
+		document.querySelector("input[name='former_height']").value = formData.former_height;
+		document.querySelector("input[name='former_bottom_diameter']").value = formData.former_bottom_diameter;
             
             // 填充工人欄位
             formData.workers.forEach((worker, index) => {
@@ -410,22 +425,23 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
                 <img src="https://raw.githubusercontent.com/ncthlab/tools/refs/heads/main/images/%E6%BE%86%E7%9B%86%E5%B0%BA%E5%AF%B8%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="澆盆尺寸示意圖" width="100%">
 		<!-- 在圖片上放置輸入欄位 -->
     <!-- 澆盆頂徑 -->
-    <input type="text" name="ladle_top_diameter" placeholder="外盆頂徑" style="position: absolute; top: 35px; left: 95px; width: 40px;">
+<input type="text" name="ladle_top_diameter" placeholder="澆盆頂徑 mm" style="position: absolute; top: 35px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;">
     
-    <!-- 澆盆高度 -->
-    <input type="text" name="ladle_height" placeholder="外盆高度" style="position: absolute; top: 140px; left: 20px; width: 40px;">
+<!-- 澆盆高度 -->
+<input type="text" name="ladle_height" placeholder="澆盆高度 mm" style="position: absolute; top: 140px; left: -20px; width: 60px; text-align: center; display: block; padding: 0;">
     
-    <!-- 澆盆底徑 -->
-    <input type="text" name="ladle_bottom_diameter" placeholder="外盆底徑" style="position: absolute; top: 210px; left: 95px; width: 40px;">
+<!-- 澆盆底徑 -->
+<input type="text" name="ladle_bottom_diameter" placeholder="澆盆底徑 mm" style="position: absolute; top: 240px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;">
     
-    <!-- 內桶頂徑 -->
-    <input type="text" name="former_top_diameter" placeholder="內桶頂徑" style="position: absolute; top: 35px; left: 275px; width: 40px;">
+<!-- 內桶頂徑 -->
+<input type="text" name="former_top_diameter" placeholder="內桶頂徑 mm" style="position: absolute; top: 35px; left: 275px; width: 60px; text-align: center; display: block; padding: 0;">
     
-	<!-- 內桶高度 -->
-    <input type="text" name="former_height" placeholder="內桶高度" style="position: absolute; top: 140px; left: 210px; width: 40px;">
+<!-- 內桶高度 -->
+<input type="text" name="former_height" placeholder="內桶高度 mm" style="position: absolute; top: 140px; left: 195px; width: 60px; text-align: center; display: block; padding: 0;">
 
-    <!-- 內桶底徑 -->
-    <input type="text" name="former_bottom_diameter" placeholder="內桶底徑" style="position: absolute; top: 210px; left: 275px; width: 40px;">
+<!-- 內桶底徑 -->
+<input type="text" name="former_bottom_diameter" placeholder="內桶底徑 mm" style="position: absolute; top: 230px; left: 271px; width: 60px; text-align: center; display: block; padding: 0;">
+
     
     
             </div>
