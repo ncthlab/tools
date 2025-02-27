@@ -44,9 +44,10 @@
     <script>
 		function exportData() {
     const typeText = document.querySelector("select[name='type'] option:checked").textContent;
-	
+    const CustomerText = document.querySelector("select[name='customer'] option:checked").textContent;
+
     const formData = {
-        customer: document.querySelector("input[name='customer']").value,
+        customer: document.querySelector("select[name='customer']").value,
         filled_by: document.querySelector("input[name='filled_by']").value,
         date: document.querySelector("input[name='date']").value,
         type: document.querySelector("select[name='type']").value,
@@ -55,40 +56,32 @@
         ownership: document.querySelector("input[name='ownership']:checked")?.value,
         sintering: document.querySelector("input[name='sintering']:checked")?.value,
         accessories: Array.from(document.querySelectorAll("input[name='accessory']:checked")).map(checkbox => checkbox.value),
-        other_accessory: document.querySelector("input[name='other_accessory']").value.trim(), // 其他配件
-	insulation: document.querySelector("input[name='insulation']:checked")?.value,
+        other_accessory: document.querySelector("input[name='other_accessory']").value.trim(),
+        insulation: document.querySelector("input[name='insulation']:checked")?.value,
         side_insulation: document.querySelector("input[name='side_insulation']").value,
         side_total: document.querySelector("input[name='side_total']").value,
         bottom_insulation: document.querySelector("input[name='bottom_insulation']").value,
         bottom_total: document.querySelector("input[name='bottom_total']").value,
-	
-	
-	
         workers: [
             document.querySelector("input[name='worker1']").value,
             document.querySelector("input[name='worker2']").value,
             document.querySelector("input[name='worker3']").value
         ],
-        // 新增日期欄位
         customer_due: document.querySelector("input[name='customer_due']").value,
         actual_delivery: document.querySelector("input[name='actual_delivery']").value,
         start_date: document.querySelector("input[name='start_date']").value,
         completion_date: document.querySelector("input[name='completion_date']").value,
-        
-	// 使用材料
         material: document.querySelector("#material").value,
         estimatedAmount: document.querySelector("#estimatedAmount").value,
         actualAmount: document.querySelector("#actualAmount").value,
         emptyBowlWeight: document.querySelector("#emptyBowlWeight").value,
         finalWeight: document.querySelector("#finalWeight").value,
-	
-	// **保存澆盆與內桶編號**
         tank_numbers: Array.from(document.querySelectorAll("input[name^='number_']")).map(input => input.value.trim()),
         inner_tank_numbers: Array.from(document.querySelectorAll("input[name^='inner_tank_number_']")).map(input => input.value.trim()),
-
     };
 
-    const fileName = `${formData.date.replace(/-/g, '')}_${formData.customer}_${typeText}.json`;
+    // 修改檔案名稱，使用 CustomerText 和 typeText
+    const fileName = `${formData.date.replace(/-/g, '')}_${CustomerText}_${typeText}.json`;
 
     const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' });
     const link = document.createElement('a');
@@ -96,6 +89,7 @@
     link.download = fileName;
     link.click();
 }
+
 
 
 
@@ -109,7 +103,7 @@
             const formData = JSON.parse(e.target.result);
             
             // 填充文字輸入框
-            document.querySelector("input[name='customer']").value = formData.customer;
+            document.querySelector("select[name='customer']").value = formData.customer;
             document.querySelector("input[name='filled_by']").value = formData.filled_by;
             document.querySelector("input[name='date']").value = formData.date;
             document.querySelector("select[name='type']").value = formData.type;
@@ -149,27 +143,28 @@
 		
 	
 
-            // 填充保溫層欄位
-            document.querySelector("input[name='side_insulation']").value = formData.side_insulation;
-            document.querySelector("input[name='side_total']").value = formData.side_total;
-            document.querySelector("input[name='bottom_insulation']").value = formData.bottom_insulation;
-            document.querySelector("input[name='bottom_total']").value = formData.bottom_total;
-		
-	if (formData.side_insulation) {
-                document.querySelector("input[name='side_insulation']").value = formData.side_insulation;
-            }
-            if (formData.side_total) {
-                document.querySelector("input[name='side_total']").value = formData.side_total;
-            }
-            if (formData.bottom_insulation) {
-                document.querySelector("input[name='bottom_insulation']").value = formData.bottom_insulation;
-            }
-            if (formData.bottom_total) {
-                document.querySelector("input[name='bottom_total']").value = formData.bottom_total;
-            }
+            // 先判斷是否有選擇保溫層
+if (formData.side_insulation && formData.side_total && formData.bottom_insulation && formData.bottom_total) {
+    // 填充保溫層欄位
+    document.querySelector("input[name='side_insulation']").value = formData.side_insulation;
+    document.querySelector("input[name='side_total']").value = formData.side_total;
+    document.querySelector("input[name='bottom_insulation']").value = formData.bottom_insulation;
+    document.querySelector("input[name='bottom_total']").value = formData.bottom_total;
 
-            // 若保溫層選擇「有」，則顯示側邊與底部欄位
-            updateInsulationFields();
+    // 若保溫層選擇「有」，則顯示側邊與底部欄位
+    updateInsulationFields();
+} else {
+    // 如果沒有選擇保溫層或資料不完整，隱藏相關欄位並清除輸入框
+    document.getElementById("side_fields").classList.add("hidden");
+    document.getElementById("bottom_fields").classList.add("hidden");
+    
+    // 清除保溫層欄位資料
+    document.querySelector("input[name='side_insulation']").value = "";
+    document.querySelector("input[name='side_total']").value = "";
+    document.querySelector("input[name='bottom_insulation']").value = "";
+    document.querySelector("input[name='bottom_total']").value = "";
+}
+
 		
             
             // 新增填充日期欄位
@@ -213,7 +208,7 @@
     }
 }
 
-
+		
 
 
 		function updateInsulationFields() {
@@ -251,7 +246,10 @@
             const quantity = document.querySelector("select[name='tank_quantity']").value;
             const container = document.getElementById("tank_number_fields");
             container.innerHTML = ""; // 清空原有欄位
-
+		
+    	 // 取得客戶代號與澆盆種類代號
+    const customerCode = document.querySelector("select[name='customer']").value; // 取得客戶代號
+    const typeCode = document.querySelector("select[name='type']").value; // 取得澆盆種類代號
             if (quantity > 0) {
                 for (let i = 1; i <= quantity; i++) {
                     const inputGroup = document.createElement("div");
@@ -263,7 +261,8 @@
                     input.type = "text";
                     input.name = `number_${i}`;
                     input.required = true;
-
+			 // 根據客戶代號與澆盆種類代號自動填充澆盆編號
+            input.value = `${customerCode}-${typeCode}-${i}`;
                     inputGroup.appendChild(label);
                     inputGroup.appendChild(input);
                     container.appendChild(inputGroup);
@@ -275,7 +274,9 @@
             const quantity = document.querySelector("select[name='inner_tank_quantity']").value;
             const container = document.getElementById("inner_tank_number_fields");
             container.innerHTML = ""; // 清空原有欄位
-
+		// 取得客戶代號與澆盆種類代號
+    const customerCode = document.querySelector("select[name='customer']").value; // 取得客戶代號
+    const typeCode = document.querySelector("select[name='type']").value; // 取得澆盆種類代號
             if (quantity > 0) {
                 for (let i = 1; i <= quantity; i++) {
                     const inputGroup = document.createElement("div");
@@ -287,7 +288,8 @@
                     input.type = "text";
                     input.name = `inner_tank_number_${i}`;
                     input.required = true;
-
+		// 根據客戶代號與澆盆種類代號自動填充內桶編號
+            input.value = `${customerCode}-${typeCode}-F`;
                     inputGroup.appendChild(label);
                     inputGroup.appendChild(input);
                     container.appendChild(inputGroup);
@@ -300,7 +302,7 @@
         border: 0 // 禁用邊框渲染
     }).then(canvas => {
         let date = document.querySelector("input[name='date']").value;
-        let customer = document.querySelector("input[name='customer']").value || "未填寫";
+        let customer = document.querySelector("select[name='customer']").value || "未填寫";
         let type = document.querySelector("input[name='type']:checked")?.value || "未選擇";
         let fileName = `${date}_${customer}_${type}.png`;
 
@@ -312,12 +314,7 @@
 }
 
 
-        window.onload = function() {
-            document.querySelector("input[name='side_insulation']").value = "軟(6mm)+硬(3mm)";
-            document.querySelector("input[name='side_total']").value = "9";
-            document.querySelector("input[name='bottom_insulation']").value = "軟(6mm)x2+硬(3mm)x2";
-            document.querySelector("input[name='bottom_total']").value = "18";
-        };
+        
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -328,9 +325,19 @@
 	
         <form>
 
-            <div class="form-group inline-group">
-    <label>客戶名稱：<input type="text" name="customer" required></label>
+            
+
+		<div class="form-group">
+    <label for="customer">客戶名稱：</label>
+    <select name="customer" id="customer" required>
+        <option value="" disabled selected>請選擇客戶名稱</option>
+        <option value="4KF">超吉 (4KF)</option>
+        <option value="4IH">建鑫 (4IH)</option>
+        <option value="4CT">大騰 (4CT)</option>
+    </select>
 </div>
+
+
 <!-- 將填表人移到下一行 -->
 <div class="form-group">
     <label>填表人：<input type="text" name="filled_by" required></label>
