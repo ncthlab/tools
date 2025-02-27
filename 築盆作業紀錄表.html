@@ -36,11 +36,19 @@
             display: none;
         }
 	
+	#footer {
+        position: fixed;         /* 固定在頁面底部 */
+        bottom: 0;               /* 距離底部 0 距離 */
+        right: 0;                /* 靠右對齊 */
+        padding: 10px;           /* 可調整內邊距 */
+        font-size: 12px;         /* 調整字體大小 */
+        color: #A9A9A9;          /* 淡灰色字體 */
+      }
 	
-
 	
 
     </style>
+	<div id="footer">By 技術服務部</div>
     <script>
 		function exportData() {
     const typeText = document.querySelector("select[name='type'] option:checked").textContent;
