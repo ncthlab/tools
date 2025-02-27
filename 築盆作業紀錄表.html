@@ -268,9 +268,9 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
                 sideContainer.classList.remove("hidden");
                 bottomContainer.classList.remove("hidden");
                 sideInput.value = "軟(6mm)+硬(3mm)";
-                sideTotalInput.value = "9 mm";
+                sideTotalInput.value = "9";
                 bottomInput.value = "軟(6mm)x2+硬(3mm)x2";
-                bottomTotalInput.value = "18 mm";
+                bottomTotalInput.value = "18";
             }
         }
 
@@ -483,14 +483,16 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 
             <!-- 側邊與底部輸入欄位，預設為隱藏 -->
             <div id="side_fields" class="hidden">
+		
                 <div class="form-group">
-                    側邊:<input type="text" name="side_insulation" value="軟(6mm)+硬(3mm)"> ，共 <input type="text" name="side_total" size="5"> mm
+			<span style="font-size: 8px; color: #808080;">※若無指定則依以下預設為主</span><br>
+                    側邊:<input type="text" name="side_insulation" value="軟(6mm)+硬(3mm)"><br>共 <input type="text" name="side_total" size="5"> mm
                 </div>
             </div>
 
             <div id="bottom_fields" class="hidden">
                 <div class="form-group">
-                    底部:<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"> ，共 <input type="text" name="bottom_total" size="5"> mm
+                    底部:<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"><br>共 <input type="text" name="bottom_total" size="5"> mm
                 </div>
             </div>
 	<div class="form-group">
