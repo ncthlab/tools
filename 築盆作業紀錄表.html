@@ -421,7 +421,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 		<input type="radio" name="sintering" value="yes"> 是
             </div>
             <div class="form-group" style="position: relative; display: inline-block;">
-                <label>澆盆尺寸示意圖：</label><br>
+                <label>澆盆尺寸示意圖 (單位：mm)：</label><br>
                 <img src="https://raw.githubusercontent.com/ncthlab/tools/refs/heads/main/images/%E6%BE%86%E7%9B%86%E5%B0%BA%E5%AF%B8%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="澆盆尺寸示意圖" width="100%">
 		<!-- 在圖片上放置輸入欄位 -->
     <!-- 澆盆頂徑 -->
@@ -447,7 +447,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
             </div>
             <div class="form-group">
     <label>其他配件：</label><br>
-<span style="font-size: smaller; color: #808080;">括號內通常隨附 依實際客戶提供為主</span><br>
+<span style="font-size: 8px; color: #808080;">※括號內通常隨附 依實際客戶提供為主</span><br>
     <input type="checkbox" name="accessory" value="斜管"> 斜管 ( <input type="checkbox" name="accessory" value="鐵鉤"> 鐵鉤 )
 	<br>
     <input type="checkbox" name="accessory" value="ㄇ形吊桿"> ㄇ形吊桿 ( <input type="checkbox" name="accessory" value="插銷"> 插銷 x 2 )
@@ -483,13 +483,13 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
         <input type="text" id="material" name="material" required style="width: 20%;"><br>
         
         <label for="estimatedAmount">預估用量（KG）：</label>
-        <input type="number" id="estimatedAmount" name="estimatedAmount" step="0.01" required style="width: 50px;"><br>
+        <input type="number" id="estimatedAmount" name="estimatedAmount" step="0.01" required style="width: 50px;">
 
         <label for="actualAmount">實際用量（KG）：</label>
         <input type="number" id="actualAmount" name="actualAmount" step="0.01" required style="width: 50px;"><br>
 
         <label for="emptyBowlWeight">空盆重量（KG）：</label>
-        <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" step="0.01" required style="width: 50px;"><br>
+        <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" step="0.01" required style="width: 50px;">
 
         <label for="finalWeight">成品重量（KG）：</label>
         <input type="number" id="finalWeight" name="finalWeight" step="0.01" required style="width: 50px;"><br>
@@ -499,17 +499,14 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
     <div>
 
         <label>客戶預交期：<input type="date" name="customer_due"></label>
-    </div>
-    <div>
-        <label>實際出貨日：<input type="date" name="actual_delivery"></label>
+    <label>實際出貨日：<input type="date" name="actual_delivery"></label>
     </div>
 </div>
 <div class="form-group">
     <div>
-        <label>起始日期：<input type="date" name="start_date"></label>
-    </div>
-    <div>
-        <label>完工日期：<input type="date" name="completion_date"></label>
+        <label>起始日期：<input type="date" name="start_date"></label>    
+        <label>完工日期：<input type="date" name="completion_date"></label><br>
+	<span style="font-size: 8px; color: #808080;">※表單、澆盆等配件、人員、材料皆備齊才開始計算10個工作天內運送</span><br>
     </div>
 </div>
 
