@@ -26,7 +26,6 @@
 		
         body {
             font-family: "Microsoft JhengHei", Cambria, sans-serif;
-            margin: 20px;
         }
         .container {
             max-width: 350px; /* 修改寬度 */
@@ -63,7 +62,35 @@
         color: #A9A9A9;          /* 淡灰色字體 */
       }
 	
-	
+	 /* 移除勾選框的默認樣式 */
+    input[type="checkbox"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 10px;
+        height: 10px;
+        border: 1px solid #333;
+        border-radius: 1px;
+        position: relative;
+        background-color: #FFF8DC; /* 未勾選時的淡黃色背景 */
+        cursor: pointer;
+    }
+
+    /* 當 checkbox 被選中時 */
+    input[type="checkbox"]:checked {
+        background-color: #007BFF; /* 勾選後的藍色背景 */
+    }
+
+   /* 顯示勾選標記並置中 */
+    input[type="checkbox"]:checked::before {
+        content: "✔";
+        position: absolute;
+        top: 50%; /* 垂直置中 */
+        left: 50%; /* 水平置中 */
+        transform: translate(-50%, -50%); /* 調整位置以完全置中 */
+        font-size: 5px; /* 勾選標記的字體大小 */
+        color: white;
+    }
 
     </style>
 	<div id="footer">By 技術服務部</div>
