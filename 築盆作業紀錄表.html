@@ -63,9 +63,7 @@
         color: #A9A9A9;          /* 淡灰色字體 */
       }
 	
-	 .radio-style {
-		background-color: #FFF8DC; /* 淡黃色背景 */
-	}
+	
 
     </style>
 	<div id="footer">By 技術服務部</div>
@@ -449,7 +447,7 @@ let waterAmount = estimatedAmount * waterRequirement;
 
 		<div class="form-group"style="margin-bottom: 5px;">
     <label for="customer">客戶名稱:</label>
-	<select name="customer" id="customer"style="background-color: #FFF8DC;font-size: 12px;">
+	<select name="customer" id="customer"style="background-color: #FFF8DC;font-size: 12px;text-align: center;">
         <option value="" disabled selected>請選擇客戶名稱</option>
         <option value="4KF">超吉 (4KF)</option>
         <option value="4IH">建鑫 (4IH)</option>
@@ -460,15 +458,15 @@ let waterAmount = estimatedAmount * waterRequirement;
 
 <!-- 將填表人移到下一行 -->
 <div class="form-group"style="margin-bottom: 5px;">
-    <label>填表人：<input type="text" name="filled_by" style="width: 50px; background-color: #FFF8DC; border: 1px solid black; outline: none;font-size: 12px;" ></label>
+    <label>填表人：<input type="text" name="filled_by" style="width: 50px; background-color: #FFF8DC; border: 1px solid black; outline: none;font-size: 12px;text-align: center;" ></label>
 </div>
             <!-- 將填表日期移到下一行 -->
             <div class="form-group"style="margin-bottom: 5px;">
-                <label>填表日期：<input type="date" name="date" style="background-color: #FFF8DC; border: 1px solid black; outline: none;font-family: Cambria;font-size: 12px;" ></label>
+                <label>填表日期：<input type="date" name="date" style="background-color: #FFF8DC; border: 1px solid black; outline: none;font-family: Cambria;font-size: 12px;text-align: center;" ></label>
             </div>
             <div class="form-group"style="margin-bottom: 5px;">
     <label for="type">澆盆種類:</label>
-    <select name="type" id="type"style="background-color: #FFF8DC;font-size: 12px;">
+    <select name="type" id="type"style="background-color: #FFF8DC;font-size: 12px;text-align: center;">
         <option value="" disabled selected>請選擇澆盆種類</option>
         <option value="APL">自動盆(APL)</option>
         <option value="TL">交換盆(TL)</option>
@@ -578,51 +576,53 @@ let waterAmount = estimatedAmount * waterRequirement;
 	<div class="form-group"style="margin-bottom: 8px;">
         <label for="material">使用材料:</label>
         <input type="text" id="material" name="material" style="width: 90px;background-color: #FFF8DC; border: 1px solid black; outline: none;font-family: Cambria; font-size: 12px;margin-bottom: 5px;">
-	<button type="button" onclick="calculate()" style="background-color: #003366; color: white; font-weight: bold;">計算</button><br>
+	<button type="button" onclick="calculate()" style="background-color: #003366; color: white; font-weight: bold;font-size: 12px;">計算</button><br>
 
 
 
         <label for="estimatedAmount">預估用量(kg):</label>
         <input type="number" id="estimatedAmount" name="estimatedAmount" style="width: 50px; background-color: #FFF8DC; border: 1px solid black; outline: none;font-family: Cambria; font-size: 12px;margin-bottom: 5px;">
 	<label for="actualAmount" style="margin-left: 5px;">實際用量(kg):</label>
-        <input type="number" id="actualAmount" name="actualAmount" style="width: 50px;font-family: Cambria; font-size: 12px;"><br>
+        <input type="number" id="actualAmount" name="actualAmount" style="width: 50px;font-family: Cambria; font-size: 12px;border: 1px solid black; outline: none;"><br>
 	
 	<!-- 顯示包數和用水量 -->
     <label for="bagCount">材料包數:</label>
-    <input type="number" id="bagCount" name="bagCount" step="1" style="width: 40px; font-family: Cambria; font-size: 12px;margin-bottom: 5px;">
+    <input type="number" id="bagCount" name="bagCount" step="1" style="width: 45px; font-family: Cambria; font-size: 12px;margin-bottom: 5px;border: 1px solid black; outline: none;">
 	
 	<label for="waterRequirement" style="margin-left: 5px;">水分(%):</label>
-<input type="number" id="waterRequirement" name="waterRequirement" value="6.17" step="0.01" style="width: 40px;font-family: Cambria; font-size: 12px;">
+<input type="number" id="waterRequirement" name="waterRequirement" value="6.17" step="0.01" style="width: 40px;font-family: Cambria; font-size: 12px;border: 1px solid black; outline: none;">
 
     <label for="waterAmount" style="margin-left: 5px;">用水量(kg):</label>
-    <input type="number" id="waterAmount" name="waterAmount" step="0.01" style="width: 50px;font-family: Cambria; font-size: 12px;"><br>
+    <input type="number" id="waterAmount" name="waterAmount" step="0.01" style="width: 45px;font-family: Cambria; font-size: 12px;border: 1px solid black; outline: none;"><br>
 	
         <label for="emptyBowlWeight">空盆重量(kg):</label>
-        <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" style="width: 50px;font-family: Cambria; font-size: 12px;">
+        <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" style="width: 50px;font-family: Cambria; font-size: 12px;border: 1px solid black; outline: none;">
 
         <label for="finalWeight" style="margin-left: 5px;">成品重量(kg):</label>
-        <input type="number" id="finalWeight" name="finalWeight" style="width: 50px;font-family: Cambria; font-size: 12px;"><br>
+        <input type="number" id="finalWeight" name="finalWeight" style="width: 50px;font-family: Cambria; font-size: 12px;border: 1px solid black; outline: none;"><br>
 
    	</div>
-            <div class="form-group"style="margin-bottom: 8px;">
-    <label>客戶預交期:<input type="date" name="customer_due" style="width: 110px; background-color: #FFF8DC; border: 1px solid black;margin-bottom: 5px; " ></label><br>
-	<label>實際出貨日:<input type="date" name="actual_delivery" style="width: 110px;"></label>
+            <div class="form-group"style="margin-bottom: 5px;">
+    <label>客戶預交期:<input type="date" name="customer_due" style="width: 110px; background-color: #FFF8DC; border: 1px solid black;border: 1px solid black; outline: none;font-family: Cambria;font-size: 12px;text-align: center;" ></label><br>
+	<span style="font-size: 10px; color: #808080;">※表單、澆盆等配件、人員、材料皆備齊才開始計算10個工作天內運送</span><br>
+	<label>實際出貨日:<input type="date" name="actual_delivery" style="width: 110px;border: 1px solid black; outline: none;font-family: Cambria;font-size: 12px;text-align: center;"></label>
 </div>
 <div class="form-group" style="margin-bottom: 8px;" >
     <div>
-        <label>起始日期:<input type="date" name="start_date"style="width: 110px;margin-bottom: 5px;"></label><br>    
-        <label>完工日期:<input type="date" name="completion_date"style="width: 110px;"></label><br>
-	<span style="font-size: 10px; color: #808080;">※表單、澆盆等配件、人員、材料皆備齊才開始計算10個工作天內運送</span>
+        <label>起始日期:<input type="date" name="start_date"style="width: 110px;margin-bottom: 5px;border: 1px solid black; outline: none;font-family: Cambria;font-size: 12px;text-align: center;"></label><br>    
+        <label>完工日期:<input type="date" name="completion_date"style="width: 110px;border: 1px solid black; outline: none;font-family: Cambria;font-size: 12px;text-align: center;"></label><br>
+	
     </div>
 </div>
 
 <div class="form-group"style="margin-bottom: 10px;">
     <label>作業人員:</label>
     <div>
-        <input type="text" name="worker1" style="width: 50px;">
-	<input type="text" name="worker2" style="width: 50px;">
-	<input type="text" name="worker3" style="width: 50px;">
-    </div>
+    <input type="text" name="worker1" style="width: 40px; font-size: 12px; text-align: center;border: 1px solid black; outline: none;">
+    <input type="text" name="worker2" style="width: 40px; font-size: 12px; text-align: center;border: 1px solid black; outline: none;">
+    <input type="text" name="worker3" style="width: 40px; font-size: 12px; text-align: center;border: 1px solid black; outline: none;">
+</div>
+
    
 </div>
             <button type="button" onclick="takeScreenshot()">截圖</button>
