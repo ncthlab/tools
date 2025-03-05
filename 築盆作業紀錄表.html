@@ -215,7 +215,14 @@ window.onbeforeprint = function() {
         actualAmount: document.querySelector("#actualAmount").value,
 	
 	waterAmount: document.querySelector("#waterAmount").value,
+	
 	bagCount: document.querySelector("#bagCount").value,
+bagBatch1: document.querySelector("#bagBatch1").textContent,
+bagBatch2: document.querySelector("#bagBatch2").textContent,
+waterBatch1: document.querySelector("#waterBatch1").textContent,
+waterBatch2: document.querySelector("#waterBatch2").textContent,
+
+	
 	waterRequirement: document.querySelector("#waterRequirement").value,
 
         emptyBowlWeight: document.querySelector("#emptyBowlWeight").value,
@@ -257,7 +264,12 @@ window.onbeforeprint = function() {
 		document.querySelector("input[name='bagCount']").value = formData.bagCount;
 		document.querySelector("input[name='waterRequirement']").value = formData.waterRequirement;
 		document.querySelector("input[name='waterAmount']").value = formData.waterAmount;
-	
+		
+		document.querySelector("#waterBatch1").textContent = formData.waterBatch1;
+		document.querySelector("#waterBatch2").textContent = formData.waterBatch2;
+		document.querySelector("#bagBatch1").textContent = formData.bagBatch1;
+		document.querySelector("#bagBatch2").textContent = formData.bagBatch2;
+		
 		document.querySelector("input[name='ladle_top_diameter']").value = formData.ladle_top_diameter;
 		document.querySelector("input[name='ladle_height']").value = formData.ladle_height;
 		document.querySelector("input[name='ladle_bottom_diameter']").value = formData.ladle_bottom_diameter;
