@@ -506,16 +506,25 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 
   // 計算包數 (預估用量 / 25)
     let bagCount = estimatedAmount / 25;
+    let bagBatch1 = bagCount / 2;
+    let bagBatch2 = bagCount - bagBatch1;
+	
 
     // 取得預設水分
 let waterRequirement = parseFloat(document.getElementById("waterRequirement").value) / 100; // 轉換為小數形式
 
-// 計算用水量 (預估用量 * 水分需求)
-let waterAmount = estimatedAmount * waterRequirement;
+ // 計算用水量 (預估用量 * 水分需求)
+    let waterAmount = estimatedAmount * waterRequirement;
+    let waterBatch1 = bagBatch1 * 25 * waterRequirement;
+    let waterBatch2 = waterAmount - waterBatch1;
 
     // 顯示計算結果，並保留兩位小數
     document.getElementById("bagCount").value = bagCount.toFixed(2); // 顯示包數
+	document.getElementById("bagBatch1").textContent = bagBatch1.toFixed(2); //包數分批量1
+	document.getElementById("bagBatch2").textContent = bagBatch2.toFixed(2); //包數分批量2	
     document.getElementById("waterAmount").value = waterAmount.toFixed(2); // 顯示用水量
+	document.getElementById("waterBatch1").textContent = waterBatch1.toFixed(2); //用水分批量1
+	document.getElementById("waterBatch2").textContent = waterBatch2.toFixed(2); //用水分批量2
     }
 
      // 計算用水量
@@ -526,9 +535,18 @@ let waterAmount = estimatedAmount * waterRequirement;
             // 如果包數或水分百分比為零，避免不正確的計算
             if (bagCount > 0 && waterRequirement > 0) {
                 const waterAmount = bagCount * 25 * (waterRequirement / 100);  // 計算用水 = 包數 * 25 * 水分%
+		const bagBatch1 = Math.round(bagCount / 2) ;
+		const bagBatch2 = bagCount - bagBatch1
+		const waterBatch1 = bagBatch1 * 25 * (waterRequirement / 100);
+		const waterBatch2 = waterAmount - waterBatch1 ;
 
                 // 更新用水欄位的值，保留兩位小數
                 document.getElementById("waterAmount").value = waterAmount.toFixed(2);
+		document.getElementById("waterBatch1").textContent = waterBatch1.toFixed(2);
+		document.getElementById("waterBatch2").textContent = waterBatch2.toFixed(2);
+		document.getElementById("bagBatch1").textContent = bagBatch1;
+		document.getElementById("bagBatch2").textContent = bagBatch2;
+		
             }
         }
 
@@ -600,7 +618,7 @@ let waterAmount = estimatedAmount * waterRequirement;
 
 <!-- 將填表人移到下一行 -->
 <div class="form-group">
-    <label>填表人：<input type="text" name="filled_by" required style="width: 50px;background-color: #FFF8DC;"></label>
+    <label>填表人：<input type="text" name="filled_by" required style="width: 50px;background-color: #FFFFE0;"></label>
 	<span style="font-size: 8px; color: #808080;">※填表人請填寫所有黃色填色區塊</span>
 </div>
             <!-- 將填表日期移到下一行 -->
@@ -667,7 +685,7 @@ let waterAmount = estimatedAmount * waterRequirement;
     <input type="checkbox" name="accessory" value="盆蓋"> 盆蓋
     
     <input type="checkbox" name="accessory" value="其他"> 其他
-    <input type="text" name="other_accessory" placeholder="若有，請輸入配件名稱" style="width: 50%;background-color: #FFF8DC;">
+    <input type="text" name="other_accessory" placeholder="若有，請輸入配件名稱" style="width: 50%;background-color: #FFFFE0;">
 	</div>
             <div class="form-group" style="position: relative; display: inline-block;">
                 <label>澆盆尺寸示意圖 (單位：mm)：</label><br>
@@ -719,20 +737,22 @@ let waterAmount = estimatedAmount * waterRequirement;
 	 <button type="button" onclick="calculate()">計算</button><br>
    
         <label for="estimatedAmount">預估用量(kg):</label>
-        <input type="number" id="estimatedAmount" name="estimatedAmount" required style="width: 55px;background-color: #FFFFE0;"oninput="updateBagCount()">
+        <input type="number" id="estimatedAmount" name="estimatedAmount" required style="width: 55px;background-color: #FFFFE0;"oninput="updateBagCount();updateWaterAmount()">
 
         <label for="actualAmount">實際用量(kg):</label>
         <input type="number" id="actualAmount" name="actualAmount" required style="width: 50px;"><br>
 	
 	 <!-- 顯示包數和用水量 -->
     <label for="bagCount">預估包數:</label>
-    <input type="number" id="bagCount" name="bagCount" step="1" style="width: 45px;" oninput="updateWaterAmount()"><br>
+    <input type="number" id="bagCount" name="bagCount" step="1" style="width: 45px;" oninput="updateWaterAmount()">
+	=<span id="bagBatch1"></span> + <span id="bagBatch2"></span> 包<br>
 
     <label for="waterRequirement" style="margin-left: 5px;">水分(%):</label>
     <input type="number" id="waterRequirement" name="waterRequirement" step="0.01" style="width: 40px;" oninput="updateWaterAmount()">
 
     <label for="waterAmount" style="margin-left: 5px;">用水(kg):</label>
-    <input type="number" id="waterAmount" name="waterAmount" step="0.01" style="width: 45px;" oninput="updateWaterRequirement()"><br>
+    <input type="number" id="waterAmount" name="waterAmount" step="0.01" style="width: 45px;" oninput="updateWaterRequirement()">
+	=<span id="waterBatch1"></span> + <span id="waterBatch2"></span> kg<br>
 
 
         <label for="emptyBowlWeight">空盆重量(kg):</label>
