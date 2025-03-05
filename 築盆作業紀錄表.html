@@ -6,6 +6,23 @@
     <title>築盆作業紀錄表</title>
 	<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
+	/* 設定列印樣式 */
+        @media print {
+            @page {
+                size: A4 portrait; /* A4 直向 */
+                margin: 0; /* 設定邊界為 0 */
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                -webkit-print-color-adjust: economy; /* 強制黑白列印 */
+                print-color-adjust: economy;
+            }
+            .no-print {
+                display: none; /* 隱藏按鈕，不列印 */
+            }
+        }
+		
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -20,7 +37,7 @@
             text-align: center;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             text-align: left;
         }
         .inline-group {
@@ -44,8 +61,85 @@
         font-size: 12px;         /* 調整字體大小 */
         color: #A9A9A9;          /* 淡灰色字體 */
       }
+	/* 移除勾選框的默認樣式 */
+    input[type="checkbox"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 10px;
+        height: 10px;
+        border: 1px solid #333;
+        border-radius: 1px;
+        position: relative;
+        background-color: #FFF8DC; /* 未勾選時的淡黃色背景 */
+        cursor: pointer;
+    }
+
+    
+
+   /* 顯示勾選標記並置中 */
+    input[type="checkbox"]:checked::before {
+        content: "✔";
+        position: absolute;
+        top: 50%; /* 垂直置中 */
+        left: 50%; /* 水平置中 */
+        transform: translate(-50%, -50%); /* 調整位置以完全置中 */
+        font-size: 8px; /* 勾選標記的字體大小 */
+        color: black;
+    }
+
+	/* 設定 radio 預設填色為淡黃色 */
+    input[type="radio"]:not(:checked) {
+        background-color: #FFF8DC; /* 淡黃色 */
+    }
+
+      /* 設定選中後的外觀 */
+    input[type="radio"]:checked {
+        background-color: #FFF8DC; /* 淡黃色 */
+    }
+
+    /* 視覺效果：顯示圓形的填色 */
+    input[type="radio"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 10px;
+        height: 10px;
+        border: 1px solid #333;
+        border-radius: 50%;
+        position: relative;
+        cursor: pointer;
+    }
+
+	/* 設定勾選後的圓點顏色 */
+    input[type="radio"]:checked::after {
+        content: "✔";
+        position: absolute;
+        top: 50%; /* 垂直置中 */
+        left: 50%; /* 水平置中 */
+        transform: translate(-50%, -50%); /* 調整位置以完全置中 */
+        font-size: 8px; /* 勾選標記的字體大小 */
+        color: black;
+    }
+		
+	input {
+    font-family: Cambria;
+    font-size: 12px;
+    border: 1px solid black;
+    outline: none;
+    margin-bottom: 5px;
+	text-align: center;
+}
 	
-	
+	select {
+    font-family: Cambria;
+    font-size: 12px;
+    border: 1px solid black;
+    outline: none;
+    margin-bottom: 5px;
+	text-align: center;
+	background-color: #FFFFE0; /* 淡黃色 */
+}
 
     </style>
 	<div id="footer">By 技術服務部</div>
@@ -104,6 +198,11 @@
         material: document.querySelector("#material").value,
         estimatedAmount: document.querySelector("#estimatedAmount").value,
         actualAmount: document.querySelector("#actualAmount").value,
+	
+	waterAmount: document.querySelector("#waterAmount").value,
+	bagCount: document.querySelector("#bagCount").value,
+	waterRequirement: document.querySelector("#waterRequirement").value,
+
         emptyBowlWeight: document.querySelector("#emptyBowlWeight").value,
         finalWeight: document.querySelector("#finalWeight").value,
         tank_numbers: Array.from(document.querySelectorAll("input[name^='number_']")).map(input => input.value.trim()),
@@ -140,6 +239,9 @@
             document.querySelector("select[name='tank_quantity']").value = formData.tank_quantity;
             document.querySelector("select[name='inner_tank_quantity']").value = formData.inner_tank_quantity;
 		document.querySelector("input[name='other_accessory']").value = formData.other_accessory || "";
+		document.querySelector("input[name='bagCount']").value = formData.bagCount;
+		document.querySelector("input[name='waterRequirement']").value = formData.waterRequirement;
+		document.querySelector("input[name='waterAmount']").value = formData.waterAmount;
 	
 		document.querySelector("input[name='ladle_top_diameter']").value = formData.ladle_top_diameter;
 		document.querySelector("input[name='ladle_height']").value = formData.ladle_height;
@@ -298,6 +400,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
                     input.type = "text";
                     input.name = `number_${i}`;
                     input.required = true;
+			input.style.width = "100px";
 			 // 根據客戶代號與澆盆種類代號自動填充澆盆編號
             input.value = `${customerCode}-${typeCode}-${i}`;
                     inputGroup.appendChild(label);
@@ -325,6 +428,7 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
                     input.type = "text";
                     input.name = `inner_tank_number_${i}`;
                     input.required = true;
+			input.style.width = "100px";
 		// 根據客戶代號與澆盆種類代號自動填充內桶編號
             input.value = `${customerCode}-${typeCode}-F`;
                     inputGroup.appendChild(label);
@@ -396,11 +500,12 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
 	
         <form>
 
-            <div style="text-align: right;">
+            <div style="text-align: right; margin-bottom: 5px;">
+  <span id="file-name" style="font-size: 8px; display: inline-block; margin-right: 10px;"></span>
   <button onclick="document.getElementById('file-input').click()">匯入資料</button>
   <input type="file" id="file-input" accept=".json" onchange="displayFileName(event)" style="display: none;">
-  <span id="file-name" style="font-size: 8px;"></span>
 </div>
+
 
 		<div class="form-group">
     <label for="customer">客戶名稱:</label>
@@ -425,10 +530,10 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
     <label for="type">澆盆種類:</label>
     <select name="type" id="type">
         <option value="" disabled selected>請選擇澆盆種類</option>
-        <option value="APL">自動盆(APL)</option>
-        <option value="TL">交換盆(TL)</option>
-        <option value="RML">回爐盆(RML)</option>
-        <option value="SL">球化盆(SL)</option>
+        <option value="APL">自動盆 (APL)</option>
+        <option value="TL">交換盆 (TL)</option>
+        <option value="RML">回爐盆 (RML)</option>
+        <option value="SL">球化盆 (SL)</option>
     </select>
 </div>
 
@@ -491,22 +596,22 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
                 <img src="https://raw.githubusercontent.com/ncthlab/tools/refs/heads/main/images/%E6%BE%86%E7%9B%86%E5%B0%BA%E5%AF%B8%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="澆盆尺寸示意圖" width="100%">
 		<!-- 在圖片上放置輸入欄位 -->
     <!-- 澆盆頂徑 -->
-<input type="text" name="ladle_top_diameter" placeholder="澆盆頂徑 mm" style="position: absolute; top: 35px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="ladle_top_diameter" placeholder="澆盆頂徑" style="position: absolute; top: 35px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;">
     
 <!-- 澆盆高度 -->
-<input type="text" name="ladle_height" placeholder="澆盆高度 mm" style="position: absolute; top: 140px; left: -20px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="ladle_height" placeholder="澆盆高度" style="position: absolute; top: 140px; left: -20px; width: 60px; text-align: center; display: block; padding: 0;">
     
 <!-- 澆盆底徑 -->
-<input type="text" name="ladle_bottom_diameter" placeholder="澆盆底徑 mm" style="position: absolute; top: 240px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="ladle_bottom_diameter" placeholder="澆盆底徑" style="position: absolute; top: 240px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;">
     
 <!-- 內桶頂徑 -->
-<input type="text" name="former_top_diameter" placeholder="內桶頂徑 mm" style="position: absolute; top: 35px; left: 275px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="former_top_diameter" placeholder="內桶頂徑" style="position: absolute; top: 35px; left: 275px; width: 60px; text-align: center; display: block; padding: 0;">
     
 <!-- 內桶高度 -->
-<input type="text" name="former_height" placeholder="內桶高度 mm" style="position: absolute; top: 140px; left: 195px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="former_height" placeholder="內桶高度" style="position: absolute; top: 140px; left: 195px; width: 60px; text-align: center; display: block; padding: 0;">
 
 <!-- 內桶底徑 -->
-<input type="text" name="former_bottom_diameter" placeholder="內桶底徑 mm" style="position: absolute; top: 230px; left: 271px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="former_bottom_diameter" placeholder="內桶底徑" style="position: absolute; top: 230px; left: 271px; width: 60px; text-align: center; display: block; padding: 0;">
  </div>
             
             <!-- 保溫層選項 -->
@@ -521,13 +626,13 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
 		
                 <div class="form-group">
 			<span style="font-size: 8px; color: #808080;">※若無指定則依以下預設為主</span><br>
-                    側邊:<input type="text" name="side_insulation" value="軟(6mm)+硬(3mm)"style="text-align: center;"><br>共 <input type="text" name="side_total" size="5"style="text-align: center;"> mm
+                    側邊:<input type="text" name="side_insulation" value="軟(6mm)+硬(3mm)"style="text-align: center;">，共 <input type="text" name="side_total" style="width: 50px; text-align: center;"> mm
                 </div>
             </div>
 
             <div id="bottom_fields" class="hidden">
                 <div class="form-group">
-                    底部:<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"style="text-align: center;"><br>共 <input type="text" name="bottom_total" size="5"style="text-align: center;"> mm
+                    底部:<input type="text" name="bottom_insulation" value="軟(6mm)x2+硬(3mm)x2"style="text-align: center;">，共 <input type="text" name="bottom_total" style="width: 50px; text-align: center;"> mm
                 </div>
             </div>
 	<div class="form-group">
@@ -540,7 +645,16 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
 
         <label for="actualAmount">實際用量(kg):</label>
         <input type="number" id="actualAmount" name="actualAmount" required style="width: 50px;"><br>
+	
+	<!-- 顯示包數和用水量 -->
+    <label for="bagCount">預估包數:</label>
+    <input type="number" id="bagCount" name="bagCount" step="1" style="width: 45px;"><br>
+	
+	<label for="waterRequirement" style="margin-left: 5px;">水分(%):</label>
+<input type="number" id="waterRequirement" name="waterRequirement" value="6.17" step="0.01" style="width: 40px;">
 
+    <label for="waterAmount" style="margin-left: 5px;">用水(kg):</label>
+    <input type="number" id="waterAmount" name="waterAmount" step="0.01" style="width: 45px;"><br>
         <label for="emptyBowlWeight">空盆重量(kg):</label>
         <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" required style="width: 50px;">
 
@@ -548,15 +662,19 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
         <input type="number" id="finalWeight" name="finalWeight" required style="width: 50px;"><br>
 
    	</div>
-            <div class="form-group">
+           <div class="form-group">
     <label>客戶預交期:<input type="date" name="customer_due" style="width: 110px;"></label><br>
-	<label>實際出貨日:<input type="date" name="actual_delivery" style="width: 110px;"></label>
+    <span style="font-size: 8px; color: #808080; display: inline-block; margin-bottom: 5px;">
+        ※表單、澆盆等配件、人員、材料皆備齊才開始計算10個工作天內運送
+    </span><br>
+    <label>實際出貨日:<input type="date" name="actual_delivery" style="width: 110px;"></label>
 </div>
+
 <div class="form-group">
     <div>
         <label>起始日期:<input type="date" name="start_date"style="width: 110px;"></label><br>    
         <label>完工日期:<input type="date" name="completion_date"style="width: 110px;"></label><br>
-	<span style="font-size: 8px; color: #808080;">※表單、澆盆等配件、人員、材料皆備齊才開始計算10個工作天內運送</span><br>
+	
     </div>
 </div>
 
@@ -571,7 +689,7 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
 </div>
             <button type="button" onclick="takeScreenshot()">截圖</button>
 		<button type="button" onclick="exportData()">匯出資料</button>
-		
+		<button class="no-print" onclick="window.print()">預覽列印</button>
 
         </form>
 	
