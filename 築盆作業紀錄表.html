@@ -472,63 +472,99 @@ if (formData.side_insulation && formData.side_total && formData.bottom_insulatio
 	 function calculate() {
 
 	
-        // 取得使用者輸入的數值
+        // 取得澆盆尺寸數值
         let ladleTopDiameter = parseFloat(document.getElementsByName("ladle_top_diameter")[0].value);
-let ladleHeight = parseFloat(document.getElementsByName("ladle_height")[0].value);
-let ladleBottomDiameter = parseFloat(document.getElementsByName("ladle_bottom_diameter")[0].value);
-let formerTopDiameter = parseFloat(document.getElementsByName("former_top_diameter")[0].value);
-let formerHeight = parseFloat(document.getElementsByName("former_height")[0].value);
-let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_diameter")[0].value);
+	let ladleHeight = parseFloat(document.getElementsByName("ladle_height")[0].value);
+	let ladleBottomDiameter = parseFloat(document.getElementsByName("ladle_bottom_diameter")[0].value);
+	let formerTopDiameter = parseFloat(document.getElementsByName("former_top_diameter")[0].value);
+	let formerHeight = parseFloat(document.getElementsByName("former_height")[0].value);
+	let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_diameter")[0].value);
 
-
-		
+	
 
         // 檢查是否所有欄位都有填寫數值
         if (isNaN(ladleTopDiameter) || isNaN(ladleHeight) || isNaN(ladleBottomDiameter) || 
             isNaN(formerTopDiameter) || isNaN(formerHeight) || isNaN(formerBottomDiameter)) {
-            alert("請填寫所有欄位！");
+            alert("請填寫澆盆尺寸");
             return; // 若有空白欄位，則不進行計算
         }
 
         // 澆盆體積公式
-        let ladleVolume = (1 / 3) * Math.PI * ladleHeight * Math.pow((ladleTopDiameter + ladleBottomDiameter) / 2, 2);
+        let ladleVolume = (1 / 3) * Math.PI * ladleHeight * 1/4* ((ladleTopDiameter**2) + ladleTopDiameter*ladleBottomDiameter+(ladleBottomDiameter**2));
 
         // 內桶體積公式
-        let formerVolume = (1 / 3) * Math.PI * formerHeight * Math.pow((formerTopDiameter + formerBottomDiameter) / 2, 2);
+        let formerVolume = (1 / 3) * Math.PI * formerHeight * 1/4* ((formerTopDiameter**2) + formerTopDiameter*formerBottomDiameter+(formerBottomDiameter**2));
+
 
         // 計算預估用量
-        let estimatedAmount = ((ladleVolume - formerVolume) / 1000 * 3.1) / 1000;
+        let estimatedAmount = (((ladleVolume - formerVolume) / 1000) * 3.1) / 1000;
 
         // 顯示計算結果，並保留兩位小數
         document.getElementById("estimatedAmount").value = estimatedAmount.toFixed(2); // 將預估用量顯示在輸入框中
+
+  // 計算包數 (預估用量 / 25)
+    let bagCount = estimatedAmount / 25;
+
+    // 取得預設水分
+let waterRequirement = parseFloat(document.getElementById("waterRequirement").value) / 100; // 轉換為小數形式
+
+// 計算用水量 (預估用量 * 水分需求)
+let waterAmount = estimatedAmount * waterRequirement;
+
+    // 顯示計算結果，並保留兩位小數
+    document.getElementById("bagCount").value = bagCount.toFixed(2); // 顯示包數
+    document.getElementById("waterAmount").value = waterAmount.toFixed(2); // 顯示用水量
     }
 
-       function updateWaterAmount() {
-    // 獲取包數和水分百分比
-    const bagCount = parseFloat(document.getElementById("bagCount").value) || 0;
-    const waterRequirement = parseFloat(document.getElementById("waterRequirement").value) || 0;
-    
-    // 計算用水
-    const waterAmount = bagCount * 25 * (waterRequirement / 100);
-    
-    // 更新用水數值
-    document.getElementById("waterAmount").value = waterAmount.toFixed(2); // 保留兩位小數
-}
+     // 計算用水量
+        function updateWaterAmount() {
+            const bagCount = parseFloat(document.getElementById("bagCount").value) || 0;  // 包數
+            const waterRequirement = parseFloat(document.getElementById("waterRequirement").value) || 0;  // 水分%
 
-function updateWaterRequirement() {
-    // 獲取包數和用水
-    const bagCount = parseFloat(document.getElementById("bagCount").value) || 0;
-    const waterAmount = parseFloat(document.getElementById("waterAmount").value) || 0;
-    
-    // 計算水分百分比
-    if (bagCount > 0 && waterAmount > 0) {
-        const waterRequirement = (waterAmount / (bagCount * 25)) * 100;
-        document.getElementById("waterRequirement").value = waterRequirement.toFixed(2); // 保留兩位小數
-    }
-}
+            // 如果包數或水分百分比為零，避免不正確的計算
+            if (bagCount > 0 && waterRequirement > 0) {
+                const waterAmount = bagCount * 25 * (waterRequirement / 100);  // 計算用水 = 包數 * 25 * 水分%
 
-document.getElementById("waterAmount").addEventListener("input", updateWaterRequirement);
+                // 更新用水欄位的值，保留兩位小數
+                document.getElementById("waterAmount").value = waterAmount.toFixed(2);
+            }
+        }
 
+        // 計算水分百分比
+        function updateWaterRequirement() {
+            const waterAmount = parseFloat(document.getElementById("waterAmount").value) || 0;  // 用水
+            const bagCount = parseFloat(document.getElementById("bagCount").value) || 0;  // 包數
+
+            // 如果包數為零或用水為零，避免不正確的計算
+            if (bagCount > 0 && waterAmount > 0) {
+                const waterRequirement = (waterAmount / (bagCount * 25)) * 100;  // 計算水分% = 用水 / (包數 * 25)
+
+                // 更新水分欄位的值，保留兩位小數
+                document.getElementById("waterRequirement").value = waterRequirement.toFixed(2);
+            }
+        }
+
+        // 預設值處理
+        window.onload = function() {
+            const waterRequirement = document.getElementById("waterRequirement");
+            // 如果沒有值，設定預設值
+            if (waterRequirement.value === "") {
+                waterRequirement.value = "6.17";
+            }
+            updateWaterAmount(); // 頁面加載時先更新用水量
+        }
+
+
+	// 計算包數
+        function updateBagCount() {
+            const estimatedAmount = parseFloat(document.getElementById("estimatedAmount").value) || 0;  // 預估用量(kg)
+
+            // 每包25kg，計算需要的包數
+            if (estimatedAmount > 0) {
+               const bagCount = estimatedAmount / 25;  // 計算包數（不取整數）
+                document.getElementById("bagCount").value = bagCount.toFixed(2);  // 更新包數
+            }
+        }
 
 
     </script>
@@ -681,20 +717,22 @@ document.getElementById("waterAmount").addEventListener("input", updateWaterRequ
 	 <button type="button" onclick="calculate()">計算</button><br>
    
         <label for="estimatedAmount">預估用量(kg):</label>
-        <input type="number" id="estimatedAmount" name="estimatedAmount" required style="width: 55px;background-color: #FFFFE0;">
+        <input type="number" id="estimatedAmount" name="estimatedAmount" required style="width: 55px;background-color: #FFFFE0;"oninput="updateBagCount()">
 
         <label for="actualAmount">實際用量(kg):</label>
         <input type="number" id="actualAmount" name="actualAmount" required style="width: 50px;"><br>
 	
-	<!-- 顯示包數和用水量 -->
+	 <!-- 顯示包數和用水量 -->
     <label for="bagCount">預估包數:</label>
-    <input type="number" id="bagCount" name="bagCount" step="1" style="width: 45px;"onchange="updateWaterAmount()"><br>
-	
-	<label for="waterRequirement" style="margin-left: 5px;">水分(%):</label>
-<input type="number" id="waterRequirement" name="waterRequirement" value="6.17" step="0.01" style="width: 40px;" onchange="updateWaterAmount()">
+    <input type="number" id="bagCount" name="bagCount" step="1" style="width: 45px;" oninput="updateWaterAmount()"><br>
+
+    <label for="waterRequirement" style="margin-left: 5px;">水分(%):</label>
+    <input type="number" id="waterRequirement" name="waterRequirement" step="0.01" style="width: 40px;" oninput="updateWaterAmount()">
 
     <label for="waterAmount" style="margin-left: 5px;">用水(kg):</label>
-	<input type="number" id="waterAmount" name="waterAmount" step="0.01" style="width: 45px;" onchange="updateWaterRequirement()" ><br>
+    <input type="number" id="waterAmount" name="waterAmount" step="0.01" style="width: 45px;" oninput="updateWaterRequirement()"><br>
+
+
         <label for="emptyBowlWeight">空盆重量(kg):</label>
         <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" required style="width: 50px;">
 
