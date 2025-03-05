@@ -503,7 +503,34 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
         document.getElementById("estimatedAmount").value = estimatedAmount.toFixed(2); // 將預估用量顯示在輸入框中
     }
 
-        
+       function updateWaterAmount() {
+    // 獲取包數和水分百分比
+    const bagCount = parseFloat(document.getElementById("bagCount").value) || 0;
+    const waterRequirement = parseFloat(document.getElementById("waterRequirement").value) || 0;
+    
+    // 計算用水
+    const waterAmount = bagCount * 25 * (waterRequirement / 100);
+    
+    // 更新用水數值
+    document.getElementById("waterAmount").value = waterAmount.toFixed(2); // 保留兩位小數
+}
+
+function updateWaterRequirement() {
+    // 獲取包數和用水
+    const bagCount = parseFloat(document.getElementById("bagCount").value) || 0;
+    const waterAmount = parseFloat(document.getElementById("waterAmount").value) || 0;
+    
+    // 計算水分百分比
+    if (bagCount > 0 && waterAmount > 0) {
+        const waterRequirement = (waterAmount / (bagCount * 25)) * 100;
+        document.getElementById("waterRequirement").value = waterRequirement.toFixed(2); // 保留兩位小數
+    }
+}
+
+document.getElementById("waterAmount").addEventListener("input", updateWaterRequirement);
+
+
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -661,13 +688,13 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
 	
 	<!-- 顯示包數和用水量 -->
     <label for="bagCount">預估包數:</label>
-    <input type="number" id="bagCount" name="bagCount" step="1" style="width: 45px;"><br>
+    <input type="number" id="bagCount" name="bagCount" step="1" style="width: 45px;"onchange="updateWaterAmount()"><br>
 	
 	<label for="waterRequirement" style="margin-left: 5px;">水分(%):</label>
-<input type="number" id="waterRequirement" name="waterRequirement" value="6.17" step="0.01" style="width: 40px;">
+<input type="number" id="waterRequirement" name="waterRequirement" value="6.17" step="0.01" style="width: 40px;" onchange="updateWaterAmount()">
 
     <label for="waterAmount" style="margin-left: 5px;">用水(kg):</label>
-    <input type="number" id="waterAmount" name="waterAmount" step="0.01" style="width: 45px;"><br>
+	<input type="number" id="waterAmount" name="waterAmount" step="0.01" style="width: 45px;" onchange="updateWaterRequirement()" ><br>
         <label for="emptyBowlWeight">空盆重量(kg):</label>
         <input type="number" id="emptyBowlWeight" name="emptyBowlWeight" required style="width: 50px;">
 
