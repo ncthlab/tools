@@ -88,7 +88,7 @@
         color: black;
     }
 
-	/* 設定 radio 預設填色為淡黃色 */
+	/* 設定 radio 預設填色為 */
     input[type="radio"]:not(:checked) {
         background-color: #FFF8DC; /* 淡黃色 */
     }
@@ -520,11 +520,11 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
 
 <!-- 將填表人移到下一行 -->
 <div class="form-group">
-    <label>填表人：<input type="text" name="filled_by" required style="width: 50px;"></label>
+    <label>填表人：<input type="text" name="filled_by" required style="width: 50px;background-color: #FFF8DC;"></label>
 </div>
             <!-- 將填表日期移到下一行 -->
             <div class="form-group">
-                <label>填表日期：<input type="date" name="date" required></label>
+                <label>填表日期：<input type="date" name="date" required style="background-color: #FFFFE0;"></label>
             </div>
             <div class="form-group">
     <label for="type">澆盆種類:</label>
@@ -535,10 +535,7 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
         <option value="RML">回爐盆 (RML)</option>
         <option value="SL">球化盆 (SL)</option>
     </select>
-</div>
-
-            <div class="form-group">
-                <label for="tank_quantity">澆盆數量:</label>
+<label for="tank_quantity">　澆盆數量:</label>
                 <select name="tank_quantity" id="tank_quantity" onchange="updateTankFields()">
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -547,8 +544,9 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
                     <option value="4">4</option>
                     <option value="5">5</option>
                 </select>
-            </div>
-            	
+</div>
+
+
 
 		<div id="tank_number_fields"></div>
 		
@@ -556,10 +554,7 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
                 <label>內桶歸屬:</label>
                 <input type="radio" name="ownership" value="customer"> 客戶
                 <input type="radio" name="ownership" value="company"> 見得行
-            </div>
-
-            <div class="form-group">
-                <label for="inner_tank_quantity">內桶數量：</label>
+		<label for="inner_tank_quantity">　內桶數量：</label>
                 <select name="inner_tank_quantity" id="inner_tank_quantity" onchange="updateTankOwnershipFields()">
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -569,6 +564,8 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
                     <option value="5">5</option>
                 </select>
             </div>
+
+          
 
             <div id="inner_tank_number_fields"></div>
 
@@ -589,29 +586,29 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
     <input type="checkbox" name="accessory" value="盆蓋"> 盆蓋
     <br>
     <input type="checkbox" name="accessory" value="其他"> 其他
-    <input type="text" name="other_accessory" placeholder="請輸入其他配件" style="width: 50%;">
+    <input type="text" name="other_accessory" placeholder="若有，請輸入配件名稱" style="width: 50%;background-color: #FFF8DC;">
 	</div>
             <div class="form-group" style="position: relative; display: inline-block;">
                 <label>澆盆尺寸示意圖 (單位：mm)：</label><br>
                 <img src="https://raw.githubusercontent.com/ncthlab/tools/refs/heads/main/images/%E6%BE%86%E7%9B%86%E5%B0%BA%E5%AF%B8%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="澆盆尺寸示意圖" width="100%">
 		<!-- 在圖片上放置輸入欄位 -->
     <!-- 澆盆頂徑 -->
-<input type="text" name="ladle_top_diameter" placeholder="澆盆頂徑" style="position: absolute; top: 35px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="ladle_top_diameter" placeholder="澆盆頂徑" style="position: absolute; top: 35px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;background-color: #FFFFE0;">
     
 <!-- 澆盆高度 -->
-<input type="text" name="ladle_height" placeholder="澆盆高度" style="position: absolute; top: 140px; left: -20px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="ladle_height" placeholder="澆盆高度" style="position: absolute; top: 140px; left: -20px; width: 60px; text-align: center; display: block; padding: 0;background-color: #FFFFE0;">
     
 <!-- 澆盆底徑 -->
-<input type="text" name="ladle_bottom_diameter" placeholder="澆盆底徑" style="position: absolute; top: 240px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="ladle_bottom_diameter" placeholder="澆盆底徑" style="position: absolute; top: 240px; left: 65px; width: 60px; text-align: center; display: block; padding: 0;background-color: #FFFFE0;">
     
 <!-- 內桶頂徑 -->
-<input type="text" name="former_top_diameter" placeholder="內桶頂徑" style="position: absolute; top: 35px; left: 275px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="former_top_diameter" placeholder="內桶頂徑" style="position: absolute; top: 35px; left: 275px; width: 60px; text-align: center; display: block; padding: 0;background-color: #FFFFE0;">
     
 <!-- 內桶高度 -->
-<input type="text" name="former_height" placeholder="內桶高度" style="position: absolute; top: 140px; left: 195px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="former_height" placeholder="內桶高度" style="position: absolute; top: 140px; left: 195px; width: 60px; text-align: center; display: block; padding: 0;background-color: #FFFFE0;">
 
 <!-- 內桶底徑 -->
-<input type="text" name="former_bottom_diameter" placeholder="內桶底徑" style="position: absolute; top: 230px; left: 271px; width: 60px; text-align: center; display: block; padding: 0;">
+<input type="text" name="former_bottom_diameter" placeholder="內桶底徑" style="position: absolute; top: 230px; left: 271px; width: 60px; text-align: center; display: block; padding: 0;background-color: #FFFFE0;">
  </div>
             
             <!-- 保溫層選項 -->
@@ -637,11 +634,11 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
             </div>
 	<div class="form-group">
         <label for="material">使用材料:</label>
-        <input type="text" id="material" name="material" required style="width: 90px;">
+        <input type="text" id="material" name="material" required style="width: 90px;background-color: #FFFFE0;">
 	 <button type="button" onclick="calculate()">計算</button><br>
    
         <label for="estimatedAmount">預估用量(kg):</label>
-        <input type="number" id="estimatedAmount" name="estimatedAmount" required style="width: 50px;">
+        <input type="number" id="estimatedAmount" name="estimatedAmount" required style="width: 50px;background-color: #FFFFE0;">
 
         <label for="actualAmount">實際用量(kg):</label>
         <input type="number" id="actualAmount" name="actualAmount" required style="width: 50px;"><br>
@@ -663,7 +660,7 @@ let formerBottomDiameter = parseFloat(document.getElementsByName("former_bottom_
 
    	</div>
            <div class="form-group">
-    <label>客戶預交期:<input type="date" name="customer_due" style="width: 110px;"></label><br>
+    <label>客戶預交期:<input type="date" name="customer_due" style="width: 110px;background-color: #FFFFE0;"></label><br>
     <span style="font-size: 8px; color: #808080; display: inline-block; margin-bottom: 5px;">
         ※表單、澆盆等配件、人員、材料皆備齊才開始計算10個工作天內運送
     </span><br>
