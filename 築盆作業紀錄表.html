@@ -241,6 +241,20 @@ waterBatch2: document.querySelector("#waterBatch2").textContent,
         inner_tank_numbers: Array.from(document.querySelectorAll("input[name^='inner_tank_number_']")).map(input => input.value.trim()),
     };
 
+	fetch('https://nameless-base-e6f3.ncthfd1984.workers.dev/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(formData),  // 使用 formData 這個實際的資料物件
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data);  // 可以看到返回的 { message: 'Data received successfully' }
+  // 顯示成功訊息
+  alert(data.message);  // 彈出成功訊息
+})
+.catch(error => console.error('Error:', error));
 
 
     // 修改檔案名稱，使用 CustomerText 和 typeText
