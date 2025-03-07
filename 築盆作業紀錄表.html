@@ -248,13 +248,21 @@ waterBatch2: document.querySelector("#waterBatch2").textContent,
   },
   body: JSON.stringify(formData),  // 使用 formData 這個實際的資料物件
 })
-.then(response => response.json())
+.then(response => {
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+})
 .then(data => {
-  console.log(data);  // 可以看到返回的 { message: 'Data received successfully' }
-  // 顯示成功訊息
+  console.log(data);  // 打印返回的數據
   alert(data.message);  // 彈出成功訊息
 })
-.catch(error => console.error('Error:', error));
+.catch(error => {
+  console.error('Error:', error);  // 顯示錯誤訊息
+  alert('Something went wrong!');
+});
+
 
 
     // 修改檔案名稱，使用 CustomerText 和 typeText
