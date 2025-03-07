@@ -374,12 +374,12 @@ waterBatch2: document.querySelector("#waterBatch2").textContent,
         inner_tank_numbers: Array.from(document.querySelectorAll("input[name^='inner_tank_number_']")).map(input => input.value.trim()),
     };
 
-    // 呼叫上傳函數
-uploadDataToGoogleSheet(formData);
+
 
 loadClient().then(() => {
         console.log("Client loaded, now calling API...");
-        uploadDataToGoogleSheet();  // 這裡應該是你的 Google Sheets API 上傳函式
+         // 呼叫上傳函數，並傳遞 formData
+         uploadDataToGoogleSheet(formData);
     }).catch((error) => {
         console.error("Failed to load GAPI client", error);
     });
