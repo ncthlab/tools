@@ -183,97 +183,85 @@ window.onbeforeprint = function() {
   }
 	
 	
-		function exportData() {
-    const typeText = document.querySelector("select[name='type'] option:checked").textContent;
-    const CustomerText = document.querySelector("select[name='customer'] option:checked").textContent;
+		async function exportData() {
+        const typeText = document.querySelector("select[name='type'] option:checked").textContent;
+        const CustomerText = document.querySelector("select[name='customer'] option:checked").textContent;
 
-    const formData = {
-        customer: document.querySelector("select[name='customer']").value,
-        filled_by: document.querySelector("input[name='filled_by']").value,
-        date: document.querySelector("input[name='date']").value,
-        type: document.querySelector("select[name='type']").value,
-        tank_quantity: document.querySelector("select[name='tank_quantity']").value,
-        inner_tank_quantity: document.querySelector("select[name='inner_tank_quantity']").value,
-        ownership: document.querySelector("input[name='ownership']:checked")?.value,
-        sintering: document.querySelector("input[name='sintering']:checked")?.value,
-        
-	ladle_top_diameter: document.querySelector("input[name='ladle_top_diameter']").value,
-	ladle_height: document.querySelector("input[name='ladle_height']").value,
-	ladle_bottom_diameter: document.querySelector("input[name='ladle_bottom_diameter']").value,
-	former_top_diameter: document.querySelector("input[name='former_top_diameter']").value,
-	former_height: document.querySelector("input[name='former_height']").value,
-	former_bottom_diameter: document.querySelector("input[name='former_bottom_diameter']").value,
-	
-	accessories: Array.from(document.querySelectorAll("input[name='accessory']:checked")).map(checkbox => checkbox.value),
-        other_accessory: document.querySelector("input[name='other_accessory']").value.trim(),
-        insulation: document.querySelector("input[name='insulation']:checked")?.value,
-        side_insulation: document.querySelector("input[name='side_insulation']").value,
-        side_total: document.querySelector("input[name='side_total']").value,
-        bottom_insulation: document.querySelector("input[name='bottom_insulation']").value,
-        bottom_total: document.querySelector("input[name='bottom_total']").value,
-        workers: [
-            document.querySelector("input[name='worker1']").value,
-            document.querySelector("input[name='worker2']").value,
-            document.querySelector("input[name='worker3']").value
-        ],
-        customer_due: document.querySelector("input[name='customer_due']").value,
-        actual_delivery: document.querySelector("input[name='actual_delivery']").value,
-        start_date: document.querySelector("input[name='start_date']").value,
-        completion_date: document.querySelector("input[name='completion_date']").value,
-        material: document.querySelector("#material").value,
-        estimatedAmount: document.querySelector("#estimatedAmount").value,
-        actualAmount: document.querySelector("#actualAmount").value,
-	
-	waterAmount: document.querySelector("#waterAmount").value,
-	
-	bagCount: document.querySelector("#bagCount").value,
-bagBatch1: document.querySelector("#bagBatch1").textContent,
-bagBatch2: document.querySelector("#bagBatch2").textContent,
-waterBatch1: document.querySelector("#waterBatch1").textContent,
-waterBatch2: document.querySelector("#waterBatch2").textContent,
+        const formData = {
+            customer: document.querySelector("select[name='customer']").value,
+            filled_by: document.querySelector("input[name='filled_by']").value,
+            date: document.querySelector("input[name='date']").value,
+            type: document.querySelector("select[name='type']").value,
+            tank_quantity: document.querySelector("select[name='tank_quantity']").value,
+            inner_tank_quantity: document.querySelector("select[name='inner_tank_quantity']").value,
+            ownership: document.querySelector("input[name='ownership']:checked")?.value,
+            sintering: document.querySelector("input[name='sintering']:checked")?.value,
+            ladle_top_diameter: document.querySelector("input[name='ladle_top_diameter']").value,
+            ladle_height: document.querySelector("input[name='ladle_height']").value,
+            ladle_bottom_diameter: document.querySelector("input[name='ladle_bottom_diameter']").value,
+            former_top_diameter: document.querySelector("input[name='former_top_diameter']").value,
+            former_height: document.querySelector("input[name='former_height']").value,
+            former_bottom_diameter: document.querySelector("input[name='former_bottom_diameter']").value,
+            accessories: Array.from(document.querySelectorAll("input[name='accessory']:checked")).map(checkbox => checkbox.value),
+            other_accessory: document.querySelector("input[name='other_accessory']").value.trim(),
+            insulation: document.querySelector("input[name='insulation']:checked")?.value,
+            side_insulation: document.querySelector("input[name='side_insulation']").value,
+            side_total: document.querySelector("input[name='side_total']").value,
+            bottom_insulation: document.querySelector("input[name='bottom_insulation']").value,
+            bottom_total: document.querySelector("input[name='bottom_total']").value,
+            workers: [
+                document.querySelector("input[name='worker1']").value,
+                document.querySelector("input[name='worker2']").value,
+                document.querySelector("input[name='worker3']").value
+            ],
+            customer_due: document.querySelector("input[name='customer_due']").value,
+            actual_delivery: document.querySelector("input[name='actual_delivery']").value,
+            start_date: document.querySelector("input[name='start_date']").value,
+            completion_date: document.querySelector("input[name='completion_date']").value,
+            material: document.querySelector("#material").value,
+            estimatedAmount: document.querySelector("#estimatedAmount").value,
+            actualAmount: document.querySelector("#actualAmount").value,
+            waterAmount: document.querySelector("#waterAmount").value,
+            bagCount: document.querySelector("#bagCount").value,
+            bagBatch1: document.querySelector("#bagBatch1").textContent,
+            bagBatch2: document.querySelector("#bagBatch2").textContent,
+            waterBatch1: document.querySelector("#waterBatch1").textContent,
+            waterBatch2: document.querySelector("#waterBatch2").textContent,
+            waterRequirement: document.querySelector("#waterRequirement").value,
+            emptyBowlWeight: document.querySelector("#emptyBowlWeight").value,
+            finalWeight: document.querySelector("#finalWeight").value,
+            tank_numbers: Array.from(document.querySelectorAll("input[name^='number_']")).map(input => input.value.trim()),
+            inner_tank_numbers: Array.from(document.querySelectorAll("input[name^='inner_tank_number_']")).map(input => input.value.trim()),
+        };
 
-	
-	waterRequirement: document.querySelector("#waterRequirement").value,
-
-        emptyBowlWeight: document.querySelector("#emptyBowlWeight").value,
-        finalWeight: document.querySelector("#finalWeight").value,
-        tank_numbers: Array.from(document.querySelectorAll("input[name^='number_']")).map(input => input.value.trim()),
-        inner_tank_numbers: Array.from(document.querySelectorAll("input[name^='inner_tank_number_']")).map(input => input.value.trim()),
-    };
-
-	fetch('https://nameless-base-e6f3.ncthfd1984.workers.dev/', {
+        fetch('https://nameless-base-e6f3.ncthfd1984.workers.dev/', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
-  body: JSON.stringify(formData),  // 使用 formData 這個實際的資料物件
+  body: JSON.stringify(formData),
+  mode: 'no-cors', // 禁用 CORS 检查
 })
 .then(response => {
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-})
-.then(data => {
-  console.log(data);  // 打印返回的數據
-  alert(data.message);  // 彈出成功訊息
+  console.log(response);
+  alert("Data sent successfully!");
 })
 .catch(error => {
-  console.error('Error:', error);  // 顯示錯誤訊息
+  console.error('Error:', error);
   alert('Something went wrong!');
 });
 
 
+        // 修改文件名，使用 CustomerText 和 typeText
+        const fileName = `${formData.date.replace(/-/g, '')}_${CustomerText}_${typeText}.json`;
 
-    // 修改檔案名稱，使用 CustomerText 和 typeText
-    const fileName = `${formData.date.replace(/-/g, '')}_${CustomerText}_${typeText}.json`;
-
-    const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = fileName;
-    link.click();
-}
+        // 生成并下载 JSON 文件
+        const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+    }
 
 
 
