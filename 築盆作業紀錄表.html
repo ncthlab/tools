@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>築盆作業紀錄表</title>
 	<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-	<script src="https://apis.google.com/js/api.js"></script>
+
     <style>
 	/* 設定列印樣式 */
         @media print {
@@ -155,139 +155,6 @@ input[type="radio"] {
 
 			
 		
-		function authenticate() {
-    return new Promise((resolve, reject) => {
-        gapi.load('auth2', function() {
-            gapi.auth2.init({
-                client_id: '302837376599-51gtled5m588esfu1e9uil6j8ihle801.apps.googleusercontent.com',
-                cookiepolicy: 'single_host_origin'
-            }).then(function(authInstance) {
-                authInstance.signIn().then(function() {
-                    console.log('Sign-in successful');
-                    resolve(); // 完成認證流程後，resolve
-                }).catch(function(error) {
-                    console.error('Sign-in error:', error);
-                    reject(error); // 認證錯誤，reject
-                });
-            }).catch(function(error) {
-                console.error('Google API initialization error:', error);
-                reject(error); // 初始化錯誤，reject
-            });
-        });
-    });
-}
-
-
-// 確保在頁面加載時，GAPI 客戶端庫被加載
-function loadClient() {
-    return new Promise((resolve, reject) => {
-        gapi.load("client:auth2", () => {
-            gapi.client.init({
-                apiKey: 'AIzaSyD0Fevx-feBWfMZ0C7rxE85IxVDTAhaL08', // 替換成你的 API 金鑰
-                clientId: '302837376599-51gtled5m588esfu1e9uil6j8ihle801.apps.googleusercontent.com', // 替換成你的客戶端 ID
-                discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-                scope: 'https://www.googleapis.com/auth/spreadsheets'
-            }).then(() => {
-                console.log('GAPI client loaded successfully');
-                resolve();
-            }).catch((error) => {
-                console.error('Error loading GAPI client', error);
-                reject(error);
-            });
-        });
-    });
-}
-
-
-function uploadDataToGoogleSheet(formData) {
-    if (!formData) {
-        console.error('formData is undefined or null');
-        return;
-    }
-
-    // Log the formData to check its structure
-    console.log('formData:', formData);
-
-    // Check if the required fields are available
-    const requiredFields = [
-        'customer', 'filled_by', 'date', 'type', 'tank_quantity', 'inner_tank_quantity', 
-        'ownership', 'sintering', 'ladle_top_diameter', 'ladle_height', 'ladle_bottom_diameter', 
-        'former_top_diameter', 'former_height', 'former_bottom_diameter', 'accessories', 
-        'other_accessory', 'insulation', 'side_insulation', 'side_total', 'bottom_insulation', 
-        'bottom_total', 'workers', 'customer_due', 'actual_delivery', 'start_date', 
-        'completion_date', 'material', 'estimatedAmount', 'actualAmount', 'waterAmount', 
-        'bagCount', 'bagBatch1', 'bagBatch2', 'waterBatch1', 'waterBatch2', 'waterRequirement', 
-        'emptyBowlWeight', 'finalWeight', 'tank_numbers', 'inner_tank_numbers'
-    ];
-
-    for (let field of requiredFields) {
-        if (!(field in formData)) {
-            console.error(`Missing field: ${field}`);
-            return;
-        }
-    }
-
-    const params = {
-        spreadsheetId: '1ktwEf9fhcQiljGfbwY74FVzRC-3uqUaADNAICVDHXkI',
-        range: '工作表1!A2', // 設定您的範圍
-        valueInputOption: 'RAW',
-        insertDataOption: 'INSERT_ROWS'
-    };
-
-    const valueRangeBody = {
-        values: [
-            [
-                formData.customer,
-                formData.filled_by,
-                formData.date,
-                formData.type,
-                formData.tank_quantity,
-                formData.inner_tank_quantity,
-                formData.ownership,
-                formData.sintering,
-                formData.ladle_top_diameter,
-                formData.ladle_height,
-                formData.ladle_bottom_diameter,
-                formData.former_top_diameter,
-                formData.former_height,
-                formData.former_bottom_diameter,
-                formData.accessories.join(', '),
-                formData.other_accessory,
-                formData.insulation,
-                formData.side_insulation,
-                formData.side_total,
-                formData.bottom_insulation,
-                formData.bottom_total,
-                formData.workers.join(', '),
-                formData.customer_due,
-                formData.actual_delivery,
-                formData.start_date,
-                formData.completion_date,
-                formData.material,
-                formData.estimatedAmount,
-                formData.actualAmount,
-                formData.waterAmount,
-                formData.bagCount,
-                formData.bagBatch1,
-                formData.bagBatch2,
-                formData.waterBatch1,
-                formData.waterBatch2,
-                formData.waterRequirement,
-                formData.emptyBowlWeight,
-                formData.finalWeight,
-                formData.tank_numbers.join(', '),
-                formData.inner_tank_numbers.join(', ')
-            ]
-        ]
-    };
-
-    // Upload the data to Google Sheets
-    gapi.client.sheets.spreadsheets.values.append(params, valueRangeBody).then((response) => {
-        console.log('Data uploaded successfully', response);
-    }, (error) => {
-        console.error('Error uploading data', error);
-    });
-}
 
 
 		
@@ -376,13 +243,8 @@ waterBatch2: document.querySelector("#waterBatch2").textContent,
 
 
 
-loadClient().then(() => {
-        console.log("Client loaded, now calling API...");
-         // 呼叫上傳函數，並傳遞 formData
-         uploadDataToGoogleSheet(formData);
-    }).catch((error) => {
-        console.error("Failed to load GAPI client", error);
-    });
+// 呼叫上傳函數
+uploadDataToGoogleSheet(formData);
 
     // 修改檔案名稱，使用 CustomerText 和 typeText
     const fileName = `${formData.date.replace(/-/g, '')}_${CustomerText}_${typeText}.json`;
