@@ -196,6 +196,33 @@ function loadClient() {
 }
 
 function uploadDataToGoogleSheet(formData) {
+    if (!formData) {
+        console.error('formData is undefined or null');
+        return;
+    }
+
+    // Log the formData to check its structure
+    console.log('formData:', formData);
+
+    // Check if the required fields are available
+    const requiredFields = [
+        'customer', 'filled_by', 'date', 'type', 'tank_quantity', 'inner_tank_quantity', 
+        'ownership', 'sintering', 'ladle_top_diameter', 'ladle_height', 'ladle_bottom_diameter', 
+        'former_top_diameter', 'former_height', 'former_bottom_diameter', 'accessories', 
+        'other_accessory', 'insulation', 'side_insulation', 'side_total', 'bottom_insulation', 
+        'bottom_total', 'workers', 'customer_due', 'actual_delivery', 'start_date', 
+        'completion_date', 'material', 'estimatedAmount', 'actualAmount', 'waterAmount', 
+        'bagCount', 'bagBatch1', 'bagBatch2', 'waterBatch1', 'waterBatch2', 'waterRequirement', 
+        'emptyBowlWeight', 'finalWeight', 'tank_numbers', 'inner_tank_numbers'
+    ];
+
+    for (let field of requiredFields) {
+        if (!(field in formData)) {
+            console.error(`Missing field: ${field}`);
+            return;
+        }
+    }
+
     const params = {
         spreadsheetId: '1ktwEf9fhcQiljGfbwY74FVzRC-3uqUaADNAICVDHXkI',
         range: '工作表1!A2', // 設定您的範圍
@@ -205,6 +232,7 @@ function uploadDataToGoogleSheet(formData) {
 
     const valueRangeBody = {
         values: [
+            [
                 formData.customer,
                 formData.filled_by,
                 formData.date,
@@ -246,14 +274,17 @@ function uploadDataToGoogleSheet(formData) {
                 formData.tank_numbers.join(', '),
                 formData.inner_tank_numbers.join(', ')
             ]
+        ]
     };
 
+    // Upload the data to Google Sheets
     gapi.client.sheets.spreadsheets.values.append(params, valueRangeBody).then((response) => {
         console.log('Data uploaded successfully', response);
     }, (error) => {
         console.error('Error uploading data', error);
     });
 }
+
 
 		
 
