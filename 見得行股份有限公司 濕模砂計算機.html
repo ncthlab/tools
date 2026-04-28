@@ -300,6 +300,7 @@
         .small-input { width: 60px !important; }
         .sub-text { font-size: 12px; color: #888; margin-top: 4px; }
         .comment-text { font-size: 12px; color: #7f8c8d; font-style: italic; margin-left: 5px; }
+        .extra-info { font-size: 11px; color: #95a5a6; display: block; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -413,7 +414,8 @@
                 <span>%</span>
                 <span class="comment-text">※若客戶未提供則用 70% 做估算</span>
             </div>
-            <div class="input-row">
+            <span class="extra-info">※得料率：合格鑄件重量佔澆鑄重量的百分比，受：澆冒口、澆道設計以及缺陷影響。</span>
+            <div class="input-row" style="margin-top: 10px;">
                 <span>砂鐵比分母：</span>
                 <input type="number" id="ratio-den" class="small-input" placeholder="">
                 <span class="comment-text">※FC/FCD 常見在 6~10</span>
