@@ -84,7 +84,6 @@
             border-bottom: 2px solid var(--primary-color);
         }
 
-        /* 必填標示 */
         .required-mark {
             color: var(--danger-color);
             margin-left: 4px;
@@ -148,7 +147,6 @@
             font-size: 16px;
         }
 
-        /* 砂鐵比量表樣式 */
         .viz-container {
             margin-top: 60px;
             position: relative;
@@ -265,7 +263,6 @@
 
         .btn-capture:hover { background-color: #34495e; }
 
-        /* 警示框樣式 */
         .toast {
             position: fixed;
             top: 20px;
@@ -302,6 +299,7 @@
         .highlight-box { display: inline-block; background: #eee; padding: 2px 8px; border-radius: 4px; font-weight: bold; min-width: 40px; }
         .small-input { width: 60px !important; }
         .sub-text { font-size: 12px; color: #888; margin-top: 4px; }
+        .comment-text { font-size: 12px; color: #7f8c8d; font-style: italic; margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -411,13 +409,14 @@
         <div class="formula-text">
             <div class="input-row">
                 <span>鑄件得料率：</span>
-                <input type="number" id="yield-rate" class="small-input" value="70">
+                <input type="number" id="yield-rate" class="small-input" value="">
                 <span>%</span>
+                <span class="comment-text">※若客戶未提供則用 70% 做估算</span>
             </div>
             <div class="input-row">
                 <span>砂鐵比分母：</span>
-                <input type="number" id="ratio-den" class="small-input" placeholder="6~10">
-                <span class="sub-text">(如：8 代表 1:8)</span>
+                <input type="number" id="ratio-den" class="small-input" placeholder="">
+                <span class="comment-text">※FC/FCD 常見在 6~10</span>
             </div>
             <hr style="border:none; border-top:1px solid #eee; margin:10px 0;">
             <div class="input-row">
@@ -529,7 +528,6 @@
             setSafeText('res-total', total.toFixed(2));
             setSafeText('calc-total-1', total.toFixed(2));
             setSafeText('calc-total-2', total.toFixed(2));
-            setSafeText('calc-total-3', total.toFixed(2));
         }
 
         if (valL && valW && valH && valMetal) {
@@ -598,7 +596,8 @@
             setSafeDisplay('cycle-container', "none");
         }
 
-        const yieldRate = parseFloat(document.getElementById('yield-rate')?.value || 0) / 100;
+        const yieldRateVal = document.getElementById('yield-rate')?.value;
+        const yieldRate = parseFloat(yieldRateVal || 0) / 100;
         const ratioDen = parseFloat(document.getElementById('ratio-den')?.value || 0);
         const batchSand = parseFloat(document.getElementById('batch-sand')?.value || 0);
         const clayAdd = parseFloat(document.getElementById('clay-add')?.value || 0);
@@ -644,28 +643,22 @@
         if (el) el.addEventListener('input', update);
     });
 
-    // 截圖儲存與欄位檢查
     document.getElementById('btn-save').addEventListener('click', function() {
         const customerNameInput = document.getElementById('customer-name');
         const customerName = customerNameInput?.value.trim();
         const toast = document.getElementById('alert-toast');
 
-        // 檢查客戶名稱是否為空
         if (!customerName) {
-            // 顯示自定義警示
             if (toast) {
                 toast.style.display = 'block';
-                // 3秒後隱藏，與 CSS 動畫同步
                 setTimeout(() => {
                     toast.style.display = 'none';
                 }, 3000);
             }
-            // 焦點回到輸入框
             customerNameInput.focus();
             return;
         }
 
-        // 名稱有效，開始截圖
         const area = document.getElementById('capture-area');
         html2canvas(area, { backgroundColor: "#f8f9fa", scale: 2 }).then(canvas => {
             const link = document.createElement('a');
