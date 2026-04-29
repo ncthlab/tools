@@ -77,11 +77,10 @@
             font-size: 16px;
             text-align: center;
             outline: none;
-            width: 120px; /* 微調寬度以適應字體 */
+            width: 120px;
             background: transparent;
         }
 
-        /* 縮小提示文字字體 */
         .customer-input::placeholder {
             font-size: 12px;
             color: #bdc3c7;
@@ -287,10 +286,10 @@
         }
 
         @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, -20px); }
-            10% { opacity: 1; transform: translate(-50%, 0); }
-            90% { opacity: 1; transform: translate(-50%, 0); }
-            100% { opacity: 0; transform: translate(-50%, -20px); }
+            0? { opacity: 0; transform: translate(-50%, -20px); }
+            10? { opacity: 1; transform: translate(-50%, 0); }
+            90? { opacity: 1; transform: translate(-50%, 0); }
+            100? { opacity: 0; transform: translate(-50%, -20px); }
         }
 
         .info {
@@ -400,8 +399,9 @@
         <span class="section-title">3. 每日砂循環次數</span>
         <div class="formula-text">
             <div class="input-row">
-                <span>每日生產模數：</span>
+                <span>每日造模數量：</span>
                 <input type="number" id="daily-molds" class="small-input" value="">
+                <span>模/天</span>
             </div>
         </div>
         <div class="cycle-summary" id="cycle-container" style="display:none;">
@@ -454,8 +454,8 @@
         </div>
 
         <div class="material-summary" id="material-container" style="display:none;">
-            <div class="result-item">鐵水月熔量：<span class="result-value" id="res-monthly-iron">0.00</span> t</div>
-            <div class="result-item" style="margin-bottom:10px;">月用砂量：<span class="result-value" id="res-monthly-sand-total">0.00</span> t</div>
+            <div class="result-item">鐵水每月熔煉量：<span class="result-value" id="res-monthly-iron">0.00</span> t</div>
+            <div class="result-item" style="margin-bottom:10px;">每月造模用砂量：<span class="result-value" id="res-monthly-sand-total">0.00</span> t</div>
             
             <div style="border-top:1px dashed #ccc; padding-top:10px;">
                 <div class="summary-label">黏土月用量預估</div>
