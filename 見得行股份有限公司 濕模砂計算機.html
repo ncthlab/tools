@@ -286,10 +286,10 @@
         }
 
         @keyframes fadeInOut {
-            0? { opacity: 0; transform: translate(-50%, -20px); }
-            10? { opacity: 1; transform: translate(-50%, 0); }
-            90? { opacity: 1; transform: translate(-50%, 0); }
-            100? { opacity: 0; transform: translate(-50%, -20px); }
+            0% { opacity: 0; transform: translate(-50%, -20px); }
+            10% { opacity: 1; transform: translate(-50%, 0); }
+            90% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
         }
 
         .info {
@@ -328,15 +328,19 @@
     <div class="section">
         <span class="section-title">1. 砂鐵比計算</span>
         <div class="input-row">
+            <span style="font-weight: 600;">砂模尺寸：</span>
             <input type="number" id="L" placeholder="長" value=""> ×
             <input type="number" id="W" placeholder="寬" value=""> ×
             <input type="number" id="H" placeholder="高" value="">
             <span>(mm)</span>
         </div>
+        <!-- 補充說明小字 -->
+        <div style="font-size: 12px; color: #e74c3c; margin-top: -5px; margin-left: 75px; margin-bottom: 10px;">※ 高度請計合模後高度</div>
+
         <div class="result-group">
-            <div class="result-item">全模重: <span class="result-value" id="res-total">0.00</span> kg</div>
+            <div class="result-item">全模重量: <span class="result-value" id="res-total">0.00</span> kg</div>
             <div class="result-item">等效砂重: <span class="result-value" id="res-sand">0.00</span> kg</div>
-            <div class="result-item">空模重: <span class="result-value" id="res-empty">0.00</span> kg</div>
+            <div class="result-item">造模重量: <span class="result-value" id="res-empty">0.00</span> kg</div>
         </div>
         <div class="input-row" style="margin-top: 15px;">
             <span>單模澆鑄量：</span>
@@ -361,7 +365,7 @@
         <div class="size-labels">
             <span>(小件)</span><span></span><span></span><span></span><span></span><span></span><span></span><span>(大件)</span>
         </div>
-        <div class="info" style="border:none; margin-top:5px; padding:0;">※ 等效砂重公式：單模澆鑄量(kg) ÷ 5</div>
+        <div class="info" style="border:none; margin-top:15px; padding:0; line-height:1.5;">※ 等效砂重：相同體積下，砂與鐵的密度比是5:1，即單模澆鑄量(kg) ÷ 5。<br>全模重量扣除等效砂重等於實際造模重量。</div>
     </div>
 
     <!-- 2. 儲砂熟成時間計算 -->
@@ -370,13 +374,13 @@
         <div class="formula-text">
             <div class="input-row">
                 <span>線上砂重：</span>
-                <span class="highlight-box" id="calc-total-1">0</span> kg(全模重) 
+                <span class="highlight-box" id="calc-total-1">0</span> kg(全模重量) 
                 <span>× 線上模數</span>
                 <input type="number" id="on-line-molds" class="small-input" value="">
             </div>
             <div class="input-row">
                 <span>每小時用砂量：</span>
-                <span class="highlight-box" id="calc-total-2">0</span> kg(全模重)
+                <span class="highlight-box" id="calc-total-2">0</span> kg(全模重量)
                 <span>× 造模速度</span>
                 <input type="number" id="molds-per-hour" class="small-input" value="">
                 <span>模/hr</span>
