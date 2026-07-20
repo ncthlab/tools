@@ -157,41 +157,43 @@
     actionBtn.innerText = '再次掃描';
   }
 
-  // 4. 送出資料與 GAS 比對
+  // 4. 送出資料與 GAS 比對 (優化跨網域通訊格式)
   function handleScannedValue(scannedText) {
     resultBox.style.display = 'block';
     resultBox.className = 'loading';
     resultBox.innerHTML = `解碼成功，比對雲端資料中...`;
 
-    // 4. 改用標準的 API 方式 (Fetch) 送出資料與 GAS 比對，繞過 iframe 沙盒
     const gasUrl = "https://script.google.com/macros/s/AKfycbxhY_tonqBBZW6KEtdNpKrz0XSGKmK1F0vCTd_7zZ5mUL3fI1jPY2hwlJusFeRXXDPjjw/exec";
+
+    // 使用表單格式包裹參數，這是 GAS 最喜歡且不會引發 CORS 預檢的格式
+    const details = { 'scannedText': scannedText };
+    const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key])).join('&');
 
     fetch(gasUrl, {
       method: "POST",
-      // 設定內容類型為純文字，避免觸發跨網域的 CORS 複雜預檢
       headers: {
-        "Content-Type": "text/plain"
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
       },
-      body: scannedText // 直接把掃描到的條碼內容文字當成 Body 傳送
+      body: formBody
     })
     .then(function(res) {
-      return res.json(); // 將 GAS 回傳的結果轉為 JSON 物件
+      return res.json();
     })
     .then(function(response) {
-      // 這裡的邏輯與你原本的完全相同
       if (response.success) {
         resultBox.className = 'success';
+        // 顯示：第一行(B欄) 換行 A欄 換行 C欄
         resultBox.innerHTML = 
-          response.bValue + "<br>" + 
-          response.aValue + "<br>" + 
-          response.cValue;
+          "<div style='font-size:16px; color:#666;'>掃描品號：</div>" +
+          "<div style='font-size:20px; font-weight:bold; margin-bottom:8px;'>" + response.bValue + "</div>" + 
+          "<div style='font-size:20px; color:#0056b3; font-weight:bold; margin-bottom:8px;'>" + response.aValue + "</div>" + 
+          "<div style='font-size:20px; color:#28a745; font-weight:bold;'>" + response.cValue + "</div>";
       } else {
         resultBox.className = 'error';
         resultBox.innerHTML = "❌ 比對失敗：" + response.message;
       }
     })
     .catch(function(error) {
-      // 捕捉網路斷線或 URL 錯誤
       resultBox.className = 'error';
       resultBox.innerHTML = "⚠️ 系統錯誤：" + error.message;
     });
