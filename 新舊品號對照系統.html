@@ -194,7 +194,7 @@
     <!-- 掃描啟動前的歡迎畫面 -->
     <div id="welcome-view" style="text-align: center; color: var(--text-sub);">
        <div style="font-size: 4rem; margin-bottom: 20px;">🔍</div>
-       <p>點擊下方按鈕開始掃描條碼</p>
+       <p>點擊下方按鈕開始掃描品號QRCODE</p>
     </div>
 
     <!-- 相機畫面 -->
@@ -304,7 +304,7 @@
   function handleScannedValue(scannedText) {
     resultBox.style.display = 'block';
     statusArea.innerHTML = `<span class="status-badge status-loading">⏳ 查詢中...</span>`;
-    dataContent.innerHTML = `<p style="font-size:0.9rem; color:#666;">條碼: ${scannedText}</p>`;
+    dataContent.innerHTML = `<p style="font-size:0.9rem; color:#666;">品號掃碼結果: ${scannedText}</p>`;
 
     // 改用 GET 請求，並將參數接在 URL 後面
     const fetchUrl = `${GAS_WEB_APP_URL}?scannedText=${encodeURIComponent(scannedText)}`;
