@@ -303,34 +303,37 @@
 
   function handleScannedValue(scannedText) {
     resultBox.style.display = 'block';
-    statusArea.innerHTML = `<span class="status-badge status-loading">⏳ 查詢中：${scannedText}</span>`;
-    dataContent.innerHTML = "";
+    statusArea.innerHTML = `<span class="status-badge status-loading">⏳ 查詢中...</span>`;
+    dataContent.innerHTML = `<p style="font-size:0.9rem; color:#666;">條碼: ${scannedText}</p>`;
 
-    const formData = new URLSearchParams();
-    formData.append('scannedText', scannedText);
+    // 改用 GET 請求，並將參數接在 URL 後面
+    const fetchUrl = `${GAS_WEB_APP_URL}?scannedText=${encodeURIComponent(scannedText)}`;
 
-    fetch(GAS_WEB_APP_URL, {
-      method: 'POST',
-      body: formData.toString(),
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    fetch(fetchUrl, {
+      method: 'GET',
+      mode: 'cors' // 明確要求跨網域模式
     })
-    .then(res => res.json())
+    .then(response => {
+      if (!response.ok) throw new Error("網路回應異常");
+      return response.json();
+    })
     .then(data => {
-      if (data.status === 'success' || data.success) {
+      if (data.status === 'success') {
         statusArea.innerHTML = `<span class="status-badge status-success">✅ 比對成功</span>`;
         dataContent.innerHTML = `
-          <div class="info-card"><div class="label">B 欄資訊</div><div class="value">${data.bValue || '-'}</div></div>
-          <div class="info-card"><div class="label">A 欄資訊</div><div class="value">${data.aValue || '-'}</div></div>
-          <div class="info-card"><div class="label">C 欄資訊</div><div class="value">${data.cValue || '-'}</div></div>
+          <div class="info-card"><div class="label">B 欄 (品號)</div><div class="value">${data.bValue || '-'}</div></div>
+          <div class="info-card"><div class="label">A 欄 (品名)</div><div class="value">${data.aValue || '-'}</div></div>
+          <div class="info-card"><div class="label">C 欄 (規格)</div><div class="value">${data.cValue || '-'}</div></div>
         `;
       } else {
-        statusArea.innerHTML = `<span class="status-badge status-error">❌ 找不到資料</span>`;
-        dataContent.innerHTML = `<p style="color:var(--text-sub)">條碼 ${scannedText} 未在清單中。</p>`;
+        statusArea.innerHTML = `<span class="status-badge status-error">❌ 比對失敗</span>`;
+        dataContent.innerHTML = `<p style="color:#666">${data.message || "找不到匹配資料"}</p>`;
       }
     })
-    .catch(err => {
-      statusArea.innerHTML = `<span class="status-badge status-error">⚠️ 系統錯誤</span>`;
-      dataContent.innerHTML = `<p>${err.message}</p>`;
+    .catch(error => {
+      console.error(error);
+      statusArea.innerHTML = `<span class="status-badge status-error">⚠️ 系統連線錯誤</span>`;
+      dataContent.innerHTML = `<p style="font-size:0.8rem; color:red;">${error.message}<br>請確認 GAS 是否已部署為「所有人」存取，且網址正確。</p>`;
     });
   }
 </script>
