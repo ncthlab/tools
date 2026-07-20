@@ -321,9 +321,9 @@
       if (data.status === 'success') {
         statusArea.innerHTML = `<span class="status-badge status-success">✅ 比對成功</span>`;
         dataContent.innerHTML = `
-          <div class="info-card"><div class="label">B 欄 (品號)</div><div class="value">${data.bValue || '-'}</div></div>
-          <div class="info-card"><div class="label">A 欄 (品名)</div><div class="value">${data.aValue || '-'}</div></div>
-          <div class="info-card"><div class="label">C 欄 (規格)</div><div class="value">${data.cValue || '-'}</div></div>
+          <div class="info-card"><div class="label">新品號</div><div class="value">${data.bValue || '-'}</div></div>
+          <div class="info-card"><div class="label">舊品號</div><div class="value">${data.aValue || '-'}</div></div>
+          <div class="info-card"><div class="label">品名</div><div class="value">${data.cValue || '-'}</div></div>
         `;
       } else {
         statusArea.innerHTML = `<span class="status-badge status-error">❌ 比對失敗</span>`;
