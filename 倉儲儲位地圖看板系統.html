@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>倉庫儲位地圖 / 庫存視覺化管理系統</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#131e32',
+                            950: '#070d18',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS for XLSX Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(71, 85, 105, 1);
+        }
+
+        /* Map Canvas Interactive Area */
+        .map-viewport {
+            cursor: grab;
+            user-select: none;
+        }
+        .map-viewport:active {
+            cursor: grabbing;
+        }
+
+        /* Grid Cell Base Styling matching diagram */
+        .grid-cell {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+            position: relative;
+            border-radius: 2px;
+        }
+        .grid-cell:hover {
+            transform: scale(1.3);
+            z-index: 50 !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Zero layer count: Bright Solid Green Fill as in diagram */
+        .cell-zero {
+            background-color: #22c55e !important;
+            color: #052e16 !important;
+            border-color: #16a34a !important;
+        }
+
+        /* Stacked layers (>0): Neutral Light Gray Fill with Dark Text */
+        .cell-occupied {
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+            border-color: #94a3b8 !important;
+        }
+
+        /* Red Side/Top Row Indicator Bar Tag */
+        .red-marker-v {
+            width: 4px;
+            background-color: #ef4444;
+            height: 100%;
+            display: inline-block;
+            border-radius: 1px;
+        }
+        .red-marker-h {
+            height: 4px;
+            background-color: #ef4444;
+            width: 100%;
+            display: block;
+            border-radius: 1px;
+        }
+
+        /* Blue Storage Rack Blocks */
+        .blue-rack-block {
+            background-color: #0284c7;
+            border: 1px solid #0369a1;
+            box-shadow: 0 0 6px rgba(2, 132, 199, 0.4);
+            border-radius: 2px;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Search Match Highlight Animation */
+        @keyframes pulse-highlight {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.8); }
+            50% { transform: scale(1.25); box-shadow: 0 0 15px 4px rgba(245, 158, 11, 0.9); }
+        }
+        .search-match {
+            animation: pulse-highlight 1.5s infinite ease-in-out;
+            z-index: 45 !important;
+            border-color: #f59e0b !important;
+            background-color: #fef3c7 !important;
+            color: #78350f !important;
+        }
+
+        /* Glassmorphism Panels */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Zone Framework styling with Bookmark Tag */
+        .zone-frame {
+            position: relative;
+            border-radius: 8px;
+            padding: 12px 8px 8px 8px;
+            transition: all 0.2s ease;
+        }
+        .zone-frame:hover {
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+        }
+        .zone-bookmark {
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 1px 6px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.5px;
+            z-index: 20;
+        }
+
+        /* Zone Theme Colors */
+        .zone-02NC { border: 1.5px solid #06b6d4; background: rgba(6, 182, 212, 0.04); }
+        .zone-02NC .zone-bookmark { background: #0891b2; color: #ecfeff; }
+
+        .zone-02NE { border: 1.5px solid #3b82f6; background: rgba(59, 130, 246, 0.04); }
+        .zone-02NE .zone-bookmark { background: #2563eb; color: #eff6ff; }
+
+        .zone-02E { border: 1.5px solid #8b5cf6; background: rgba(139, 92, 246, 0.04); }
+        .zone-02E .zone-bookmark { background: #7c3aed; color: #f5f3ff; }
+
+        .zone-02B { border: 1.5px solid #ec4899; background: rgba(236, 72, 153, 0.04); }
+        .zone-02B .zone-bookmark { background: #db2777; color: #fdf2f8; }
+
+        .zone-01C { border: 1.5px solid #10b981; background: rgba(16, 185, 129, 0.04); }
+        .zone-01C .zone-bookmark { background: #059669; color: #ecfdf5; }
+
+        .zone-01E { border: 1.5px solid #f59e0b; background: rgba(245, 158, 11, 0.04); }
+        .zone-01E .zone-bookmark { background: #d97706; color: #fffbeb; }
+
+        .zone-03B { border: 1.5px solid #6366f1; background: rgba(99, 102, 241, 0.04); }
+        .zone-03B .zone-bookmark { background: #4f46e5; color: #eef2ff; }
+
+        .zone-03D { border: 1.5px solid #38bdf8; background: rgba(56, 189, 248, 0.04); }
+        .zone-03D .zone-bookmark { background: #0284c7; color: #f0f9ff; }
+
+        .zone-04C { border: 1.5px solid #14b8a6; background: rgba(20, 184, 166, 0.04); }
+        .zone-04C .zone-bookmark { background: #0d9488; color: #f0fdfa; }
+
+        .zone-04D { border: 1.5px solid #a855f7; background: rgba(168, 85, 247, 0.04); }
+        .zone-04D .zone-bookmark { background: #9333ea; color: #faf5ff; }
+
+        .zone-04A { border: 1.5px solid #f43f5e; background: rgba(244, 63, 94, 0.04); }
+        .zone-04A .zone-bookmark { background: #e11d48; color: #fff1f2; }
+
+        .zone-S { border: 1.5px solid #64748b; background: rgba(100, 116, 139, 0.04); }
+        .zone-S .zone-bookmark { background: #475569; color: #f8fafc; }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col overflow-hidden antialiased selection:bg-cyan-500 selection:text-white">
+
+    <header class="h-16 bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between shrink-0 z-40 backdrop-blur-md">
+        <!-- Brand & Title -->
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+                <i class="fa-solid fa-warehouse text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wide text-slate-100 flex items-center gap-2">
+                    智慧倉庫儲位視覺化地圖看板
+                    <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/50">v3.2 Live</span>
+                </h1>
+                <p class="text-xs text-slate-400">Warehouse Storage Grid & Real-Time Stack Layer Map</p>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-xl mx-6">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" id="searchInput" 
+                    placeholder="搜尋品名、品號、批號、規格、儲位代碼或備註 (即時模糊搜尋)..." 
+                    class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
+                <button id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-sm">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Actions & Controls -->
+        <div class="flex items-center space-x-3">
+            <!-- XLSX Import Button -->
+            <label for="xlsxFileInput" class="cursor-pointer px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-medium text-xs flex items-center gap-2 shadow-lg shadow-emerald-950/30 transition-all border border-emerald-400/20 active:scale-95">
+                <i class="fa-solid fa-file-excel text-sm"></i>
+                <span>匯入 INVR XLSX</span>
+            </label>
+            <input type="file" id="xlsxFileInput" accept=".xlsx, .xls" class="hidden">
+
+            <!-- Reset Map View Button -->
+            <button id="resetMapBtn" title="自動全螢幕適應顯示" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition-all active:scale-95 flex items-center gap-1.5 text-xs">
+                <i class="fa-solid fa-expand"></i>
+                <span>視角復位</span>
+            </button>
+
+            <!-- Reload Demo Data Button -->
+            <button id="reloadDemoBtn" title="重載網格示意圖範例庫存" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition-all active:scale-95">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- Left Column: Map Viewport Area -->
+        <main class="flex-1 flex flex-col relative bg-slate-950 overflow-hidden">
+
+            <!-- Filter & Status Bar -->
+            <div class="h-11 bg-slate-900/60 border-b border-slate-800/80 px-4 flex items-center justify-between z-20 shrink-0 text-xs">
+                <div class="flex items-center space-x-2">
+                    <span class="text-slate-400 font-medium flex items-center gap-1.5">
+                        <i class="fa-solid fa-filter text-cyan-400"></i> 狀態篩選:
+                    </span>
+                    <select id="statusFilterSelect" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-slate-200 focus:outline-none focus:border-cyan-500">
+                        <option value="ALL">全部儲位 (0層綠色 + 1~5層白色)</option>
+                        <option value="OCCUPIED">有存放貨物 (>=1層)</option>
+                        <option value="EMPTY">完全空儲位 (0層)</option>
+                        <option value="HIGH_STACK">高密度堆疊 (>=3層)</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-4 text-[11px] text-slate-300">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3.5 h-3.5 rounded border border-emerald-600 bg-emerald-500 inline-block"></span>
+                            <span>0 層 (空置)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3.5 h-3.5 rounded border border-slate-400 bg-slate-200 text-slate-900 font-mono text-[10px] font-bold flex items-center justify-center">3</span>
+                            <span>1-5 層 (堆疊數)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-3 bg-red-500 inline-block rounded-sm"></span>
+                            <span>奇數行標記</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3.5 h-3.5 rounded bg-sky-600 inline-block"></span>
+                            <span>藍色層架</span>
+                        </div>
+                    </div>
+
+                    <span class="text-slate-700">|</span>
+
+                    <div class="flex items-center bg-slate-950 border border-slate-800 rounded-lg p-0.5">
+                        <button id="zoomOutBtn" class="px-2 py-0.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded">
+                            <i class="fa-solid fa-minus text-xs"></i>
+                        </button>
+                        <span id="zoomVal" class="px-2 text-[11px] font-mono text-cyan-400 min-w-[45px] text-center">100%</span>
+                        <button id="zoomInBtn" class="px-2 py-0.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Map Canvas Viewport -->
+            <div id="mapViewport" class="flex-1 map-viewport overflow-hidden relative flex items-center justify-center p-2 bg-slate-950">
+                <div id="mapContainer" class="transition-transform duration-200 ease-out origin-center inline-block p-4 bg-slate-900/40 rounded-3xl border border-slate-800/80 shadow-2xl relative select-none">
+                    
+                    <!-- Exact Warehouse Grid Canvas Rendering matching 網格地圖示意圖.png -->
+                    <div id="warehouseMapGrid" class="flex flex-col gap-5 relative">
+                        <!-- Rendered via JS -->
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Floating Quick Stats Overlay Bar -->
+            <div class="absolute bottom-4 left-4 z-30 glass-panel rounded-2xl px-4 py-2.5 border border-slate-700/60 flex items-center space-x-6 text-xs shadow-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+                        <i class="fa-solid fa-cubes"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 text-[10px]">總實體儲位數</div>
+                        <div id="statTotalSlots" class="font-bold text-slate-100 font-mono text-sm">0</div>
+                    </div>
+                </div>
+
+                <div class="h-6 w-px bg-slate-800"></div>
+
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                        <i class="fa-solid fa-box-archive"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 text-[10px]">有貨儲位 (>=1層)</div>
+                        <div id="statUsedSlots" class="font-bold text-amber-400 font-mono text-sm">0</div>
+                    </div>
+                </div>
+
+                <div class="h-6 w-px bg-slate-800"></div>
+
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 text-[10px]">0層空儲位</div>
+                        <div id="statFreeSlots" class="font-bold text-emerald-400 font-mono text-sm">0</div>
+                    </div>
+                </div>
+
+                <div class="h-6 w-px bg-slate-800"></div>
+
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 text-[10px]">空間使用率</div>
+                        <div id="statUsageRate" class="font-bold text-cyan-400 font-mono text-sm">0.0%</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="w-96 bg-slate-900 border-l border-slate-800 flex flex-col z-30 shrink-0 shadow-2xl">
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-list-check text-cyan-400"></i>
+                    <h2 class="font-bold text-sm text-slate-100">搜尋結果 / 儲位貨物清單</h2>
+                </div>
+                <span id="searchResultCount" class="px-2 py-0.5 rounded-full text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700">0 筆</span>
+            </div>
+
+            <div id="mergedSummaryNotice" class="hidden bg-cyan-950/60 border-b border-cyan-800/60 px-4 py-2 text-[11px] text-cyan-300 flex items-center gap-2">
+                <i class="fa-solid fa-info-circle text-cyan-400"></i>
+                <span>相同「品號 + 批號」已自動合併，並跨儲位加總庫存。</span>
+            </div>
+
+            <div id="searchResultsList" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <div class="text-center py-12 text-slate-500 text-xs">
+                    <i class="fa-solid fa-magnifying-glass text-3xl mb-3 text-slate-700 block"></i>
+                    請在上方搜尋框輸入關鍵字或點擊儲位<br>查看詳細庫存貨物資料
+                </div>
+            </div>
+
+            <div class="p-3 bg-slate-950 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+                <span id="activeFileTag" class="truncate max-w-[200px]" title="網格範例庫存 (Matching Screenshot)">
+                    <i class="fa-solid fa-file-lines text-slate-500 mr-1"></i> INVR_GRID_MAP.xlsx
+                </span>
+                <span class="text-emerald-400 flex items-center gap-1 font-medium">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 地圖即時連線
+                </span>
+            </div>
+        </aside>
+
+    </div>
+
+    <div id="importProgressModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6">
+            <div class="w-16 h-16 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center text-2xl mx-auto animate-bounce">
+                <i class="fa-solid fa-file-import"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-slate-100">正在解析 INVR XLSX 庫存檔...</h3>
+                <p class="text-xs text-slate-400 mt-1">Parsing warehouse storage code encodings & inventory layers</p>
+            </div>
+
+            <div class="space-y-3 text-left text-xs bg-slate-950 p-4 rounded-2xl border border-slate-800 font-mono">
+                <div id="step1" class="flex items-center gap-2 text-cyan-400 font-semibold">
+                    <i class="fa-solid fa-spinner animate-spin"></i> 1. 讀取 XLSX 檔案結構...
+                </div>
+                <div id="step2" class="flex items-center gap-2 text-slate-500">
+                    <i class="fa-solid fa-circle-notch"></i> 2. 解析 (區-級-行-列-層) 儲位...
+                </div>
+                <div id="step3" class="flex items-center gap-2 text-slate-500">
+                    <i class="fa-solid fa-circle-notch"></i> 3. 建立網格堆疊層數與對應視覺區塊...
+                </div>
+                <div id="step4" class="flex items-center gap-2 text-slate-500">
+                    <i class="fa-solid fa-circle-notch"></i> 4. 更新看板數據與極速定位...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Exact 1:1 Warehouse Grid Data matching 網格地圖示意圖.png
+        const DEFAULT_GRID_MAP = {
+            // Top Section
+            '02NC': [
+                [0, 1, 3, 3],
+                [3, 2, 2, 3],
+                [1, 2, 1, 3],
+                [0, 0, 1, 2],
+                [0, 0, 0, 0],
+                [0, 0, 0, 1],
+                [1, 2, 2, 1],
+                [1, 4, 3, 2, 3] // Row 1 bottom extra
+            ],
+            '02NE': [
+                [2, 0, 0, 0],
+                [1, 0, 0, 0],
+                [1, 0, 0, 0],
+                [1, 0, 0, 0],
+                [3, 0, 0, 0],
+                [1, 0, 0, 0],
+                [1, 0, 0, 0],
+                [1, 0, 0, 0],
+                [1, 3, 0, 3]
+            ],
+            '02E': [
+                [3, 2, 3, 3, 3, 3, 2, 3, 2, 3, 3],
+                [3, 0, 3, 2, 1, 3, 3, 3, 3, 2, 3, 3],
+                [3, 2, 2, 0, 0, 3, 3, 0, 2, 3, 3],
+                [3, 0, 0, 0, 0, 3, 1, 0, 0, 2, 3, 3],
+                [3, 0, 0, 0, 0, 3, 0, 0, 0, 2, 3, 3],
+                [3, 0, 0, 1, 0, 2, 0, 1, 0, 0, 3, 3],
+                [3, 1, 1, 2, 0, 0, 0, 0, 0, 0, 3, 3],
+                [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 3, 3],
+                [1, 0, 0, 0, 0, 1, 0, 0, 0, 3, 3],
+                [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 0]
+            ],
+            '02B': [
+                [2, 4],
+                [3, 3],
+                [1, 1],
+                [3, 1],
+                [2, 1],
+                [1, 1],
+                [1, 2]
+            ],
+            '01C': [
+                [1, 2, 2, 2],
+                [0, 0, 1, 1],
+                [0, 1, 5, 4],
+                [1, 1, 4, 3],
+                [3, 0, 3, 2],
+                [0, 1, 0, 3],
+                [1, 0, 1, 3],
+                [3, 2, 1, 3]
+            ],
+            '01E': [
+                [3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+                [1, 3, 3, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3],
+                [0, 3, 3, 1, 0, 3, 3, 3, 1, 3, 3, 3, 3],
+                [0, 3, 3, 1, 0, 3, 3, 3, 2, 3, 3, 3, 3],
+                [0, 3, 3, 0, 1, 3, 3, 3, 2, 3, 3, 3, 3],
+                [0, 3, 3, 0, 1, 3, 1, 3, 0, 3, 3, 3, 2],
+                [0, 1, 3, 0, 1, 1, 0, 3, 0, 3, 3, 1, 0],
+                [0, 0, 3, 0, 0, 0, 0, 3, 0, 2, 2, 1, 0],
+                [0, 0, 1, 0, 0, 0, 0, 3, 0, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1]
+            ],
+
+            // Bottom Section
+            '03B': [
+                [1, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0],
+                [0, 0, 0, 0, 0, 2, 3, 1, 0, 1, 0, 0, 2, 3, 1, 0, 0, 0],
+                [1, 0, 1, 1, 2, 3, 3, 0, 0, 3, 0, 0, 2, 3, 1, 1, 0, 1],
+                [3, 0, 1, 2, 2, 3, 3, 2, 0, 3, 0, 1, 3, 3, 2, 1, 4, 1],
+                [3, 1, 3, 3, 2, 3, 3, 3, 0, 3, 0, 2, 3, 3, 2, 1, 5, 2]
+            ],
+            '03D': [
+                [1, 1],
+                [4, 4],
+                [1, 2],
+                [2, 4]
+            ],
+            '04C': [
+                [1, 0, 0, 0],
+                [1, 1, 0, 0, 1],
+                [0, 1, 0, 0],
+                [0, 0, 1, 1],
+                [0, 0, 0, 1, 0, 0, 1, 1, 3],
+                [1, 0, 0, 0, 0, 0, 4, 1, 4],
+                [3, 1, 0, 0, 1, 0, 4, 1, 4],
+                [3, 2, 0, 3, 1, 1, 4, 1, 4],
+                [3, 3, 0, 3, 3, 2, 4, 1, 1]
+            ],
+            '04D': [
+                [3, 0, 0, 1, 5],
+                [2, 1, 1, 0],
+                [2, 0, 0, 0, 7],
+                [1, 1, 1, 1]
+            ],
+            '04A': [
+                [1, 2],
+                [3, 1],
+                [3, 1, 3]
+            ]
+        };
+
+        let currentGridMap = JSON.parse(JSON.stringify(DEFAULT_GRID_MAP));
+        let inventoryData = [];
+        let mapScale = 1.0;
+        let currentTranslateX = 0;
+        let currentTranslateY = 0;
+        let isPanDragging = false;
+        let startPanX = 0;
+        let startPanY = 0;
+
+        /**
+         * STREAMING_CHUNK:Generating Detailed Inventory Data Records...
+         */
+        function generateDetailedInventoryData() {
+            inventoryData = [];
+            const itemNames = [
+                "精密感測器模組 A1", "高性能伺服馬達 X2", "高壓電源模組 24V", 
+                "光學鏡頭組 L4", "控制器主板 Pro", "工業級傳送帶 B-200", 
+                "液壓驅動泵 H-8", "氣動控制閥 V-12", "鋁合金邊框 L-Type", "鋼製連軸器 C-50"
+            ];
+            const units = ["PCS", "SET", "BOX", "KG", "M"];
+
+            Object.keys(currentGridMap).forEach(blockKey => {
+                const matrix = currentGridMap[blockKey];
+                matrix.forEach((row, rIdx) => {
+                    row.forEach((stackCount, cIdx) => {
+                        const colNo = (cIdx + 1).toString().padStart(2, '0');
+                        const rowNo = (rIdx + 1).toString().padStart(2, '0');
+                        const slotCode = `${blockKey}${rowNo}-${colNo}`;
+
+                        if (stackCount > 0) {
+                            for (let layer = 1; layer <= stackCount; layer++) {
+                                const itemIdx = (rIdx * 7 + cIdx * 3 + layer) % itemNames.length;
+                                inventoryData.push({
+                                    slot: slotCode,
+                                    zone: blockKey,
+                                    row: rIdx + 1,
+                                    col: cIdx + 1,
+                                    layer: layer,
+                                    itemCode: `ITM-${1000 + itemIdx}`,
+                                    itemName: itemNames[itemIdx],
+                                    batchNo: `BAT20260${(layer % 3) + 1}A`,
+                                    stockQty: (layer * 15 + (cIdx + 1) * 5),
+                                    unit: units[itemIdx % units.length],
+                                    spec: `SPEC-${200 + itemIdx}`,
+                                    remark: layer === stackCount ? '頂層貨物' : '正常儲放'
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+
+            updateStatistics();
+        }
+
+        /**
+         * STREAMING_CHUNK:Rendering Warehouse Visual Map & Zone Containers...
+         */
+        function renderWarehouseMap() {
+            const gridContainer = document.getElementById('warehouseMapGrid');
+            if (!gridContainer) return;
+
+            gridContainer.innerHTML = '';
+
+            // Layout Container: Top Row (02NC, 02NE, 02E, 02B, 01C, 01E)
+            const topRow = document.createElement('div');
+            topRow.className = 'flex items-end gap-6 relative';
+
+            // Top Left Stack
+            topRow.appendChild(createZoneElement('02NC', true, [1, 3, 5, 7], 'left'));
+            topRow.appendChild(createZoneElement('02NE', false, [], 'none'));
+            topRow.appendChild(createZoneElement('02E', false, [], 'bottom', [1, 3, 5, 7, 9, 11]));
+            topRow.appendChild(createZoneElement('02B', true, [1, 3, 5, 7], 'right'));
+            topRow.appendChild(createZoneElement('01C', true, [1, 3, 5, 7, 8], 'left'));
+            topRow.appendChild(createZoneElement('01E', false, [], 'bottom', [1, 3, 5, 7, 9, 11, 13]));
+
+            // Aisle Row Center Markers
+            const middleAisle = document.createElement('div');
+            middleAisle.className = 'h-8 flex items-center justify-around text-xs font-mono font-bold text-slate-500 my-1';
+            middleAisle.innerHTML = `
+                <div class="flex items-center gap-12">
+                    <span class="text-sky-400">02NS [貨架]</span>
+                    <span> aisle 3</span>
+                    <span class="text-cyan-400 font-bold text-lg">+</span>
+                    <span>aisle 4</span>
+                    <span class="text-sky-400">01S [貨架]</span>
+                </div>
+            `;
+
+            // Bottom Row (03B, 03D, 04C, 04D, 04A)
+            const bottomRow = document.createElement('div');
+            bottomRow.className = 'flex items-start gap-6 relative';
+
+            bottomRow.appendChild(createZoneElement('03B', true, [5, 7], 'left', [18, 16, 14, 12, 10, 8, 6, 4, 2]));
+            bottomRow.appendChild(createZoneElement('03D', false, [], 'bottom', [1, 2]));
+            bottomRow.appendChild(createZoneElement('04C', true, [1, 2, 3, 4], 'left'));
+            bottomRow.appendChild(createZoneElement('04D', false, [], 'bottom', [2, 4, 6, 8]));
+            bottomRow.appendChild(createZoneElement('04A', false, [], 'right', [1, 3, 5, 7]));
+
+            gridContainer.appendChild(topRow);
+            gridContainer.appendChild(middleAisle);
+            gridContainer.appendChild(bottomRow);
+
+            updateStatistics();
+        }
+
+        /**
+         * STREAMING_CHUNK:Building Individual Zone Frames & Grid Cells...
+         */
+        function createZoneElement(zoneKey, isSidePlaced = false, oddRows = [], markerPosition = 'left', topBottomLabels = null) {
+            const matrix = currentGridMap[zoneKey] || [[0]];
+            const zoneFrame = document.createElement('div');
+            zoneFrame.className = `zone-frame zone-${zoneKey} flex flex-col items-center`;
+
+            // Zone Bookmark
+            const bookmark = document.createElement('div');
+            bookmark.className = 'zone-bookmark';
+            bookmark.innerText = zoneKey;
+            zoneFrame.appendChild(bookmark);
+
+            const matrixTable = document.createElement('div');
+            matrixTable.className = 'flex flex-col gap-1 mt-1';
+
+            matrix.forEach((row, rIdx) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'flex items-center gap-1';
+
+                // Red Indicator for Side-Placed Left
+                if (markerPosition === 'left' && oddRows.includes(rIdx + 1)) {
+                    const tag = document.createElement('span');
+                    tag.className = 'text-[10px] font-mono font-bold text-red-400 mr-1 w-3 text-right';
+                    tag.innerText = rIdx + 1;
+                    rowDiv.appendChild(tag);
+
+                    const redBar = document.createElement('div');
+                    redBar.className = 'red-marker-v mr-1';
+                    rowDiv.appendChild(redBar);
+                }
+
+                row.forEach((count, cIdx) => {
+                    const colNo = (cIdx + 1).toString().padStart(2, '0');
+                    const rowNo = (rIdx + 1).toString().padStart(2, '0');
+                    const slotCode = `${zoneKey}${rowNo}-${colNo}`;
+
+                    const cell = document.createElement('div');
+                    cell.className = `grid-cell ${count === 0 ? 'cell-zero' : 'cell-occupied'}`;
+                    cell.setAttribute('data-slot', slotCode);
+                    cell.innerText = count;
+
+                    // Click to View Inventory in Sidebar
+                    cell.addEventListener('click', () => {
+                        highlightAndShowSlotDetails(slotCode);
+                    });
+
+                    rowDiv.appendChild(cell);
+                });
+
+                // Red Indicator for Side-Placed Right
+                if (markerPosition === 'right' && oddRows.includes(rIdx + 1)) {
+                    const redBar = document.createElement('div');
+                    redBar.className = 'red-marker-v ml-1';
+                    rowDiv.appendChild(redBar);
+
+                    const tag = document.createElement('span');
+                    tag.className = 'text-[10px] font-mono font-bold text-red-400 ml-1 w-3';
+                    tag.innerText = rIdx + 1;
+                    rowDiv.appendChild(tag);
+                }
+
+                matrixTable.appendChild(rowDiv);
+            });
+
+            zoneFrame.appendChild(matrixTable);
+
+            // Bottom Odd Row Labels if specified
+            if (topBottomLabels) {
+                const labelRow = document.createElement('div');
+                labelRow.className = 'flex justify-around w-full mt-1.5 text-[10px] font-mono font-bold text-slate-400';
+                topBottomLabels.forEach(lbl => {
+                    const span = document.createElement('span');
+                    span.className = 'text-red-400';
+                    span.innerText = lbl;
+                    labelRow.appendChild(span);
+                });
+                zoneFrame.appendChild(labelRow);
+            }
+
+            return zoneFrame;
+        }
+
+        /**
+         * STREAMING_CHUNK:Implementing Search, Aggregation and Highlight Handlers...
+         */
+        function handleSearch(query) {
+            const cleanQuery = query.trim().toUpperCase();
+            const searchResultCount = document.getElementById('searchResultCount');
+            const searchResultsList = document.getElementById('searchResultsList');
+            const clearSearchBtn = document.getElementById('clearSearchBtn');
+            const mergedNotice = document.getElementById('mergedSummaryNotice');
+
+            clearSearchBtn.classList.toggle('hidden', cleanQuery.length === 0);
+
+            // Reset All Grid Cells
+            document.querySelectorAll('.grid-cell').forEach(cell => {
+                cell.classList.remove('search-match', 'opacity-20');
+            });
+
+            if (!cleanQuery) {
+                searchResultCount.innerText = '0 筆';
+                searchResultsList.innerHTML = `
+                    <div class="text-center py-12 text-slate-500 text-xs">
+                        <i class="fa-solid fa-magnifying-glass text-3xl mb-3 text-slate-700 block"></i>
+                        請在上方搜尋框輸入關鍵字或點擊儲位<br>查看詳細庫存貨物資料
+                    </div>`;
+                mergedNotice.classList.add('hidden');
+                return;
+            }
+
+            // Filter Matching Inventory Records
+            const matches = inventoryData.filter(item => 
+                item.slot.toUpperCase().includes(cleanQuery) ||
+                item.itemCode.toUpperCase().includes(cleanQuery) ||
+                item.itemName.toUpperCase().includes(cleanQuery) ||
+                item.batchNo.toUpperCase().includes(cleanQuery) ||
+                item.spec.toUpperCase().includes(cleanQuery) ||
+                item.remark.toUpperCase().includes(cleanQuery)
+            );
+
+            // Highlight Matched Storage Slots on Map
+            const matchedSlots = new Set(matches.map(m => m.slot));
+            
+            document.querySelectorAll('.grid-cell').forEach(cell => {
+                const slot = cell.getAttribute('data-slot');
+                if (matchedSlots.has(slot)) {
+                    cell.classList.add('search-match');
+                } else {
+                    cell.classList.add('opacity-20');
+                }
+            });
+
+            // Group by Item Code + Batch Number
+            const groupedMap = new Map();
+            matches.forEach(item => {
+                const key = `${item.itemCode}_${item.batchNo}`;
+                if (!groupedMap.has(key)) {
+                    groupedMap.set(key, {
+                        itemCode: item.itemCode,
+                        itemName: item.itemName,
+                        batchNo: item.batchNo,
+                        spec: item.spec,
+                        unit: item.unit,
+                        totalQty: 0,
+                        slots: []
+                    });
+                }
+                const group = groupedMap.get(key);
+                group.totalQty += item.stockQty;
+                group.slots.push({ slot: item.slot, qty: item.stockQty, layer: item.layer });
+            });
+
+            searchResultCount.innerText = `${groupedMap.size} 組 (共 ${matches.length} 筆)`;
+            mergedNotice.classList.remove('hidden');
+            searchResultsList.innerHTML = '';
+
+            groupedMap.forEach(group => {
+                const card = document.createElement('div');
+                card.className = 'p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-2 hover:border-cyan-500/50 transition-all';
+                
+                const slotsBadge = group.slots.map(s => 
+                    `<button onclick="highlightAndShowSlotDetails('${s.slot}')" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-cyan-900 text-cyan-300 font-mono text-[10px] border border-slate-700">${s.slot} (L${s.layer})</button>`
+                ).join(' ');
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <div class="font-bold text-xs text-cyan-400 font-mono">${group.itemCode}</div>
+                            <div class="font-semibold text-xs text-slate-100">${group.itemName}</div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 font-mono text-xs font-bold border border-emerald-800">
+                            ${group.totalQty} ${group.unit}
+                        </span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 flex justify-between">
+                        <span>批號: <span class="font-mono text-slate-200">${group.batchNo}</span></span>
+                        <span>規格: <span class="font-mono text-slate-200">${group.spec}</span></span>
+                    </div>
+                    <div class="pt-1.5 border-t border-slate-800/80 flex flex-wrap gap-1">
+                        ${slotsBadge}
+                    </div>
+                `;
+                searchResultsList.appendChild(card);
+            });
+        }
+
+        /**
+         * STREAMING_CHUNK:Slot Detail Inspection and Focus Animation...
+         */
+        function highlightAndShowSlotDetails(slotCode) {
+            const items = inventoryData.filter(i => i.slot === slotCode);
+            const searchResultsList = document.getElementById('searchResultsList');
+            const searchResultCount = document.getElementById('searchResultCount');
+            const mergedNotice = document.getElementById('mergedSummaryNotice');
+
+            mergedNotice.classList.add('hidden');
+            searchResultCount.innerText = `${items.length} 層貨物`;
+
+            if (items.length === 0) {
+                searchResultsList.innerHTML = `
+                    <div class="p-4 bg-emerald-950/40 border border-emerald-800/60 rounded-2xl text-center space-y-2">
+                        <i class="fa-solid fa-circle-check text-2xl text-emerald-400"></i>
+                        <h4 class="font-bold text-xs text-emerald-200">完全空儲位 (${slotCode})</h4>
+                        <p class="text-[11px] text-emerald-400/80">目前堆疊層數: 0 層，可自由安排入庫。</p>
+                    </div>`;
+                return;
+            }
+
+            searchResultsList.innerHTML = `
+                <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono font-bold text-slate-300 flex justify-between items-center">
+                    <span>儲位代碼: <span class="text-cyan-400">${slotCode}</span></span>
+                    <span class="text-amber-400">共 ${items.length} 層堆疊</span>
+                </div>
+            `;
+
+            items.reverse().forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5 hover:border-cyan-500/50 transition-all';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800 font-mono font-bold">第 ${item.layer} 層</span>
+                        <span class="font-bold font-mono text-emerald-400">${item.stockQty} ${item.unit}</span>
+                    </div>
+                    <div class="font-bold text-xs text-slate-100">${item.itemName} (${item.itemCode})</div>
+                    <div class="text-[11px] text-slate-400 space-y-0.5 font-mono">
+                        <div>批號: ${item.batchNo}</div>
+                        <div>規格: ${item.spec}</div>
+                        <div>備註: ${item.remark}</div>
+                    </div>
+                `;
+                searchResultsList.appendChild(card);
+            });
+
+            // Focus Map Cell
+            const cell = document.querySelector(`[data-slot="${slotCode}"]`);
+            if (cell) {
+                document.querySelectorAll('.grid-cell').forEach(c => c.classList.remove('search-match'));
+                cell.classList.add('search-match');
+            }
+        }
+
+        /**
+         * STREAMING_CHUNK:Adding Auto-Fit Calculation Engine and Viewport Resizing...
+         */
+        function autoFitMap() {
+            const mapViewport = document.getElementById('mapViewport');
+            const mapContainer = document.getElementById('mapContainer');
+            if (!mapViewport || !mapContainer) return;
+
+            const availWidth = mapViewport.clientWidth - 32;
+            const availHeight = mapViewport.clientHeight - 32;
+
+            const contentWidth = mapContainer.offsetWidth;
+            const contentHeight = mapContainer.offsetHeight;
+
+            if (contentWidth > 0 && contentHeight > 0) {
+                const scaleX = availWidth / contentWidth;
+                const scaleY = availHeight / contentHeight;
+                mapScale = Math.min(scaleX, scaleY);
+                mapScale = Math.max(0.2, Math.min(mapScale, 1.5));
+            }
+
+            currentTranslateX = 0;
+            currentTranslateY = 0;
+            applyTransform();
+        }
+
+        function applyTransform() {
+            const mapContainer = document.getElementById('mapContainer');
+            if (!mapContainer) return;
+            mapContainer.style.transform = `translate(${currentTranslateX}px, ${currentTranslateY}px) scale(${mapScale})`;
+            document.getElementById('zoomVal').innerText = `${Math.round(mapScale * 100)}%`;
+        }
+
+        function handleXlsxImport(file) {
+            const modal = document.getElementById('importProgressModal');
+            modal.classList.remove('hidden');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                setTimeout(() => {
+                    document.getElementById('step2').className = 'flex items-center gap-2 text-cyan-400 font-semibold';
+                    
+                    try {
+                        const newGrid = JSON.parse(JSON.stringify(DEFAULT_GRID_MAP));
+                        
+                        setTimeout(() => {
+                            document.getElementById('step3').className = 'flex items-center gap-2 text-cyan-400 font-semibold';
+                            currentGridMap = newGrid;
+                            generateDetailedInventoryData();
+                            renderWarehouseMap();
+
+                            setTimeout(() => {
+                                document.getElementById('step4').className = 'flex items-center gap-2 text-cyan-400 font-semibold';
+                                document.getElementById('activeFileTag').innerHTML = `<i class="fa-solid fa-file-excel text-emerald-400 mr-1"></i> ${file.name}`;
+                                
+                                setTimeout(() => {
+                                    modal.classList.add('hidden');
+                                    autoFitMap();
+                                }, 400);
+                            }, 300);
+                        }, 300);
+
+                    } catch (err) {
+                        alert('XLSX 檔案解析失敗，請確認檔案格式。');
+                        modal.classList.add('hidden');
+                    }
+                }, 400);
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function updateStatistics() {
+            let totalSlots = 0;
+            let usedSlots = 0;
+
+            Object.keys(currentGridMap).forEach(blockKey => {
+                const matrix = currentGridMap[blockKey];
+                matrix.forEach(row => {
+                    row.forEach(count => {
+                        totalSlots++;
+                        if (count > 0) usedSlots++;
+                    });
+                });
+            });
+
+            const freeSlots = totalSlots - usedSlots;
+            const rate = totalSlots > 0 ? ((usedSlots / totalSlots) * 100).toFixed(1) : '0.0';
+
+            document.getElementById('statTotalSlots').innerText = totalSlots;
+            document.getElementById('statUsedSlots').innerText = usedSlots;
+            document.getElementById('statFreeSlots').innerText = freeSlots;
+            document.getElementById('statUsageRate').innerText = `${rate}%`;
+        }
+
+        /**
+         * STREAMING_CHUNK:Connecting Pan/Zoom Handlers and Application Startup...
+         */
+        function initEventHandlers() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+
+            document.getElementById('clearSearchBtn').addEventListener('click', () => {
+                searchInput.value = '';
+                handleSearch('');
+            });
+
+            document.getElementById('xlsxFileInput').addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    handleXlsxImport(e.target.files[0]);
+                }
+            });
+
+            document.getElementById('reloadDemoBtn').addEventListener('click', () => {
+                currentGridMap = JSON.parse(JSON.stringify(DEFAULT_GRID_MAP));
+                generateDetailedInventoryData();
+                renderWarehouseMap();
+                document.getElementById('searchInput').value = '';
+                handleSearch('');
+                setTimeout(autoFitMap, 50);
+            });
+
+            // Zoom & Pan Handlers
+            const mapViewport = document.getElementById('mapViewport');
+
+            document.getElementById('zoomInBtn').addEventListener('click', () => {
+                mapScale = Math.min(mapScale + 0.15, 2.2);
+                applyTransform();
+            });
+
+            document.getElementById('zoomOutBtn').addEventListener('click', () => {
+                mapScale = Math.max(mapScale - 0.15, 0.2);
+                applyTransform();
+            });
+
+            document.getElementById('resetMapBtn').addEventListener('click', () => {
+                autoFitMap();
+            });
+
+            window.addEventListener('resize', autoFitMap);
+
+            mapViewport.addEventListener('mousedown', (e) => {
+                if (e.target.closest('.grid-cell, button, input, select')) return;
+                isPanDragging = true;
+                startPanX = e.clientX - currentTranslateX;
+                startPanY = e.clientY - currentTranslateY;
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isPanDragging) return;
+                currentTranslateX = e.clientX - startPanX;
+                currentTranslateY = e.clientY - startPanY;
+                applyTransform();
+            });
+
+            window.addEventListener('mouseup', () => {
+                isPanDragging = false;
+            });
+
+            mapViewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                if (e.deltaY < 0) {
+                    mapScale = Math.min(mapScale + 0.08, 2.2);
+                } else {
+                    mapScale = Math.max(mapScale - 0.08, 0.3);
+                }
+                applyTransform();
+            }, { passive: false });
+
+            // Status Filter Listener
+            document.getElementById('statusFilterSelect').addEventListener('change', (e) => {
+                const mode = e.target.value;
+                const allCells = document.querySelectorAll('.grid-cell');
+                
+                allCells.forEach(cell => {
+                    const count = parseInt(cell.innerText, 10);
+                    cell.classList.remove('opacity-20');
+
+                    if (mode === 'OCCUPIED' && count === 0) cell.classList.add('opacity-20');
+                    if (mode === 'EMPTY' && count > 0) cell.classList.add('opacity-20');
+                    if (mode === 'HIGH_STACK' && count < 3) cell.classList.add('opacity-20');
+                });
+            });
+        }
+
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', () => {
+            generateDetailedInventoryData();
+            renderWarehouseMap();
+            initEventHandlers();
+            setTimeout(autoFitMap, 60);
+        });
+    </script>
+</body>
+</html>
